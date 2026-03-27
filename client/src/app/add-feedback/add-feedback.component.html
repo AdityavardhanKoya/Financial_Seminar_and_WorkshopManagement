@@ -1,1 +1,30 @@
-<!--To complete the code here!!-->
+<div class="container mt-4">
+  <h3 class="mb-3">Add Feedback</h3>
+
+  <div *ngIf="showError"   class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="showMessage" class="alert alert-success">{{ responseMessage }}</div>
+
+  <table class="table table-bordered" *ngIf="eventList.length > 0">
+    <thead class="table-dark">
+      <tr><th>ID</th><th>Title</th><th>Schedule</th><th>Status</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of eventList">
+        <td>{{ e.id }}</td>
+        <td>{{ e.title }}</td>
+        <td>{{ e.schedule }}</td>
+        <td>{{ e.status }}</td>
+        <td>
+          <button class="btn btn-sm btn-info" (click)="addRemarks(e)">Add Feedback</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card p-3 mt-3" *ngIf="isAddRemarks">
+    <h6>Feedback for: {{ selectedEvent.title }}</h6>
+    <textarea class="form-control mb-2" rows="3" [(ngModel)]="formModel.content"
+      placeholder="Enter your feedback..."></textarea>
+    <button class="btn btn-success" (click)="saveFeedBack()">Submit Feedback</button>
+  </div>
+</div>
