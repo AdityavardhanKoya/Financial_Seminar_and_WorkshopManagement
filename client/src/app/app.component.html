@@ -51,4 +51,49 @@
   </div>
 
 </body>
+<!-- ✅ NAVBAR ONLY FOR INSTITUTION -->
+<nav *ngIf="roleName === 'INSTITUTION'" class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+
+    <a class="navbar-brand fw-bold">Finance Event Portal</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#instiNavbar" aria-controls="instiNavbar"
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="instiNavbar">
+      <ul class="navbar-nav me-auto">
+
+        <li class="nav-item">
+          <a routerLink="/create-event" class="nav-link">Create Event</a>
+        </li>
+
+        <li class="nav-item">
+          <a routerLink="/add-resource" class="nav-link">Add Resource</a>
+        </li>
+
+        <li class="nav-item">
+          <a routerLink="/assign-professional" class="nav-link">Assign Professional</a>
+        </li>
+
+        <li class="nav-item">
+          <a routerLink="/view-events" class="nav-link">View Events</a>
+        </li>
+
+      </ul>
+
+      <!-- ✅ LOGOUT BUTTON -->
+      <div class="d-flex">
+        <button class="btn btn-outline-light" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ✅ PAGE CONTENT -->
+<div class="container mt-4">
+  <router-outlet></router-outlet>
+</div>
 

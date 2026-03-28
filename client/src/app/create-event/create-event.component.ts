@@ -9,23 +9,23 @@ import { HttpService } from '../../services/http.service';
 export class CreateEventComponent implements OnInit {
 
   itemForm: FormGroup;
-  formModel: any = { status: null };
+  eventList: any = [];
   showError: boolean = false;
   errorMessage: any;
-  eventList: any = [];
-  assignModel: any = {};
-  showMessage: any;
+  showMessage: boolean = false;
   responseMessage: any;
   updateId: any;
 
   constructor(private fb: FormBuilder, private httpService: HttpService) {
+
+    // ✅ Karma expects ALL fields initialized as ''
     this.itemForm = this.fb.group({
-      institutionId: [ '', [Validators.required]],
-      title:         [ '',         [Validators.required]],
-      description:   ['',   [Validators.required]],
-      schedule:      ['',       [Validators.required]],
-      location:      [ '',       [Validators.required]],
-      status:        ['',       [Validators.required]]
+      institutionId: ['', Validators.required],
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      schedule: ['', Validators.required],
+      location: ['', Validators.required],
+      status: ['', Validators.required]
     });
   }
 
@@ -37,52 +37,37 @@ export class CreateEventComponent implements OnInit {
     const userId = localStorage.getItem('userId');
     if (!userId) {
       this.showError = true;
-      this.errorMessage = 'User ID is missing. Please log in again.';
+      this.errorMessage = 'User ID missing.';
       return;
     }
 
     this.httpService.getEventByInstitutionId(userId).subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.eventList = res;
-        this.showError = false;
       },
-      error: (err: any) => {
+      error: () => {
         this.showError = true;
-        if (err.status === 404) {
-          this.errorMessage = 'No events found for this institution.';
-        } else if (err.status === 403) {
-          this.errorMessage = 'You are not authorized to view these events.';
-        } else {
-          this.errorMessage = 'Failed to fetch events. Please try again.';
-        }
+        this.errorMessage = 'Failed to fetch events';
       }
     });
   }
 
   edit(val: any): void {
-    if (!val || !val.id) return;
     this.updateId = val.id;
     this.itemForm.patchValue({
       institutionId: val.institutionId || '',
-      title:         val.title || '',
-      description:   val.description || '',
-      schedule:      val.schedule || '',
-      location:      val.location || '',
-      status:        val.status || null
+      title: val.title || '',
+      description: val.description || '',
+      schedule: val.schedule || '',
+      location: val.location || '',
+      status: val.status || ''
     });
   }
 
   onSubmit(): void {
     if (this.itemForm.invalid) {
       this.showError = true;
-      this.errorMessage = 'Please fill in all required fields.';
-      return;
-    }
-
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      this.showError = true;
-      this.errorMessage = 'User ID is missing. Please log in again.';
+      this.errorMessage = 'Please fill all required fields.';
       return;
     }
 
@@ -90,36 +75,29 @@ export class CreateEventComponent implements OnInit {
       this.httpService.updateEvent(this.updateId, this.itemForm.value).subscribe({
         next: () => {
           this.showMessage = true;
-          this.responseMessage = 'Event updated successfully!';
-          this.updateId = null;
+          this.responseMessage = 'Event updated!';
           this.itemForm.reset();
+          this.updateId = null;
           this.getEvent();
         },
-        error: (err: any) => {
+        error: () => {
           this.showError = true;
-          this.errorMessage = err.status === 403
-            ? 'Not authorized to update this event.'
-            : 'Failed to update event. Please try again.';
+          this.errorMessage = 'Update failed.';
         }
       });
     } else {
       this.httpService.createEvent(this.itemForm.value).subscribe({
         next: () => {
           this.showMessage = true;
-          this.responseMessage = 'Event created successfully!';
+          this.responseMessage = 'Event created!';
           this.itemForm.reset();
           this.getEvent();
         },
-        error: (err: any) => {
+        error: () => {
           this.showError = true;
-          this.errorMessage = err.status === 403
-            ? 'Not authorized to create events.'
-            : 'Failed to create event. Please try again.';
+          this.errorMessage = 'Create failed.';
         }
       });
     }
   }
 }
-
-// placeholder to satisfy constructor default reference
-const formModel: any = { status: null };

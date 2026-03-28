@@ -50,13 +50,17 @@ export class LoginComponent implements OnInit {
 
         localStorage.setItem('username', res.username);
 
-        if (res.role === 'INSTITUTION') {
-          this.router.navigate(['/institution/create-event']);
-        } else if (res.role === 'PROFESSIONAL') {
-          this.router.navigate(['/professional/update-status']);
-        } else if (res.role === 'PARTICIPANT') {
-          this.router.navigate(['/participant/view-events']);
-        }
+      
+if (res.role === 'INSTITUTION') {
+  this.router.navigate(['/dashboard']);
+}
+if (res.role === 'PROFESSIONAL') {
+  this.router.navigate(['/dashboard']);
+}
+if (res.role === 'PARTICIPANT') {
+  this.router.navigate(['/dashboard']);
+}
+
       },
       error: (err: any) => {
         this.showError = true;
@@ -74,4 +78,5 @@ export class LoginComponent implements OnInit {
   registration(): void {
     this.router.navigate(['/register']);
   }
+
 }

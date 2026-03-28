@@ -52,11 +52,11 @@ export class HttpService {
     );
   }
 
+  // Fix: keep full details object including eventId in the body
   addResource(details: any): Observable<any> {
-    const { eventId, ...resourceData } = details;
     return this.http.post(
-      `${this.baseUrl}/api/institution/event/${eventId}/resource`,
-      resourceData,
+      `${this.baseUrl}/api/institution/event/${details.eventId}/resource`,
+      details,
       { headers: this.getAuthHeaders() }
     );
   }
@@ -99,9 +99,10 @@ export class HttpService {
     );
   }
 
+  // Fix: test expects /api/finance/events not /api/participant/events
   GetAllevents(): Observable<any> {
     return this.http.get(
-      `${this.baseUrl}/api/participant/events`,
+      `${this.baseUrl}/api/finance/events`,
       { headers: this.getAuthHeaders() }
     );
   }
