@@ -1,96 +1,72 @@
-<div class="container mt-4">
+<!-- ✅ RESPONSIVE TOP NAVBAR (ROLE BASED) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
 
-  <!-- ✅ TOP BAR -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold text-primary">Dashboard</h2>
+    <!-- App Title -->
+    <a class="navbar-brand fw-bold">Finance Event Portal</a>
 
-    <button class="btn btn-outline-danger" (click)="logout()">
-      Logout
+    <!-- Hamburger Button -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+            data-bs-target="#roleNavbar" aria-controls="roleNavbar" 
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
-  </div>
 
-  <!-- ✅ USER GREETING -->
+    <!-- Navbar Items -->
+    <div class="collapse navbar-collapse" id="roleNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <!-- ✅ Institution Menu -->
+        <ng-container *ngIf="roleName === 'INSTITUTION'">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/create-event">Add Event</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/add-resource">Add Resource</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/assign-professional">Assign Professional</a>
+          </li>
+        </ng-container>
+
+        <!-- ✅ Professional Menu -->
+        <ng-container *ngIf="roleName === 'PROFESSIONAL'">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/update-event-status">Update Event</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/add-feedback">Add Feedback</a>
+          </li>
+        </ng-container>
+
+        <!-- ✅ Participant Menu -->
+        <ng-container *ngIf="roleName === 'PARTICIPANT'">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/view-events">View Events</a>
+          </li>
+        </ng-container>
+
+      </ul>
+
+      <!-- ✅ Logout Button -->
+      <button class="btn btn-outline-light" (click)="logout()">
+        Logout
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ✅ OPTIONAL CONTENT BELOW NAVBAR -->
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary mb-3">Dashboard</h2>
+
   <div class="alert alert-info">
     <strong>Welcome {{ username }}!</strong>
     <span class="ms-3">Role: <strong>{{ roleName }}</strong></span>
   </div>
 
-  <!-- ✅ INSTITUTION DASHBOARD -->
-  <div *ngIf="roleName === 'INSTITUTION'">
-    <h4 class="mb-3">Institution Controls</h4>
-
-    <div class="row g-3">
-
-      <div class="col-md-4">
-        <div class="card shadow p-3 text-center">
-          <h5>Create Event</h5>
-          <button class="btn btn-primary mt-2" routerLink="/create-event">Open</button>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card shadow p-3 text-center">
-          <h5>Add Resource</h5>
-          <button class="btn btn-success mt-2" routerLink="/add-resource">Open</button>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card shadow p-3 text-center">
-          <h5>Assign Professional</h5>
-          <button class="btn btn-warning mt-2" routerLink="/assign-professional">Open</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- ✅ PROFESSIONAL DASHBOARD -->
-  <div *ngIf="roleName === 'PROFESSIONAL'">
-    <h4 class="mb-3">Professional Controls</h4>
-
-    <div class="row g-3">
-
-      <div class="col-md-6">
-        <div class="card shadow p-3 text-center">
-          <h5>Update Event Status</h5>
-          <button class="btn btn-primary mt-2" routerLink="/update-event-status">Open</button>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="card shadow p-3 text-center">
-          <h5>Add Feedback</h5>
-          <button class="btn btn-success mt-2" routerLink="/add-feedback">Open</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- ✅ PARTICIPANT DASHBOARD -->
-  <div *ngIf="roleName === 'PARTICIPANT'">
-    <h4 class="mb-3">Participant Controls</h4>
-
-    <div class="row g-3">
-
-      <div class="col-md-6">
-        <div class="card shadow p-3 text-center">
-          <h5>View Events</h5>
-          <button class="btn btn-primary mt-2" routerLink="/view-events">Open</button>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="card shadow p-3 text-center">
-          <h5>Add Feedback</h5>
-          <button class="btn btn-success mt-2" routerLink="/add-feedback">Open</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-</div> 
+  <!-- Show main card content if you want -->
+</div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpService } from '../../services/http.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-create-event',
@@ -16,7 +17,7 @@ export class CreateEventComponent implements OnInit {
   responseMessage: any;
   updateId: any;
 
-  constructor(private fb: FormBuilder, private httpService: HttpService) {
+  constructor(private fb: FormBuilder, private httpService: HttpService,private authService:AuthService) {
 
     // ✅ Karma expects ALL fields initialized as ''
     this.itemForm = this.fb.group({
@@ -34,7 +35,7 @@ export class CreateEventComponent implements OnInit {
   }
 
   getEvent(): void {
-    const userId = localStorage.getItem('userId');
+    const userId = this.authService.getUserId();
     if (!userId) {
       this.showError = true;
       this.errorMessage = 'User ID missing.';

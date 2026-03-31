@@ -31,10 +31,6 @@ public class InstitutionController {
         return ResponseEntity.ok(eventService.updateEvent(id, event));
     }
 
-    @GetMapping("/events")
-    public ResponseEntity<List<Event>> getEvents(@RequestParam Long institutionId) {
-        return ResponseEntity.ok(eventService.getEventsByInstitution(institutionId));
-    }
 
     @PostMapping("/event/{eventId}/resource")
     public ResponseEntity<Resource> addResource(@PathVariable Long eventId,
@@ -52,4 +48,8 @@ public class InstitutionController {
                                                      @RequestParam Long userId) {
         return ResponseEntity.ok(eventService.assignProfessional(eventId, userId));
     }
+    @GetMapping("/events")
+public ResponseEntity<List<Event>> getAllEvents() {
+    return ResponseEntity.ok(eventService.getAllEvents());
+}
 }

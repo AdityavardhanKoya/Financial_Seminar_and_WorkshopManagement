@@ -117,8 +117,10 @@ export class UpdateEventStatusComponent implements OnInit {
       return;
     }
 
-    const timestamp = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
-    const feedbackData = { content: this.formModel.content, timestamp };
+const feedbackData = {
+  content: this.formModel.content,
+  timestamp: new Date().toISOString()
+};
 
     this.httpService.AddFeedback(this.updateId, userId, feedbackData).subscribe({
       next: () => {

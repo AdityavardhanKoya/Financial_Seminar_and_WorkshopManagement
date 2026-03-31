@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.roleName = localStorage.getItem('roleName');  // e.g. INSTITUTION, PROFESSIONAL, PARTICIPANT
+    this.roleName = localStorage.getItem('role');  // e.g. INSTITUTION, PROFESSIONAL, PARTICIPANT
     this.IsLoggin = !!localStorage.getItem('token');   // true if logged in
   }
 
