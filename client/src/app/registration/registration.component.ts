@@ -8,12 +8,10 @@ import { HttpService } from '../../services/http.service';
   templateUrl: './registration.component.html'
 })
 export class RegistrationComponent implements OnInit {
-
   itemForm: FormGroup;
   formModel: any = { role: null, email: '', password: '', username: '' };
   showMessage: boolean = false;
   responseMessage: any;
-
   constructor(
     private fb: FormBuilder,
     private httpService: HttpService,

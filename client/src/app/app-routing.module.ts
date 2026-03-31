@@ -2,16 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
-
-
 import { AppComponent } from './app.component';
 import { DashbaordComponent } from './dashbaord/dashbaord.component';
-
 import { CreateEventComponent } from './create-event/create-event.component';
 import { AddResourceComponent } from './add-resource/add-resource.component';
-
 import { ViewEventsComponent } from './view-events/view-events.component';
-
 import { AssignProfessionalComponent } from './assign-professional/assign-professional.component';
 import { UpdateEventStatusComponent } from './update-event-status/update-event-status.component';
 import { AddFeedbackComponent } from './add-feedback/add-feedback.component';
@@ -26,9 +21,6 @@ const routes: Routes = [
   { path: 'update-event-status', component: UpdateEventStatusComponent }, 
   { path: 'add-feedback', component: AddFeedbackComponent }, 
   { path: 'view-events', component: ViewEventsComponent },  
-  
-  
- 
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 
   { path: '**', redirectTo: '/dashboard', pathMatch: 'full' },
