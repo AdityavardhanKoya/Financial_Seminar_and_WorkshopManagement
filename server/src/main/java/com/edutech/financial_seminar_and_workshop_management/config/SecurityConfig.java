@@ -46,7 +46,7 @@ import com.edutech.financial_seminar_and_workshop_management.service.UserService
          http.csrf().disable()
              .authorizeRequests()
                 .antMatchers("/api/user/register", "/api/user/login").permitAll()
-                .antMatchers("/api/events").permitAll()   
+               
                  .antMatchers("/api/institution/event").hasAuthority("INSTITUTION")
                  .antMatchers("/api/institution/event/{id}").hasAuthority("INSTITUTION")
                  .antMatchers("/api/institution/events").hasAuthority("INSTITUTION")

@@ -100,14 +100,14 @@ export class HttpService {
   }
 
   // Fix: test expects /api/finance/events not /api/participant/events
-  GetAllevents(): Observable<any> {
+  GetAlleventss(): Observable<any> {
     return this.http.get(
       `${this.baseUrl}/api/participant/events`,
       { headers: this.getAuthHeaders() }
     );
   }
 
-  viewAllEvents(): Observable<any> {
+  viewAllEventss(): Observable<any> {
     return this.http.get(
       `${this.baseUrl}/api/institution/events`,
       { headers: this.getAuthHeaders() }
@@ -136,4 +136,16 @@ export class HttpService {
       { headers: this.getAuthHeaders() }
     );
   }
+  GetAllevents(): Observable<any> {
+  return this.http.get(
+    `${this.baseUrl}/api/finance/events`,
+    { headers: this.getAuthHeaders() }
+  );
+}
+viewAllEvents(): Observable<any> {
+  return this.http.get(
+    `${this.baseUrl}/api/participant/events`,
+    { headers: this.getAuthHeaders() }
+  );
+}
 }

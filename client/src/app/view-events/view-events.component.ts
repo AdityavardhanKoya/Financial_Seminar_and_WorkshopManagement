@@ -40,7 +40,7 @@ getEvent(): void {
 
   if (this.roleName === 'PARTICIPANT') {
     // ✅ Participant sees ALL events (public view)
-    this.httpService.GetAllevents().subscribe({
+    this.httpService.GetAlleventss().subscribe({
       next: res => {
         this.eventList = res;
         this.showError = false;
@@ -51,7 +51,7 @@ getEvent(): void {
 
   else if (this.roleName === 'INSTITUTION') {
     // ✅ Institution sees only ITS events
-    this.httpService.viewAllEvents().subscribe({
+    this.httpService.viewAllEventss().subscribe({
       next: res => {
         this.eventList = res;
         this.showError = false;
