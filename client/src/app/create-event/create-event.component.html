@@ -1,0 +1,82 @@
+<div class="container mt-4">
+  <h3 class="mb-3">{{ updateId ? 'Update Event' : 'Create Event' }}</h3>
+
+  <div *ngIf="showError"   class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="showMessage" class="alert alert-success">{{ responseMessage }}</div>
+
+  <form [formGroup]="itemForm" class="card p-3 mb-4" (ngSubmit)="onSubmit()">
+    <div class="row g-2">
+      <div class="col-md-2">
+        <label class="form-label">Institution ID</label>
+        <input type="number" class="form-control" formControlName="institutionId" />
+        <div *ngIf="itemForm.get('institutionId')?.invalid && itemForm.get('institutionId')?.touched"
+          class="text-danger small">Required.</div>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-control" formControlName="title" />
+        <div *ngIf="itemForm.get('title')?.invalid && itemForm.get('title')?.touched"
+          class="text-danger small">Required.</div>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Description</label>
+        <input type="text" class="form-control" formControlName="description" />
+        <div *ngIf="itemForm.get('description')?.invalid && itemForm.get('description')?.touched"
+          class="text-danger small">Required.</div>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Schedule</label>
+        <input type="text" class="form-control" formControlName="schedule" />
+        <div *ngIf="itemForm.get('schedule')?.invalid && itemForm.get('schedule')?.touched"
+          class="text-danger small">Required.</div>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Location</label>
+        <input type="text" class="form-control" formControlName="location" />
+        <div *ngIf="itemForm.get('location')?.invalid && itemForm.get('location')?.touched"
+          class="text-danger small">Required.</div>
+      </div>
+      <div class="col-md-1">
+        <label class="form-label">Status</label>
+        <select class="form-select" formControlName="status">
+          <option [ngValue]="null">--</option>
+          <option value="PENDING">PENDING</option>
+          <option value="IN_PROGRESS">IN_PROGRESS</option>
+          <option value="COMPLETED">COMPLETED</option>
+        </select>
+        <div *ngIf="itemForm.get('status')?.invalid && itemForm.get('status')?.touched"
+          class="text-danger small">Required.</div>
+      </div>
+    </div>
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary me-2"
+        [disabled]="itemForm.invalid">
+        {{ updateId ? 'Update' : 'Create' }}
+      </button>
+      <button type="button" class="btn btn-outline-secondary" (click)="getEvent()">
+        Refresh Events
+      </button>
+    </div>
+  </form>
+
+  <table class="table table-bordered" *ngIf="eventList.length > 0">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th><th>Title</th><th>Schedule</th>
+        <th>Location</th><th>Status</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of eventList">
+        <td>{{ e.id }}</td>
+        <td>{{ e.title }}</td>
+        <td>{{ e.schedule }}</td>
+        <td>{{ e.location }}</td>
+        <td>{{ e.status }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning" (click)="edit(e)">Edit</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

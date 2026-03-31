@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+
+    <!-- USER MODULE -->
+
+    <property name="testRegisterUser"
+              value="Verify that a new user can be successfully registered and all user details are persisted correctly in the database"/>
+
+    <property name="testLoginUser"
+              value="Verify that a registered user can successfully log in and receive a valid authentication token"/>
+
+    <property name="testLoginWithWrongUsernameOrPassword"
+              value="Verify that login fails with invalid credentials and returns an unauthorized response"/>
+
+
+    <!-- INSTITUTION MODULE -->
+
+    <property name="testInstitutionShouldCreateEvent"
+              value="Verify that an institution user can create a new event and the event details are stored correctly in the database"/>
+
+    <property name="testInstitutionShouldUpdateEvent"
+              value="Verify that an institution user can update an existing event and the updated details are correctly persisted"/>
+
+    <property name="testInstitutionShouldGetEvents"
+              value="Verify that all events associated with a specific institution ID can be retrieved correctly"/>
+
+    <property name="testAddResourceToEvent"
+              value="Verify that a resource can be successfully added to an event and correctly linked with that event"/>
+
+    <property name="testGetProfessionalsList"
+              value="Verify that all users with the PROFESSIONAL role can be retrieved successfully"/>
+
+    <property name="testAssignProfessionalToEvent"
+              value="Verify that a professional user can be successfully assigned to an event and the relationship is persisted"/>
+
+
+    <!-- PROFESSIONAL MODULE -->
+
+    <property name="testProfessionalsShouldViewAssignedEvents"
+              value="Verify that a professional user can view all events assigned to them"/>
+
+    <property name="testProfessionalsShouldProvideFeedback"
+              value="Verify that a professional user can provide feedback for an event and the feedback is stored correctly"/>
+
+
+    <!-- PARTICIPANT MODULE -->
+
+    <property name="testParticipantShouldGetAllEvents"
+              value="Verify that a participant can retrieve the list of all available events"/>
+
+    <property name="testParticipantShouldEnrollInEvent"
+              value="Verify that a participant can successfully enroll in an event and the enrollment is persisted"/>
+
+    <property name="testParticipantShouldViewEventStatus"
+              value="Verify that a participant can view the status of a specific event"/>
+
+    <property name="testParticipantShouldProvideFeedback"
+              value="Verify that a participant can provide feedback for an event and it is stored correctly"/>
+
+
+    <!-- SECURITY / AUTHORIZATION -->
+
+    <property name="testInstitutionApiShouldBeForbiddenForOtherUser"
+              value="Verify that users without INSTITUTION role are forbidden from accessing institution-specific APIs"/>
+
+    <property name="testProfessionalsApiShouldBeForbiddenForOtherUser"
+              value="Verify that users without PROFESSIONAL role are forbidden from accessing professional-specific APIs"/>
+
+    <property name="testParticipantApiShouldBeForbiddenForOtherUser"
+              value="Verify that users without PARTICIPANT role are forbidden from accessing participant-specific APIs"/>
+
+
+  
+
+    <!-- ADD RESOURCE COMPONENT -->
+
+    <property name="testAddResourceFormInitialization"
+              value="Verify that the Add Resource form initializes with empty values and all required validators are applied"/>
+
+    <property name="testAddResourceFormValid"
+              value="Verify that the Add Resource form becomes valid when all required fields are filled correctly"/>
+
+
+    <!-- ASSIGN PROFESSIONAL COMPONENT -->
+
+    <property name="testAssignProfessionalFormInitialization"
+              value="Verify that the Assign Professional form initializes with required fields and validation rules"/>
+
+    <property name="testAssignProfessionalFormValid"
+              value="Verify that the Assign Professional form becomes valid when event ID and user ID are provided"/>
+
+
+    <!-- CREATE EVENT COMPONENT -->
+
+    <property name="testCreateEventFormInitialization"
+              value="Verify that the Create Event form initializes with empty values and required validators"/>
+
+    <property name="testCreateEventFormValid"
+              value="Verify that the Create Event form becomes valid when all mandatory fields are filled correctly"/>
+
+
+    <!-- LOGIN COMPONENT -->
+
+    <property name="testLoginFormInvalidWhenEmpty"
+              value="Verify that the login form is invalid when both username and password fields are empty"/>
+
+    <property name="testLoginFormInvalidWhenPartial"
+              value="Verify that the login form is invalid when either username or password is missing"/>
+
+    <property name="testLoginFormValid"
+              value="Verify that the login form becomes valid when both username and password are provided"/>
+
+
+    <!-- REGISTRATION COMPONENT -->
+
+    <property name="testRegistrationFormInvalidWhenEmpty"
+              value="Verify that the registration form is invalid when all required fields are empty"/>
+
+    <property name="testRegistrationFormInvalidEmail"
+              value="Verify that the registration form is invalid when the email format is incorrect"/>
+
+    <property name="testRegistrationFormValid"
+              value="Verify that the registration form becomes valid when all fields are correctly filled"/>
+
+
+    <!-- HTTP SERVICE -->
+
+    <property name="testHttpServiceCreation"
+              value="Verify that the HTTP service is successfully instantiated"/>
+
+    <property name="testGetEventByProfessional"
+              value="Verify that events are fetched correctly for a professional user using API"/>
+
+    <property name="testGetEventByInstitutionId"
+              value="Verify that events are fetched correctly for a given institution ID using API"/>
+
+    <property name="testGetAllProfessionals"
+              value="Verify that all professionals are retrieved correctly using API"/>
+
+    <property name="testGetAllEventsFinance"
+              value="Verify that all events are fetched from finance API endpoint correctly"/>
+
+    <property name="testViewAllEventsParticipant"
+              value="Verify that participants can retrieve all available events using API"/>
+
+    <property name="testViewEventStatus"
+              value="Verify that event status is retrieved correctly for a given event ID"/>
+
+    <property name="testEnrollParticipant"
+              value="Verify that a participant can successfully enroll in an event using API"/>
+
+    <property name="testCreateEventApi"
+              value="Verify that an event is successfully created using API call"/>
+
+    <property name="testUpdateEventApi"
+              value="Verify that an event is successfully updated using API call"/>
+
+    <property name="testAddResourceApi"
+              value="Verify that a resource is successfully added to an event using API"/>
+
+    <property name="testAssignProfessionalsApi"
+              value="Verify that a professional is successfully assigned to an event using API"/>
+
+    <property name="testUpdateEventStatus"
+              value="Verify that event status is successfully updated using API"/>
+
+    <property name="testAddFeedbackApi"
+              value="Verify that feedback is successfully submitted for an event using API"/>
+
+</properties>

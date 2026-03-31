@@ -1,0 +1,96 @@
+<div class="container mt-4">
+
+  <!-- ✅ TOP BAR -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary">Dashboard</h2>
+
+    <button class="btn btn-outline-danger" (click)="logout()">
+      Logout
+    </button>
+  </div>
+
+  <!-- ✅ USER GREETING -->
+  <div class="alert alert-info">
+    <strong>Welcome {{ username }}!</strong>
+    <span class="ms-3">Role: <strong>{{ roleName }}</strong></span>
+  </div>
+
+  <!-- ✅ INSTITUTION DASHBOARD -->
+  <div *ngIf="roleName === 'INSTITUTION'">
+    <h4 class="mb-3">Institution Controls</h4>
+
+    <div class="row g-3">
+
+      <div class="col-md-4">
+        <div class="card shadow p-3 text-center">
+          <h5>Create Event</h5>
+          <button class="btn btn-primary mt-2" routerLink="/create-event">Open</button>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow p-3 text-center">
+          <h5>Add Resource</h5>
+          <button class="btn btn-success mt-2" routerLink="/add-resource">Open</button>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow p-3 text-center">
+          <h5>Assign Professional</h5>
+          <button class="btn btn-warning mt-2" routerLink="/assign-professional">Open</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ✅ PROFESSIONAL DASHBOARD -->
+  <div *ngIf="roleName === 'PROFESSIONAL'">
+    <h4 class="mb-3">Professional Controls</h4>
+
+    <div class="row g-3">
+
+      <div class="col-md-6">
+        <div class="card shadow p-3 text-center">
+          <h5>Update Event Status</h5>
+          <button class="btn btn-primary mt-2" routerLink="/update-event-status">Open</button>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card shadow p-3 text-center">
+          <h5>Add Feedback</h5>
+          <button class="btn btn-success mt-2" routerLink="/add-feedback">Open</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ✅ PARTICIPANT DASHBOARD -->
+  <div *ngIf="roleName === 'PARTICIPANT'">
+    <h4 class="mb-3">Participant Controls</h4>
+
+    <div class="row g-3">
+
+      <div class="col-md-6">
+        <div class="card shadow p-3 text-center">
+          <h5>View Events</h5>
+          <button class="btn btn-primary mt-2" routerLink="/view-events">Open</button>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card shadow p-3 text-center">
+          <h5>Add Feedback</h5>
+          <button class="btn btn-success mt-2" routerLink="/add-feedback">Open</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div> 
