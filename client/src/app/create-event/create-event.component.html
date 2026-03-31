@@ -1,0 +1,120 @@
+<div class="container mt-4">
+
+  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="card p-4">
+
+    <h3 class="mb-3">
+      {{ updateId ? 'Update Event' : 'Create Event' }}
+    </h3>
+
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="title"
+      />
+      <div class="text-danger"
+           *ngIf="itemForm.get('title')?.touched && itemForm.get('title')?.invalid">
+        Title is required
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea
+        class="form-control"
+        formControlName="description">
+      </textarea>
+      <div class="text-danger"
+           *ngIf="itemForm.get('description')?.touched && itemForm.get('description')?.invalid">
+        Description is required
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Schedule</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="schedule"
+      />
+      <div class="text-danger"
+           *ngIf="itemForm.get('schedule')?.touched && itemForm.get('schedule')?.invalid">
+        Schedule is required
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Location</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="location"
+      />
+      <div class="text-danger"
+           *ngIf="itemForm.get('location')?.touched && itemForm.get('location')?.invalid">
+        Location is required
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Status</label>
+      <select
+        class="form-select"
+        formControlName="status">
+        <option value="">Select Status</option>
+        <option value="PENDING">PENDING</option>
+        <option value="IN_PROGRESS">IN_PROGRESS</option>
+        <option value="COMPLETED">COMPLETED</option>
+      </select>
+      <div class="text-danger"
+           *ngIf="itemForm.get('status')?.touched && itemForm.get('status')?.invalid">
+        Status is required
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="itemForm.invalid">
+      {{ updateId ? 'Update Event' : 'Create Event' }}
+    </button>
+
+  </form>
+
+  <div class="mt-4" *ngIf="eventList?.length">
+
+    <h4>My Events</h4>
+
+    <table class="table table-bordered mt-2">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Schedule</th>
+          <th>Location</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let event of eventList">
+          <td>{{ event.title }}</td>
+          <td>{{ event.description }}</td>
+          <td>{{ event.schedule }}</td>
+          <td>{{ event.location }}</td>
+          <td>{{ event.status }}</td>
+          <td>
+            <button
+              class="btn btn-sm btn-warning"
+              (click)="edit(event)">
+              Edit
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>

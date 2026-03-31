@@ -1,0 +1,71 @@
+<div class="container mt-4">
+
+  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="card p-4">
+
+    <h3 class="mb-3">Add Resource</h3>
+
+    <div class="mb-3">
+      <label class="form-label">Event</label>
+      <select class="form-select" formControlName="eventId">
+        <option value="">Select Event</option>
+        <option *ngFor="let event of eventList" [value]="event.id">
+          {{ event.title }}
+        </option>
+      </select>
+
+      <div class="text-danger"
+           *ngIf="itemForm.get('eventId')?.touched && itemForm.get('eventId')?.invalid">
+        Event is required
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Resource Type</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="type"
+      />
+      <div class="text-danger"
+           *ngIf="itemForm.get('type')?.touched && itemForm.get('type')?.invalid">
+        Resource type is required
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea
+        class="form-control"
+        formControlName="description">
+      </textarea>
+      <div class="text-danger"
+           *ngIf="itemForm.get('description')?.touched && itemForm.get('description')?.invalid">
+        Description is required
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Availability Status</label>
+      <select
+        class="form-select"
+        formControlName="availabilityStatus">
+        <option value="">Select Status</option>
+        <option value="AVAILABLE">AVAILABLE</option>
+        <option value="ALLOCATED">ALLOCATED</option>
+      </select>
+      <div class="text-danger"
+           *ngIf="itemForm.get('availabilityStatus')?.touched && itemForm.get('availabilityStatus')?.invalid">
+        Availability status is required
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="itemForm.invalid">
+      Add Resource
+    </button>
+
+  </form>
+
+</div>
