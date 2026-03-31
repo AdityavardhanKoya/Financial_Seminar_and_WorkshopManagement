@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashbaord',
@@ -13,6 +14,19 @@ export class DashbaordComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
+
+    // ✅ Load initial values
+    this.loadValues();
+
+    // ✅ Auto-update dashboard whenever route changes
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.loadValues();
+      });
+  }
+
+  loadValues(): void {
     this.roleName = localStorage.getItem('role');
     this.username = localStorage.getItem('username');
   }

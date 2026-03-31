@@ -22,30 +22,52 @@ export class ViewEventsComponent implements OnInit {
   userId: any;
   selectedEvent: any = {};
   status: any;
+  roleName: string | null = null;
 
   constructor(private httpService: HttpService, private datePipe: DatePipe) {}
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('userId');
+    this.roleName = localStorage.getItem('role');
     this.getEvent();
   }
-
-  getEvent(): void {
-    this.httpService.GetAllevents().subscribe({
-      next: (res: any) => {
+getEvent(): void {
+  if (this.roleName === 'PARTICIPANT') {
+    this.httpService.GetAlleventss().subscribe({
+      next: res => {
         this.eventList = res;
         this.showError = false;
       },
-      error: (err: any) => {
-        this.showError = true;
-        if (err.status === 403) {
-          this.errorMessage = 'Not authorized to view events.';
-        } else {
-          this.errorMessage = 'Failed to fetch events. Please try again.';
-        }
-      }
+      error: err => this.handleError(err)
     });
   }
+  else if (this.roleName === 'INSTITUTION') {
+    this.httpService.viewAllEventss().subscribe({
+      next: res => {
+        this.eventList = res;
+        this.showError = false;
+      },
+      error: err => this.handleError(err)
+    });
+  }
+  else if (this.roleName === 'PROFESSIONAL') {
+    this.httpService.getEventByProfessional(this.userId).subscribe({
+      next: res => {
+        this.eventList = res;
+        this.showError = false;
+      },
+      error: err => this.handleError(err)
+    });
+  }
+}
+handleError(err: any) {
+  this.showError = true;
+  if (err.status === 403) {
+    this.errorMessage = 'Not authorized to view events.';
+  } else {
+    this.errorMessage = 'Failed to fetch events. Please try again.';
+  }
+}
 
   enroll(eventId: any): void {
     if (!this.userId) {
@@ -93,8 +115,10 @@ export class ViewEventsComponent implements OnInit {
       return;
     }
 
-    const timestamp = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
-    const feedbackData = { content: this.formModel.content, timestamp };
+  const feedbackData = {
+  content: this.formModel.content,
+  timestamp: new Date().toISOString()
+};
 
     this.httpService.AddFeedbackByParticipants(
       this.selectedEvent.id, this.userId, feedbackData

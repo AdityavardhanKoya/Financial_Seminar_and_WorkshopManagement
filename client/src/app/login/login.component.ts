@@ -38,29 +38,26 @@ export class LoginComponent implements OnInit {
 
     this.httpService.Login(this.itemForm.value).subscribe({
       next: (res: any) => {
+        console.log('Login response:', res); 
+
         if (!res || !res.token) {
           this.showError = true;
           this.errorMessage = 'Invalid response from server.';
           return;
         }
-
         this.authService.saveToken(res.token);
         this.authService.SetRole(res.role);
-        this.authService.saveUserId(res.id ? res.id.toString() : '');
+      this.authService.saveUserId(res.id.toString());
 
         localStorage.setItem('username', res.username);
-
-      
-if (res.role === 'INSTITUTION') {
-  this.router.navigate(['/dashboard']);
+       if (res.role === 'INSTITUTION') {
+  this.router.navigate(['/create-event']);
 }
-if (res.role === 'PROFESSIONAL') {
-  this.router.navigate(['/dashboard']);
+       else if (res.role === 'PROFESSIONAL') {
+  this.router.navigate(['/update-event-status']);
+} else if (res.role === 'PARTICIPANT') {
+  this.router.navigate(['/view-events']);
 }
-if (res.role === 'PARTICIPANT') {
-  this.router.navigate(['/dashboard']);
-}
-
       },
       error: (err: any) => {
         this.showError = true;
@@ -74,9 +71,21 @@ if (res.role === 'PARTICIPANT') {
       }
     });
   }
+  private extractAndSaveUserIdFromToken(token: string): void {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log('JWT payload:', payload);
+      if (payload.userId) {
+        this.authService.saveUserId(payload.userId.toString());
+      } else if (payload.id) {
+        this.authService.saveUserId(payload.id.toString());
+      }
+    } catch (e) {
+      console.error('Failed to decode JWT:', e);
+    }
+  }
 
   registration(): void {
     this.router.navigate(['/register']);
   }
-
 }

@@ -1,21 +1,16 @@
 <div class="container mt-4">
 
-  <!-- ✅ PAGE HEADING -->
   <h2 class="mb-4 text-primary fw-bold">Add Resource</h2>
 
-  <!-- ✅ SUCCESS & ERROR MESSAGES -->
   <div *ngIf="showError" class="alert alert-danger">{{ errorMessage }}</div>
   <div *ngIf="showMessage" class="alert alert-success">{{ responseMessage }}</div>
 
-  <!-- ✅ CARD BOX -->
   <div class="card shadow-sm p-4">
 
-    <!-- ✅ BOX HEADING -->
     <h4 class="mb-3">Event</h4>
 
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
 
-      <!-- ✅ EVENT FIELD -->
       <div class="mb-3">
         <label class="form-label fw-semibold">Event:</label>
         <select class="form-select" formControlName="eventId">
@@ -24,7 +19,6 @@
         </select>
       </div>
 
-      <!-- ✅ TYPE FIELD -->
       <div class="mb-3">
         <label class="form-label fw-semibold">Type:</label>
         <input
@@ -35,7 +29,6 @@
         />
       </div>
 
-      <!-- ✅ DESCRIPTION FIELD -->
       <div class="mb-3">
         <label class="form-label fw-semibold">Description:</label>
         <input
@@ -46,7 +39,6 @@
         />
       </div>
 
-      <!-- ✅ AVAILABILITY STATUS FIELD -->
       <div class="mb-3">
         <label class="form-label fw-semibold">Availability Status:</label>
         <input
@@ -57,7 +49,6 @@
         />
       </div>
 
-      <!-- ✅ SUBMIT BUTTON -->
       <div class="text-end mt-3">
         <button
           class="btn btn-success px-4"

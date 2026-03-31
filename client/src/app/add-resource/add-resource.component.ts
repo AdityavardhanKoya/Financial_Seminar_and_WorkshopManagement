@@ -17,7 +17,6 @@ export class AddResourceComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private httpService: HttpService) {
 
-    // ✅ EXACT FORM STRUCTURE REQUIRED BY TEST CASES
     this.itemForm = this.fb.group({
       eventId: [undefined, Validators.required],
       type: [undefined, Validators.required],

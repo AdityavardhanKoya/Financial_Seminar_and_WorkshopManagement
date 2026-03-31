@@ -30,7 +30,7 @@ public class EnrollmentService {
         Enrollment enrollment = new Enrollment();
         enrollment.setEvent(event);
         enrollment.setUser(user);
-        enrollment.setStatus("PENDING");
+        enrollment.setStatus("ENROLLED");
         return enrollmentRepository.save(enrollment);
     }
 

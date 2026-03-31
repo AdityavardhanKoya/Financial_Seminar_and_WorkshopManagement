@@ -36,7 +36,6 @@ public class ParticipantController {
         return ResponseEntity.ok(enrollmentService.enrollParticipant(eventId, userId));
     }
 
-    // Returns full Event object so $.title, $.status etc. are all accessible
     @GetMapping("/event/{id}/status")
     public ResponseEntity<Event> getEventStatus(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.getEventById(id));

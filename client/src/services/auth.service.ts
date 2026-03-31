@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -7,14 +8,14 @@ export class AuthService {
 
   private token: string | null = null;
   private isLoggedIn: boolean = false;
-
+private authState = new BehaviorSubject<boolean>(this.getLoginStatus);
+authState$ = this.authState.asObservable();
   constructor() {}
 
-  saveToken(token: string): void {
-    this.token = token;
-    this.isLoggedIn = true;
-    localStorage.setItem('token', token);
-  }
+  saveToken(token: string) {
+  localStorage.setItem('token', token);
+  this.authState.next(true);
+}
 
   SetRole(role: any): void {
     localStorage.setItem('role', role);
@@ -33,15 +34,15 @@ export class AuthService {
     return this.token;
   }
 
-  logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('userId');
-    this.token = null;
-    this.isLoggedIn = false;
-  }
+logout() {
+  localStorage.clear();
+  this.authState.next(false);
+}
 
   saveUserId(userid: string): void {
     localStorage.setItem('userId', userid);
+  }
+    getUserId(): string | null {
+    return localStorage.getItem('userId');
   }
 }

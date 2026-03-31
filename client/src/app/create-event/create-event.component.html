@@ -26,7 +26,7 @@
       </div>
       <div class="col-md-2">
         <label class="form-label">Schedule</label>
-        <input type="text" class="form-control" formControlName="schedule" />
+        <input type="date" class="form-control" formControlName="schedule" />
         <div *ngIf="itemForm.get('schedule')?.invalid && itemForm.get('schedule')?.touched"
           class="text-danger small">Required.</div>
       </div>
