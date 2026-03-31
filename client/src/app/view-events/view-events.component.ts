@@ -31,15 +31,8 @@ export class ViewEventsComponent implements OnInit {
     this.roleName = localStorage.getItem('role');
     this.getEvent();
   }
-
-
-
-
-
 getEvent(): void {
-
   if (this.roleName === 'PARTICIPANT') {
-    // ✅ Participant sees ALL events (public view)
     this.httpService.GetAlleventss().subscribe({
       next: res => {
         this.eventList = res;
@@ -48,9 +41,7 @@ getEvent(): void {
       error: err => this.handleError(err)
     });
   }
-
   else if (this.roleName === 'INSTITUTION') {
-    // ✅ Institution sees only ITS events
     this.httpService.viewAllEventss().subscribe({
       next: res => {
         this.eventList = res;
@@ -59,9 +50,7 @@ getEvent(): void {
       error: err => this.handleError(err)
     });
   }
-
   else if (this.roleName === 'PROFESSIONAL') {
-    // ✅ Professional sees only assigned events
     this.httpService.getEventByProfessional(this.userId).subscribe({
       next: res => {
         this.eventList = res;
@@ -71,7 +60,6 @@ getEvent(): void {
     });
   }
 }
-
 handleError(err: any) {
   this.showError = true;
   if (err.status === 403) {

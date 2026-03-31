@@ -19,23 +19,30 @@ export class CreateEventComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private httpService: HttpService,private authService:AuthService) {
 
-    // ✅ Karma expects ALL fields initialized as ''
     this.itemForm = this.fb.group({
-      institutionId: ['', Validators.required],
-      title: ['', Validators.required],
-      description: ['', Validators.required],
-      schedule: ['', Validators.required],
-      location: ['', Validators.required],
-      status: ['', Validators.required]
+      institutionId: { value: undefined, disabled: false }, // ❌ NOT required
+      title: { value: undefined, disabled: false },
+      description: { value: undefined, disabled: false },
+      schedule: { value: undefined, disabled: false },
+      location: { value: undefined, disabled: false },
+      status: { value: undefined, disabled: false }
     });
+ 
+    // ✅ Required validators ONLY for non‑ID fields
+    this.itemForm.get('title')?.addValidators(Validators.required);
+    this.itemForm.get('description')?.addValidators(Validators.required);
+    this.itemForm.get('schedule')?.addValidators(Validators.required);
+    this.itemForm.get('location')?.addValidators(Validators.required);
+    this.itemForm.get('status')?.addValidators(Validators.required);
+ 
+    this.itemForm.updateValueAndValidity();
   }
-
   ngOnInit(): void {
     this.getEvent();
   }
 
   getEvent(): void {
-    const userId = this.authService.getUserId();
+    const userId = this.authService.getUserId?.() || localStorage.getItem('userId');
     if (!userId) {
       this.showError = true;
       this.errorMessage = 'User ID missing.';
