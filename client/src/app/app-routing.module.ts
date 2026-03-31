@@ -16,24 +16,29 @@ import { AssignProfessionalComponent } from './assign-professional/assign-profes
 import { UpdateEventStatusComponent } from './update-event-status/update-event-status.component';
 import { AddFeedbackComponent } from './add-feedback/add-feedback.component';
 
+
+  
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'registration', component: RegistrationComponent },
+
+  // Institution operations
+  { path: 'create-event', component: CreateEventComponent },
+  { path: 'add-resource', component: AddResourceComponent },
+  { path: 'assign-professional', component: AssignProfessionalComponent },
+  { path: 'update-event-status', component: UpdateEventStatusComponent },
+  { path: 'add-feedback', component: AddFeedbackComponent },
+  { path: 'view-events', component: ViewEventsComponent },
+
+  // Dashboard
   { path: 'dashboard', component: DashbaordComponent },
-  { path: 'create-event', component: CreateEventComponent },  
-  { path: 'add-resource', component: AddResourceComponent }, 
-  { path: 'assign-professional', component: AssignProfessionalComponent },  
-  { path: 'update-event-status', component: UpdateEventStatusComponent }, 
-  { path: 'add-feedback', component: AddFeedbackComponent }, 
-  { path: 'view-events', component: ViewEventsComponent },  
-  
-  
- 
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 
-  { path: '**', redirectTo: '/dashboard', pathMatch: 'full' },
+  // Default route
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+
+  // Wildcard
+  { path: '**', redirectTo: 'login' }
 ];
-
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
