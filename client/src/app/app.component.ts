@@ -1,28 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  // styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
 
-  roleName: string | null = null;   // ✅ Needed by template
-  IsLoggin: boolean = false;        // ✅ Needed by template
+  roleName: string | null = null;
+  IsLoggin: boolean = false;
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.roleName = localStorage.getItem('role');  // e.g. INSTITUTION, PROFESSIONAL, PARTICIPANT
-    this.IsLoggin = !!localStorage.getItem('token');   // true if logged in
+    this.loadState();
+    // Re-check on every navigation so navbar updates after login/logout
+    this.router.events
+      .pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe(() => this.loadState());
   }
 
-  logout(): void {   // ✅ Needed by template
+  loadState(): void {
+    this.roleName = localStorage.getItem('role');
+    this.IsLoggin = !!localStorage.getItem('token');
+  }
+
+  logout(): void {
     localStorage.clear();
     this.IsLoggin = false;
     this.roleName = null;
     this.router.navigate(['/login']);
   }
-
 }

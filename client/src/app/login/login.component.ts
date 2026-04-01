@@ -9,8 +9,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
-
-  itemForm: FormGroup;
+itemForm: FormGroup;
   formModel: any = {};
   showError: boolean = false;
   errorMessage: any;
@@ -22,6 +21,7 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     this.itemForm = this.fb.group({
+      role:     ['', [Validators.required]],
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(4)]]
     });
@@ -32,60 +32,52 @@ export class LoginComponent implements OnInit {
   onLogin(): void {
     if (this.itemForm.invalid) {
       this.showError = true;
-      this.errorMessage = 'Please fill in all required fields correctly.';
+      this.errorMessage = 'Please fill in all required fields.';
       return;
     }
 
-    this.httpService.Login(this.itemForm.value).subscribe({
-      next: (res: any) => {
-        console.log('Login response:', res); 
+    const { role, username, password } = this.itemForm.value;
 
+    this.httpService.Login({ username, password }).subscribe({
+      next: (res: any) => {
         if (!res || !res.token) {
           this.showError = true;
           this.errorMessage = 'Invalid response from server.';
           return;
         }
+
+        // Role-based authentication check
+        // Prevent a PARTICIPANT logging in as INSTITUTION etc.
+        if (res.role !== role) {
+          this.showError = true;
+          this.errorMessage = `Access denied. This account is registered as
+            "${res.role}", not "${role}". Please select the correct role.`;
+          return;
+        }
+
         this.authService.saveToken(res.token);
         this.authService.SetRole(res.role);
-      this.authService.saveUserId(res.id.toString());
-
+        this.authService.saveUserId(res.id ? res.id.toString() : '');
         localStorage.setItem('username', res.username);
-       if (res.role === 'INSTITUTION') {
-  this.router.navigate(['/create-event']);
-}
-       else if (res.role === 'PROFESSIONAL') {
-  this.router.navigate(['/update-event-status']);
-} else if (res.role === 'PARTICIPANT') {
-  this.router.navigate(['/view-events']);
-}
+
+        if (res.role === 'INSTITUTION') {
+          this.router.navigate(['/create-event']);
+        } else if (res.role === 'PROFESSIONAL') {
+          this.router.navigate(['/update-event-status']);
+        } else {
+          this.router.navigate(['/view-events']);
+        }
       },
       error: (err: any) => {
         this.showError = true;
         if (err.status === 401) {
           this.errorMessage = 'Invalid username or password.';
         } else if (err.status === 0) {
-          this.errorMessage = 'Unable to connect to server. Please try again.';
+          this.errorMessage = 'Cannot connect to server.';
         } else {
           this.errorMessage = 'Login failed. Please try again.';
         }
       }
     });
-  }
-  private extractAndSaveUserIdFromToken(token: string): void {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      console.log('JWT payload:', payload);
-      if (payload.userId) {
-        this.authService.saveUserId(payload.userId.toString());
-      } else if (payload.id) {
-        this.authService.saveUserId(payload.id.toString());
-      }
-    } catch (e) {
-      console.error('Failed to decode JWT:', e);
-    }
-  }
-
-  registration(): void {
-    this.router.navigate(['/register']);
   }
 }
