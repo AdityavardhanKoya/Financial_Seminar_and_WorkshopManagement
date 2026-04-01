@@ -20,12 +20,12 @@ export class CreateEventComponent implements OnInit {
   constructor(private fb: FormBuilder, private httpService: HttpService,private authService:AuthService) {
 
     this.itemForm = this.fb.group({
-      institutionId: { value: undefined, disabled: false }, // ❌ NOT required
-      title: { value: undefined, disabled: false },
-      description: { value: undefined, disabled: false },
-      schedule: { value: undefined, disabled: false },
-      location: { value: undefined, disabled: false },
-      status: { value: undefined, disabled: false }
+      institutionId: { value: null, disabled: false }, // ❌ NOT required
+      title: { value: null, disabled: false },
+      description: { value: null, disabled: false },
+      schedule: { value: null, disabled: false },
+      location: { value: null, disabled: false },
+      status: { value: null, disabled: false }
     });
  
     // ✅ Required validators ONLY for non‑ID fields

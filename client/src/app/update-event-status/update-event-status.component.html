@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h3 class="mb-3">Update Event Status & Feedback</h3>
+  <h3 class="mb-3">Update Event Status</h3>
 
   <div *ngIf="showError"   class="alert alert-danger">{{ errorMessage }}</div>
   <div *ngIf="showMessage" class="alert alert-success">{{ responseMessage }}</div>
@@ -20,9 +20,7 @@
           <button class="btn btn-sm btn-warning me-1" (click)="addStatus(e)">
             Update Status
           </button>
-          <button class="btn btn-sm btn-info" (click)="addRemarks(e)">
-            Add Feedback
-          </button>
+         
         </td>
       </tr>
     </tbody>
