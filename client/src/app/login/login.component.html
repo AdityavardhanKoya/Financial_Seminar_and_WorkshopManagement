@@ -2,11 +2,29 @@
   <div class="row justify-content-center">
     <div class="col-md-5">
       <div class="card p-4 shadow">
-        <h3 class="text-center mb-4">Login</h3>
+
+        <h3 class="text-center mb-2">Login</h3>
+        <p class="text-center text-muted small mb-4">
+          Sign in with your registered account
+        </p>
 
         <div *ngIf="showError" class="alert alert-danger">{{ errorMessage }}</div>
 
         <form [formGroup]="itemForm" (ngSubmit)="onLogin()">
+
+          <!-- Role selector — determines which account type is logging in -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Login As</label>
+            <select class="form-select" formControlName="role">
+              <option value="">-- Select your role --</option>
+              <option value="INSTITUTION">Institution</option>
+              <option value="PROFESSIONAL">Professional</option>
+              <option value="PARTICIPANT">Participant</option>
+            </select>
+            <div *ngIf="itemForm.get('role')?.invalid && itemForm.get('role')?.touched"
+              class="text-danger small">Please select your role.</div>
+          </div>
+
           <div class="mb-3">
             <label class="form-label">Username</label>
             <input type="text" class="form-control" formControlName="username"
@@ -23,12 +41,12 @@
               class="text-danger small">Password must be at least 4 characters.</div>
           </div>
 
-          <button type="submit" class="btn btn-primary w-100">Login</button>
+          <button type="submit" class="btn btn-primary w-100"
+            [disabled]="itemForm.invalid">Login</button>
 
-            <p class="text-center mt-3">
-  Don't have an account?
-  <a routerLink="/registration">Register</a>
-
+          <p class="text-center mt-3 small">
+            Don't have an account?
+            <a routerLink="/registration">Register here</a>
           </p>
         </form>
       </div>
