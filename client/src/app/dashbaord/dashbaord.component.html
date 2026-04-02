@@ -1,3 +1,72 @@
-<div class="row text-center">
-<h1 class="text-capitalize">Financial Seminar and Workshop Management Platform</h1>
+<!-- ✅ RESPONSIVE TOP NAVBAR (ROLE BASED) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+
+    <!-- App Title -->
+    <a class="navbar-brand fw-bold">Finance Event Portal</a>
+
+    <!-- Hamburger Button -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+            data-bs-target="#roleNavbar" aria-controls="roleNavbar" 
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar Items -->
+    <div class="collapse navbar-collapse" id="roleNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <!-- ✅ Institution Menu -->
+        <ng-container *ngIf="roleName === 'INSTITUTION'">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/create-event">Add Event</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/add-resource">Add Resource</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/assign-professional">Assign Professional</a>
+          </li>
+        </ng-container>
+
+        <!-- ✅ Professional Menu -->
+        <ng-container *ngIf="roleName === 'PROFESSIONAL'">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/update-event-status">Update Event</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/add-feedback">Add Feedback</a>
+          </li>
+        </ng-container>
+
+        <!-- ✅ Participant Menu -->
+        <ng-container *ngIf="roleName === 'PARTICIPANT'">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/view-events">View Events</a>
+          </li>
+        </ng-container>
+
+      </ul>
+
+      <!-- ✅ Logout Button -->
+      <button class="btn btn-outline-light" (click)="logout()">
+        Logout
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ✅ OPTIONAL CONTENT BELOW NAVBAR -->
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary mb-3">Dashboard</h2>
+
+  <div class="alert alert-info">
+    <strong>Welcome {{ username }}!</strong>
+    <span class="ms-3">Role: <strong>{{ roleName }}</strong></span>
+  </div>
+
+  <!-- Show main card content if you want -->
 </div>
