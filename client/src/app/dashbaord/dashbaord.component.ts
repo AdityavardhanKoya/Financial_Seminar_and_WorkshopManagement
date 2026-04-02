@@ -13,7 +13,7 @@ export class DashbaordComponent implements OnInit {
 
   constructor(private router: Router) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void { 
 
     // ✅ Load initial values
     this.loadValues();

@@ -1,111 +1,107 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
 import { AuthService } from '../../services/auth.service';
 
+
 @Component({
   selector: 'app-create-event',
-  templateUrl: './create-event.component.html'
+  templateUrl: './create-event.component.html',
+  styleUrls: ['./create-event.component.scss']
 })
 export class CreateEventComponent implements OnInit {
 
-  itemForm: FormGroup;
-  eventList: any = [];
-  showError: boolean = false;
-  errorMessage: any;
-  showMessage: boolean = false;
+  itemForm: FormGroup; 
+  formModel:any={status:null};
+  showError:boolean=false;
+  errorMessage:any;
+  eventList:any=[];
+  assignModel: any={};
+
+  showMessage: any;
   responseMessage: any;
   updateId: any;
-
-  constructor(private fb: FormBuilder, private httpService: HttpService,private authService:AuthService) {
-
-    this.itemForm = this.fb.group({
-      institutionId: { value: null, disabled: false }, // ❌ NOT required
-      title: { value: null, disabled: false },
-      description: { value: null, disabled: false },
-      schedule: { value: null, disabled: false },
-      location: { value: null, disabled: false },
-      status: { value: null, disabled: false }
+  constructor(public router:Router, public httpService:HttpService, private formBuilder: FormBuilder, private authService:AuthService) 
+    {
+      this.itemForm = this.formBuilder.group({
+        title: [this.formModel.title,[ Validators.required]],      
+        schedule: [this.formModel.schedule,[ Validators.required]],
+        location: [this.formModel.location,[ Validators.required]],
+        status: [this.formModel.status,[ Validators.required]],
+        description: [this.formModel.description,[ Validators.required]],
+        institutionId: [this.formModel.institutionId],
     });
- 
-    // ✅ Required validators ONLY for non‑ID fields
-    this.itemForm.get('title')?.addValidators(Validators.required);
-    this.itemForm.get('description')?.addValidators(Validators.required);
-    this.itemForm.get('schedule')?.addValidators(Validators.required);
-    this.itemForm.get('location')?.addValidators(Validators.required);
-    this.itemForm.get('status')?.addValidators(Validators.required);
- 
-    this.itemForm.updateValueAndValidity();
   }
   ngOnInit(): void {
     this.getEvent();
   }
-
-  getEvent(): void {
-    const userId = this.authService.getUserId?.() || localStorage.getItem('userId');
-    if (!userId) {
+  getEvent() {
+    this.eventList=[];
+    const userIdString = localStorage.getItem('userId');
+    const userId = userIdString ? parseInt(userIdString, 10) : null;
+    this.itemForm.controls["institutionId"].setValue(userId)
+    this.httpService.getEventByInstitutionId(userId).subscribe((data: any) => {
+      this.eventList=data;
+      console.log(this.eventList);
+    }, error => {
+      // Handle error
       this.showError = true;
-      this.errorMessage = 'User ID missing.';
-      return;
-    }
-
-    this.httpService.getEventByInstitutionId(userId).subscribe({
-      next: (res) => {
-        this.eventList = res;
-      },
-      error: () => {
-        this.showError = true;
-        this.errorMessage = 'Failed to fetch events';
+      this.errorMessage = "An error occurred.. Please try again later.";
+      console.error('Login error:', error);
+    });;
+  }
+  edit(val:any)
+  {
+    this.itemForm.patchValue(val);
+    this.updateId=val.id;
+  }
+ 
+  onSubmit()
+  {
+    
+      if (this.itemForm.valid) {
+        if(this.updateId==null)
+        {
+          this.showError = false;
+          const userIdString = localStorage.getItem('userId');
+          const userId = userIdString ? parseInt(userIdString, 10) : null;
+          this.itemForm.controls["institutionId"].setValue(userId)
+          this.httpService.createEvent(this.itemForm.value).subscribe((data: any) => {
+            this.itemForm.reset();
+            this.getEvent();
+            
+          }, error => {
+            // Handle error
+            this.showError = true;
+            this.errorMessage = "An error occurred while created in. Please try again later.";
+            console.error('Login error:', error);
+          });;
+        }
+        else{
+          this.showError = false;
+          const userIdString = localStorage.getItem('userId');
+          const userId = userIdString ? parseInt(userIdString, 10) : null;
+          this.itemForm.controls["institutionId"].setValue(userId)
+          this.httpService.updateEvent(this.updateId,this.itemForm.value).subscribe((data: any) => {
+            this.itemForm.reset();
+            this.getEvent();
+            this.updateId=null;
+            
+          }, error => {
+            // Handle error
+            this.showError = true;
+            this.errorMessage = "An error occurred while created in. Please try again later.";
+            console.error('Login error:', error);
+          });;
+        }
+       
+      } else {
+        this.itemForm.markAllAsTouched();
       }
-    });
+    
+   
   }
 
-  edit(val: any): void {
-    this.updateId = val.id;
-    this.itemForm.patchValue({
-      institutionId: val.institutionId || '',
-      title: val.title || '',
-      description: val.description || '',
-      schedule: val.schedule || '',
-      location: val.location || '',
-      status: val.status || ''
-    });
-  }
-
-  onSubmit(): void {
-    if (this.itemForm.invalid) {
-      this.showError = true;
-      this.errorMessage = 'Please fill all required fields.';
-      return;
-    }
-
-    if (this.updateId) {
-      this.httpService.updateEvent(this.updateId, this.itemForm.value).subscribe({
-        next: () => {
-          this.showMessage = true;
-          this.responseMessage = 'Event updated!';
-          this.itemForm.reset();
-          this.updateId = null;
-          this.getEvent();
-        },
-        error: () => {
-          this.showError = true;
-          this.errorMessage = 'Update failed.';
-        }
-      });
-    } else {
-      this.httpService.createEvent(this.itemForm.value).subscribe({
-        next: () => {
-          this.showMessage = true;
-          this.responseMessage = 'Event created!';
-          this.itemForm.reset();
-          this.getEvent();
-        },
-        error: () => {
-          this.showError = true;
-          this.errorMessage = 'Create failed.';
-        }
-      });
-    }
-  }
+  
 }

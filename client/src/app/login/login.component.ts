@@ -6,7 +6,8 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html'
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'] // Ensured SCSS file is linked
 })
 export class LoginComponent implements OnInit {
 
@@ -47,17 +48,17 @@ export class LoginComponent implements OnInit {
         }
         this.authService.saveToken(res.token);
         this.authService.SetRole(res.role);
-      this.authService.saveUserId(res.id.toString());
+        this.authService.saveUserId(res.id.toString());
 
         localStorage.setItem('username', res.username);
-       if (res.role === 'INSTITUTION') {
-  this.router.navigate(['/create-event']);
-}
-       else if (res.role === 'PROFESSIONAL') {
-  this.router.navigate(['/update-event-status']);
-} else if (res.role === 'PARTICIPANT') {
-  this.router.navigate(['/view-events']);
-}
+        if (res.role === 'INSTITUTION') {
+          this.router.navigate(['/create-event']);
+        }
+        else if (res.role === 'PROFESSIONAL') {
+          this.router.navigate(['/update-event-status']);
+        } else if (res.role === 'PARTICIPANT') {
+          this.router.navigate(['/view-events']);
+        }
       },
       error: (err: any) => {
         this.showError = true;
@@ -71,6 +72,7 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+
   private extractAndSaveUserIdFromToken(token: string): void {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -85,7 +87,8 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  // Updated to use the correct router path from your logic
   registration(): void {
-    this.router.navigate(['/register']);
+    this.router.navigate(['/registration']);
   }
 }

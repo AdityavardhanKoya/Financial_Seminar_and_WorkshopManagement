@@ -8,7 +8,6 @@
  import org.springframework.stereotype.Component;
  import com.edutech.financial_seminar_and_workshop_management.entity.User;
  import com.edutech.financial_seminar_and_workshop_management.repository.UserRepository;
-
  import java.util.Date;
  import java.util.HashMap;
  import java.util.Map;
