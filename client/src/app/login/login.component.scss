@@ -1,3 +1,148 @@
-a{
-    cursor: pointer;
+.login-page {
+  min-height: 100vh;
+  width: 100%;
+  
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
+              url('/home/coder/app/client/src/assets/loginimage.jpeg') no-repeat center center;
+  
+  background-size: cover;
+  background-attachment: fixed; // Keeps background from scrolling
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 20px;
+}
+
+.login-container {
+  display: flex;
+  width: 100%;
+  max-width: 1100px;
+  min-height: 600px;
+  border-radius: 20px;
+  overflow: hidden;
+  /* Adds a slight glow/shadow to separate the container from the background */
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5); 
+}
+
+// ... Rest of your existing SCSS remains the same
+.brand-section {
+  flex: 1.2;
+  display: flex;
+  align-items: center;
+  padding: 40px;
+  color: white;
+
+  .logo-circle {
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1a2a44;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .welcome-text { font-size: 1.5rem; margin: 0; font-weight: 300; }
+  .main-title {
+    font-size: 5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin: 10px 0;
+    span { color: #f39c12; }
+  }
+  .tagline { font-size: 1.2rem; letter-spacing: 1px; margin-bottom: 40px; opacity: 0.9; }
+
+  .upcoming-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 20px 30px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: fit-content;
+
+    .card-icon { font-size: 1.8rem; color: #f39c12; }
+    .event-name { margin: 0; font-weight: 600; font-size: 1rem; }
+    .event-time { margin: 0; font-size: 0.9rem; opacity: 0.8; }
+  }
+}
+
+.form-section {
+  flex: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .auth-card {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    padding: 50px 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 35px;
+      h2 { color: #1a2a44; font-weight: 700; font-size: 1.8rem; }
+      p { color: #777; font-size: 0.85rem; line-height: 1.4; }
+    }
+  }
+}
+
+.input-wrapper {
+  position: relative;
+  .icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    z-index: 5;
+  }
+  .custom-input {
+    width: 100%;
+    padding: 14px 15px 14px 45px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    &:focus { 
+      outline: none; 
+      border-color: #f39c12; 
+      box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
+    }
+  }
+}
+
+.x-small { font-size: 0.75rem; margin-top: 5px; color: #dc3545; }
+
+.btn-gradient {
+  padding: 14px;
+  background: linear-gradient(90deg, #f39c12 0%, #e67e22 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  &:hover { 
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(230, 126, 34, 0.4);
+  }
+}
+
+@media (max-width: 992px) {
+  .brand-section { display: none; }
+  .login-page { padding: 0; background: white; }
+  .login-container { min-height: 100vh; border-radius: 0; }
+  .form-section { flex: 1; background: #f8f9fa; }
+  .auth-card { box-shadow: none; max-width: 100%; }
 }

@@ -1,1 +1,135 @@
-<!--To complete the code here!!-->
+<div class="d-flex justify-content-between mt-4">
+    <h2 class="mb-0">Manage Event</h2>  
+  
+  </div>
+  <div class="row mt-3">
+    <div class="card">
+        <div class="card-header">
+        Create Event
+          </div>
+        <div class="card-body">
+            <form class="mb-3 mt-md-4" [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="content" class="form-label ">Title</label>
+                            <input type="hidden" formControlName="institutionId">
+                            <input type="text" name ="title"formControlName="title" [(ngModel)]="formModel.title" class="form-control" id="title" placeholder="Event Name">
+                            <div *ngIf="itemForm.controls['title'].invalid && (itemForm.controls['title'].dirty || itemForm.controls['title'].touched)"
+                            class="ng-dirty">
+                            <span *ngIf="itemForm.controls['title'].errors">
+                              <span class="text-danger">Please Enter Title .</span>
+                            </span>
+                          </div>
+                          </div>
+                    </div>
+               
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="schedule" class="form-label ">Schedule</label>
+                            <input type="text" name="schedule"  formControlName="schedule" [(ngModel)]="formModel.schedule" class="form-control" id="schedule" placeholder="schedule">
+                            <div *ngIf="itemForm.controls['schedule'].invalid && (itemForm.controls['schedule'].dirty || itemForm.controls['schedule'].touched)"
+                            class="ng-dirty">
+                            <span *ngIf="itemForm.controls['schedule'].errors">
+                              <span class="text-danger">Please Enter .</span>
+                            </span>
+                          </div>
+                          </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="mb-3">
+                          <label for="location" class="form-label ">Location</label>
+                          <input type="text" name="location"  formControlName="location" [(ngModel)]="formModel.location" class="form-control" id="location" placeholder="location">
+                          <div *ngIf="itemForm.controls['location'].invalid && (itemForm.controls['location'].dirty || itemForm.controls['location'].touched)"
+                          class="ng-dirty">
+                          <span *ngIf="itemForm.controls['location'].errors">
+                            <span class="text-danger">Please Enter .</span>
+                          </span>
+                        </div>
+                        </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="mb-3">
+                          <label for="status" class="form-label ">Status</label>
+                          <select  class="form-control" name="status" id="status" formControlName="status" [(ngModel)]="formModel.status">
+                              <option value="null">Choose Status</option>
+                               <option value="Start">Start</option>
+                               <option value="Complete">Complete</option>                              
+                            </select>
+                            <div *ngIf="itemForm.controls['status'].invalid && (itemForm.controls['status'].dirty || itemForm.controls['status'].touched)"
+                            class="ng-dirty">
+                            <span *ngIf="itemForm.controls['status'].errors">
+                              <span class="text-danger">Please choose status .</span>
+                            </span>
+                          </div>
+                          </div>
+                        
+                  </div>
+                  <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="description" class="form-label ">description</label>
+                        <textarea type="text" name="description"  formControlName="description" [(ngModel)]="formModel.description" class="form-control" id="description" placeholder="description"></textarea>
+                        <div *ngIf="itemForm.controls['description'].invalid && (itemForm.controls['description'].dirty || itemForm.controls['description'].touched)"
+                        class="ng-dirty">
+                        <span *ngIf="itemForm.controls['description'].errors">
+                          <span class="text-danger">Please Enter .</span>
+                        </span>
+                      </div>
+                      </div>
+                </div>
+                    <div class="col-md-2">
+                        <div class="d-grid">
+                            <br>
+                            <button class="btn btn-outline-dark mt-1" type="submit">Submit</button>
+                          </div>
+                    </div>
+                </div>
+              
+               
+              
+               
+              </form>
+        </div>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="card">
+        <div class="card-header">Event Information</div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sr#</th>
+                        <th>Title</th>                       
+                        <th>Schedule</th> 
+                        <th>Location</th> 
+                        <th>Status</th>       
+                        <th>Description</th> 
+                        <th>Action</th>                   
+                                 
+                  
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let event of eventList">
+                      <td>{{event.id}}</td>
+                        <td>{{event.title}}</td>                    
+                        <td>{{event.schedule}}</td>
+                        <td>{{event.location}}</td>
+                        <td>{{event.status}}</td>
+                        <td>{{event.description}}</td>
+                        <td>
+                          <button class="btn btn-warning" (click)="edit(event)">Edit</button>
+                        </td>
+                  
+                       
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+  </div>
+
