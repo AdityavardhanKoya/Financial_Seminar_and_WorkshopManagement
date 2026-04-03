@@ -1,1 +1,137 @@
-c
+<div class="container mt-4">
+
+  <h3 class="mb-3">Available Events</h3>
+
+  <!-- ================= EVENTS LIST ================= -->
+  <div class="row">
+    <div class="col-md-4 mb-3" *ngFor="let e of pagedEvents">
+      <div class="card h-100 shadow-sm">
+
+        <div class="card-body">
+          <h5 class="card-title">{{ e.title }}</h5>
+
+          <p class="card-text">
+            <strong>Description:</strong> {{ e.description }}
+          </p>
+
+          <p class="card-text">
+            <strong>Schedule:</strong> {{ e.schedule }}
+          </p>
+
+          <p class="card-text">
+            <strong>Location:</strong> {{ e.location }}
+          </p>
+
+          <p class="card-text">
+            <strong>Status:</strong>
+            <span class="badge bg-info">{{ e.status }}</span>
+          </p>
+
+          <!-- ✅ ACCEPTED professionals only (already filtered backend-side) -->
+          <div *ngIf="e.professionals?.length">
+            <strong>Professional(s):</strong>
+            <ul class="mb-2">
+              <li *ngFor="let p of e.professionals">
+                {{ p.username }}
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- ================= ACTIONS ================= -->
+        <div class="card-footer text-center">
+
+          <!-- ✅ Enrolled badge -->
+          <span *ngIf="e.enrolled" class="badge bg-success mb-2">
+            Enrolled
+          </span>
+
+          <!-- ✅ Enroll button -->
+          <button
+            *ngIf="!e.enrolled"
+            class="btn btn-primary btn-sm w-100 mb-2"
+            (click)="enroll(e)">
+            Enroll
+          </button>
+
+          <!-- ✅ Select event for status / feedback -->
+          <button
+            class="btn btn-outline-secondary btn-sm w-100"
+            (click)="selectEvent(e)">
+            View / Feedback
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PAGINATION ================= -->
+  <div class="d-flex justify-content-center mt-3">
+    <button
+      class="btn btn-outline-secondary btn-sm me-2"
+      [disabled]="page === 1"
+      (click)="page = page - 1">
+      Prev
+    </button>
+
+    <span class="align-self-center">
+      Page {{ page }} of {{ totalPages }}
+    </span>
+
+    <button
+      class="btn btn-outline-secondary btn-sm ms-2"
+      [disabled]="page === totalPages"
+      (click)="page = page + 1">
+      Next
+    </button>
+  </div>
+
+  <!-- ================= SELECTED EVENT ================= -->
+  <div *ngIf="selectedEvent" class="card mt-4">
+    <div class="card-body">
+
+      <h5>Selected Event: {{ selectedEvent.title }}</h5>
+
+      <!-- ✅ Check status -->
+      <button class="btn btn-info btn-sm mb-2" (click)="checkStatus()">
+        Check Status
+      </button>
+
+      <div *ngIf="statusText" class="alert alert-secondary">
+        Current Status: {{ statusText }}
+      </div>
+
+      <!-- ================= FEEDBACK ================= -->
+      <div class="mt-3">
+        <label><strong>Feedback</strong></label>
+        <textarea
+          class="form-control"
+          rows="3"
+          [(ngModel)]="feedbackText"
+          placeholder="Enter your feedback">
+        </textarea>
+
+        <button
+          class="btn btn-success btn-sm mt-2"
+          (click)="submitParticipantFeedback()">
+          Submit Feedback
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= ENROLL POPUP ================= -->
+  <div *ngIf="enrollPopup" class="alert alert-success mt-3 text-center">
+    Successfully enrolled!
+  </div>
+
+  <!-- ================= ERROR / INFO MESSAGE ================= -->
+  <div *ngIf="message" class="alert alert-warning mt-3">
+    {{ message }}
+  </div>
+
+</div>

@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
-
 import { CreateEventComponent } from './create-event/create-event.component';
 import { DeleteEventComponent } from './delete-event/delete-event.component';
 import { AddResourceComponent } from './add-resource/add-resource.component';

@@ -29,46 +29,53 @@
     @Autowired
      private JwtUtil jwtUtil;
 
-     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     FilterChain filterChain)
-            throws ServletException, IOException {
+@Override
+protected void doFilterInternal(HttpServletRequest request,
+                                HttpServletResponse response,
+                                FilterChain filterChain)
+        throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
-         String username = null;
-         String jwt = null;
+    String path = request.getServletPath();
 
-         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-             jwt = authHeader.substring(7);
-            try {
-                username = jwtUtil.extractUsername(jwt);
-             } catch (ExpiredJwtException e) {
-                logger.warn("JWT token is expired: " + e.getMessage());
-             } catch (MalformedJwtException e) {
-                 logger.warn("JWT token is malformed: " + e.getMessage());
-             } catch (Exception e) {
-                 logger.warn("Unable to parse JWT token: " + e.getMessage());
-             }
-         }
+    // ✅ Skip JWT filter for public endpoints
+    if (path.equals("/api/user/login") || path.equals("/api/user/register")) {
+        filterChain.doFilter(request, response);
+        return;
+    }
 
-         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                String role = jwtUtil.extractRole(jwt);
-                UsernamePasswordAuthenticationToken authToken =
-                         new UsernamePasswordAuthenticationToken(
-                                 userDetails,
-                                 null,
-                                 AuthorityUtils.createAuthorityList(role)
-                         );
-                 authToken.setDetails(
-                       new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-             }
+    final String authHeader = request.getHeader("Authorization");
+    String username = null;
+    String jwt = null;
+
+    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        jwt = authHeader.substring(7);
+        try {
+            username = jwtUtil.extractUsername(jwt);
+        } catch (ExpiredJwtException e) {
+            logger.warn("JWT token is expired");
+        } catch (MalformedJwtException e) {
+            logger.warn("JWT token is malformed");
+        } catch (Exception e) {
+            logger.warn("Unable to parse JWT token");
         }
-       filterChain.doFilter(request, response);
-     }
- }
- 
+    }
+
+    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (jwtUtil.validateToken(jwt, userDetails)) {
+            String role = jwtUtil.extractRole(jwt);
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            AuthorityUtils.createAuthorityList(role)
+                    );
+            authToken.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+        }
+    }
+
+    filterChain.doFilter(request, response);
+}}
