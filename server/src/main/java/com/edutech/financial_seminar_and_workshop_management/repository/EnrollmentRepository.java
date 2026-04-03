@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
+    boolean existsByEvent_IdAndUser_Id(Long eventId, Long userId);
+    long countByEvent_Id(Long eventId);
+ List<Enrollment> findByParticipantId(Long participantId);
 }

@@ -1,167 +1,144 @@
 import { Component, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 import { HttpService } from '../../services/http.service';
+import { SelectedEventService } from '../selected-event.service';
 
 @Component({
   selector: 'app-view-events',
-  templateUrl: './view-events.component.html',
-  providers: [DatePipe]
+  templateUrl: './view-events.component.html'
 })
 export class ViewEventsComponent implements OnInit {
 
-  formModel: any = { status: null };
-  showError: boolean = false;
-  errorMessage: any;
-  eventObj: any = [];
-  assignModel: any = {};
-  showMessage: any;
-  responseMessage: any;
-  isUpdate: any = false;
-  eventList: any = [];
-  workShopList: any = [];
-  userId: any;
-  selectedEvent: any = {};
-  status: any;
-  roleName: string | null = null;
+  role: string | null = null;
+  events: any[] = [];
 
-  constructor(private httpService: HttpService, private datePipe: DatePipe) {}
+  page = 1;
+  pageSize = 6;
+
+  selectedEvent: any | null = null;
+  feedbackText = '';
+  statusText: string | null = null;
+
+  enrollPopup = false;
+  message = '';
+
+  constructor(
+    private http: HttpService,
+    private auth: AuthService,
+    private selectedSvc: SelectedEventService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.userId = localStorage.getItem('userId');
-    this.roleName = localStorage.getItem('role');
-    this.getEvent();
+    this.role = this.auth.getRoleFromToken();
+    this.load();
   }
-getEvent(): void {
-  if (this.roleName === 'PARTICIPANT') {
-    this.httpService.GetAlleventss().subscribe({
-      next: res => {
-        this.eventList = res;
-        this.showError = false;
-      },
-      error: err => this.handleError(err)
-    });
-  }
-  else if (this.roleName === 'INSTITUTION') {
-    this.httpService.viewAllEventss().subscribe({
-      next: res => {
-        this.eventList = res;
-        this.showError = false;
-      },
-      error: err => this.handleError(err)
-    });
-  }
-  else if (this.roleName === 'PROFESSIONAL') {
-    this.httpService.getEventByProfessional(this.userId).subscribe({
-      next: res => {
-        this.eventList = res;
-        this.showError = false;
-      },
-      error: err => this.handleError(err)
-    });
-  }
-}
-handleError(err: any) {
-  this.showError = true;
-  if (err.status === 403) {
-    this.errorMessage = 'Not authorized to view events.';
-  } else {
-    this.errorMessage = 'Failed to fetch events. Please try again.';
-  }
-}
 
-  enroll(eventId: any): void {
-    if (!this.userId) {
-      this.showError = true;
-      this.errorMessage = 'User ID missing. Please log in again.';
-      return;
+  /* ================= LOAD EVENTS ================= */
+
+  load(): void {
+    if (this.role === 'INSTITUTION') {
+      this.http.getInstitutionEvents().subscribe({
+        next: r => this.events = r || []
+      });
+    } else if (this.role === 'PROFESSIONAL') {
+      this.http.getProfessionalEvents().subscribe({
+        next: r => this.events = r || []
+      });
+    } else {
+      // ✅ participant events (already sorted by backend – recent first)
+      this.http.getParticipantEvents().subscribe({
+        next: r => this.events = r || []
+      });
     }
+  }
 
-    this.httpService.EnrollParticipant(eventId, this.userId).subscribe({
-      next: () => {
-        this.showMessage = true;
-        this.responseMessage = 'Enrolled successfully!';
-        this.showError = false;
-        this.getEvent();
-      },
-      error: (err: any) => {
-        this.showError = true;
-        if (err.status === 409) {
-          this.errorMessage = 'You are already enrolled in this event.';
-        } else if (err.status === 403) {
-          this.errorMessage = 'Not authorized to enroll.';
-        } else {
-          this.errorMessage = 'Enrollment failed. Please try again.';
+  /* ================= PAGINATION ================= */
+
+  get pagedEvents() {
+    const start = (this.page - 1) * this.pageSize;
+    return this.events.slice(start, start + this.pageSize);
+  }
+
+  get totalPages() {
+    return Math.max(1, Math.ceil(this.events.length / this.pageSize));
+  }
+
+  /* ================= INSTITUTION ================= */
+
+  openFeedbacks(e: any): void {
+    this.selectedSvc.set(e);
+    this.router.navigate(['/view-feedbacks']);
+  }
+
+  /* ================= PARTICIPANT ================= */
+
+  enroll(e: any): void {
+  this.http.enrollEvent(e.id).subscribe({
+    next: () => {
+      this.enrollPopup = true;
+
+      // ✅ IMPORTANT: update event inside MAIN array
+      const idx = this.events.findIndex(ev => ev.id === e.id);
+      if (idx !== -1) {
+        this.events[idx] = {
+          ...this.events[idx],
+          enrolled: true
+        };
+      }
+
+      setTimeout(() => this.enrollPopup = false, 3000);
+    },
+    error: (err) => {
+      if (err.status === 409) {
+        const idx = this.events.findIndex(ev => ev.id === e.id);
+        if (idx !== -1) {
+          this.events[idx] = {
+            ...this.events[idx],
+            enrolled: true
+          };
         }
       }
-    });
-  }
-
-  viewDetails(val: any): void {
-    this.selectedEvent = { ...val };
-    this.status = null;
-    this.formModel.content = '';
-  }
-
-  saveFeedBack(): void {
-    if (!this.selectedEvent || !this.selectedEvent.id) {
-      this.showError = true;
-      this.errorMessage = 'Please select an event first.';
-      return;
     }
+  });
+}
 
-    if (!this.formModel.content) {
-      this.showError = true;
-      this.errorMessage = 'Feedback content cannot be empty.';
-      return;
-    }
-
-  const feedbackData = {
-  content: this.formModel.content,
-  timestamp: new Date().toISOString()
-};
-
-    this.httpService.AddFeedbackByParticipants(
-      this.selectedEvent.id, this.userId, feedbackData
-    ).subscribe({
-      next: () => {
-        this.showMessage = true;
-        this.responseMessage = 'Feedback submitted successfully!';
-        this.showError = false;
-        this.formModel.content = '';
-        this.selectedEvent = {};
-        this.getEvent();
-      },
-      error: (err: any) => {
-        this.showError = true;
-        if (err.status === 403) {
-          this.errorMessage = 'Not authorized to submit feedback.';
-        } else {
-          this.errorMessage = 'Failed to submit feedback. Please try again.';
-        }
-      }
-    });
+  selectEvent(e: any): void {
+    this.selectedEvent = e;
+    this.feedbackText = '';
+    this.statusText = null;
   }
 
   checkStatus(): void {
-    if (!this.selectedEvent || !this.selectedEvent.id) {
-      this.showError = true;
-      this.errorMessage = 'Please select an event first.';
+    if (!this.selectedEvent?.id) return;
+
+    this.http.viewEventStatus(this.selectedEvent.id).subscribe({
+      next: (res: any) => {
+        this.statusText = res?.status || res;
+      },
+      error: () => {
+        this.message = 'Failed to fetch status';
+      }
+    });
+  }
+
+  submitParticipantFeedback(): void {
+    if (!this.selectedEvent?.id || !this.feedbackText.trim()) {
+      this.message = 'Please enter feedback';
       return;
     }
 
-    this.httpService.viewEventStatus(this.selectedEvent.id).subscribe({
-      next: (res: any) => {
-        this.status = res.status;
-        console.log('Event status:', this.status);
-        this.showError = false;
+    this.http.addParticipantFeedback(this.selectedEvent.id, {
+      content: this.feedbackText
+    }).subscribe({
+      next: () => {
+        this.message = 'Feedback submitted successfully';
+        this.feedbackText = '';
+        this.selectedEvent = null;
       },
-      error: (err: any) => {
-        this.showError = true;
-        if (err.status === 404) {
-          this.errorMessage = 'Event not found.';
-        } else {
-          this.errorMessage = 'Failed to fetch event status.';
-        }
+      error: () => {
+        this.message = 'Feedback submission failed';
       }
     });
   }

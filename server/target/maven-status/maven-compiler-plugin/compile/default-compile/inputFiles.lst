@@ -19,6 +19,7 @@
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/controller/RegisterAndLoginController.java
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/config/Configurations.java
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/entity/Resource.java
+/home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/service/EmailNotificationService.java
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/controller/InstitutionController.java
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/dto/LoginResponse.java
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/entity/User.java

@@ -1,54 +1,42 @@
 <div class="container mt-4">
-  <h3 class="mb-3">Update Event Status</h3>
+  <h3 class="mb-3">My Assignments</h3>
 
-  <div *ngIf="showError"   class="alert alert-danger">{{ errorMessage }}</div>
-  <div *ngIf="showMessage" class="alert alert-success">{{ responseMessage }}</div>
-
-  <table class="table table-bordered" *ngIf="eventList.length > 0">
+  <table class="table table-bordered table-hover" *ngIf="events.length">
     <thead class="table-dark">
       <tr>
-        <th>ID</th><th>Title</th><th>Schedule</th><th>Status</th><th>Actions</th>
+        <th>ID</th><th>Title</th><th>Schedule</th><th>Status</th>
+        <th>My Response</th><th>Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let e of eventList">
-        <td>{{ e.id }}</td>
-        <td>{{ e.title }}</td>
-        <td>{{ e.schedule }}</td>
-        <td>{{ e.status }}</td>
-        <td>
-          <button class="btn btn-sm btn-warning me-1" (click)="addStatus(e)">
-            Update Status
-          </button>
-         
+      <tr *ngFor="let e of events">
+        <td>{{e.id}}</td>
+        <td>{{e.title}}</td>
+        <td>{{e.schedule}}</td>
+        <td>{{e.status}}</td>
+
+        <!-- Your backend returns professionalStatus map; professional sees own in event.professionalStatus[userId] if included -->
+        <td>{{ e.assignmentStatus || 'PENDING' }}</td>
+
+        <td class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-sm btn-success" (click)="respond(e,'ACCEPTED')">Accept</button>
+          <button class="btn btn-sm btn-danger" (click)="respond(e,'REJECTED')">Reject</button>
+          <button class="btn btn-sm btn-warning" (click)="selectForStatus(e)">Update Status</button>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <!-- Status Update Panel -->
-  <div class="card p-3 mb-3" *ngIf="updateId && !isAddRemarks">
-    <h6>Update Status for Event ID: {{ updateId }}</h6>
-    <div class="row g-2">
-      <div class="col-md-3">
-        <select class="form-select" [(ngModel)]="formModel.status">
-          <option [ngValue]="null">-- Select Status --</option>
-          <option value="PENDING">PENDING</option>
-          <option value="IN_PROGRESS">IN_PROGRESS</option>
-          <option value="COMPLETED">COMPLETED</option>
-        </select>
-      </div>
-    </div>
-    <button class="btn btn-primary mt-2" (click)="updateStatus()">Save Status</button>
-  </div>
+  <div *ngIf="!events.length" class="alert alert-info">No assignments.</div>
 
-  <!-- Feedback Panel -->
-  <div class="card p-3" *ngIf="isAddRemarks">
-    <h6>Feedback for: {{ selectedEvent.title }}</h6>
-    <div class="mb-2">
-      <textarea class="form-control" rows="3" [(ngModel)]="formModel.content"
-        placeholder="Enter your feedback..."></textarea>
-    </div>
-    <button class="btn btn-success" (click)="saveFeedBack()">Submit Feedback</button>
+  <div class="card p-3 mt-3" *ngIf="selectedId">
+    <h6>Update Status — Event ID: {{selectedId}}</h6>
+    <select class="form-select w-auto" [(ngModel)]="status">
+      <option [ngValue]="null">-- Select --</option>
+      <option value="PENDING">PENDING</option>
+      <option value="IN_PROGRESS">IN_PROGRESS</option>
+      <option value="COMPLETED">COMPLETED</option>
+    </select>
+    <button class="btn btn-primary mt-2" (click)="saveStatus()">Save</button>
   </div>
 </div>
