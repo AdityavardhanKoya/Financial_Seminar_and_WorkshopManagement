@@ -1,48 +1,50 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
+import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RegistrationComponent } from './registration/registration.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { HttpService } from '../services/http.service';
-import { DashbaordComponent } from './dashbaord/dashbaord.component';
+
 import { CreateEventComponent } from './create-event/create-event.component';
+import { DeleteEventComponent } from './delete-event/delete-event.component';
 import { AddResourceComponent } from './add-resource/add-resource.component';
-
-import { ViewEventsComponent } from './view-events/view-events.component';
-
-
 import { AssignProfessionalComponent } from './assign-professional/assign-professional.component';
+import { ViewEventsComponent } from './view-events/view-events.component';
 import { UpdateEventStatusComponent } from './update-event-status/update-event-status.component';
 import { AddFeedbackComponent } from './add-feedback/add-feedback.component';
+import { ViewFeedbacksComponent } from './view-feedback/view-feedback.component';
+import { JwtInterceptor } from './jwt.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
+    NavbarComponent,
     LoginComponent,
-      RegistrationComponent,
-      DashbaordComponent,    
-      CreateEventComponent,
-      AddResourceComponent,
-
-      ViewEventsComponent,
-     
-   
-      AssignProfessionalComponent,
-           UpdateEventStatusComponent,
-           AddFeedbackComponent
+    RegistrationComponent,
+    CreateEventComponent,
+    DeleteEventComponent,
+    AddResourceComponent,
+    AssignProfessionalComponent,
+    ViewEventsComponent,
+    UpdateEventStatusComponent,
+    AddFeedbackComponent,
+    ViewFeedbacksComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule 
+    HttpClientModule
   ],
-  providers: [HttpService,HttpClientModule ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

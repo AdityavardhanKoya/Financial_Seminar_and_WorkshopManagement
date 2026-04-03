@@ -7,18 +7,12 @@
         <div *ngIf="showMessage" class="alert alert-info">{{ responseMessage }}</div>
 
         <form [formGroup]="itemForm" (ngSubmit)="onRegister()">
+
           <div class="mb-3">
             <label class="form-label">Username</label>
             <input type="text" class="form-control" formControlName="username" />
             <div *ngIf="itemForm.get('username')?.invalid && itemForm.get('username')?.touched"
               class="text-danger small">Username is required.</div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-control" formControlName="password" />
-            <div *ngIf="itemForm.get('password')?.invalid && itemForm.get('password')?.touched"
-              class="text-danger small">Min 4 characters required.</div>
           </div>
 
           <div class="mb-3">
@@ -40,11 +34,40 @@
               class="text-danger small">Role is required.</div>
           </div>
 
+          <!-- ✅ authCode only for institution/professional -->
+          <div class="mb-3" *ngIf="itemForm.value.role === 'INSTITUTION' || itemForm.value.role === 'PROFESSIONAL'">
+            <label class="form-label">Authentication Code</label>
+            <input type="text" class="form-control" formControlName="authCode" placeholder="Enter code provided by admin" />
+            <div *ngIf="itemForm.get('authCode')?.invalid && itemForm.get('authCode')?.touched"
+              class="text-danger small">Authentication code is required.</div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" formControlName="password" />
+          </div>
+
+          <!-- ✅ Password rule list: turns green briefly then disappears -->
+          <ul class="list-unstyled mb-3"
+              *ngIf="(itemForm.get('password')?.touched || itemForm.get('password')?.dirty) && !allRulesDone">
+            <li *ngFor="let r of rules" [class.d-none]="r.hidden"
+                [ngClass]="r.flashGreen ? 'text-success fw-semibold' : 'text-danger'">
+              <span class="me-1">{{ r.flashGreen ? '✔' : '✖' }}</span>
+              {{ r.text }}
+            </li>
+          </ul>
+
+          <div *ngIf="itemForm.get('password')?.invalid && itemForm.get('password')?.touched"
+            class="text-danger small mb-2">
+            Password must satisfy all rules.
+          </div>
+
           <button type="submit" class="btn btn-success w-100">Register</button>
 
           <p class="text-center mt-3">
             Already have an account? <a routerLink="/login">Login</a>
           </p>
+
         </form>
       </div>
     </div>

@@ -1,0 +1,28 @@
+<div class="container mt-4">
+  <h3 class="mb-3 text-primary fw-bold">View Feedbacks</h3>
+
+  <div class="card p-3 mb-3 shadow-sm" *ngIf="selectedEvent">
+    <div><b>Event:</b> {{selectedEvent.title}}</div>
+    <div><b>Schedule:</b> {{selectedEvent.schedule}}</div>
+    <div><b>Location:</b> {{selectedEvent.location}}</div>
+  </div>
+
+  <div *ngIf="feedbacks.length === 0" class="alert alert-info">
+    No feedbacks yet.
+  </div>
+
+  <table class="table table-hover" *ngIf="feedbacks.length">
+    <thead class="table-secondary">
+      <tr><th>#</th><th>User</th><th>Role</th><th>Feedback</th><th>Time</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let f of feedbacks; let i = index">
+        <td>{{i+1}}</td>
+        <td>{{f.user?.username || 'Unknown'}}</td>
+        <td>{{f.user?.role || '—'}}</td>
+        <td>{{f.content}}</td>
+        <td>{{f.timestamp | date:'yyyy-MM-dd HH:mm'}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

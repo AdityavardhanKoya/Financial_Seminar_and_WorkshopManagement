@@ -1,45 +1,27 @@
 <div class="container mt-4">
-  <h3 class="mb-3">Assign Professional to Event</h3>
+  <h3 class="mb-3">Assign Professional</h3>
 
-  <div *ngIf="showError"   class="alert alert-danger">{{ errorMessage }}</div>
-  <div *ngIf="showMessage" class="alert alert-success">{{ responseMessage }}</div>
-
-  <form [formGroup]="itemForm" class="card p-3 mb-4" (ngSubmit)="onSubmit()">
-    <div class="row g-2">
+  <div class="card p-3 shadow-sm">
+    <div class="row g-3">
       <div class="col-md-4">
-        <label class="form-label">Select Event</label>
-        <select class="form-select" formControlName="eventId">
-          <option value="">-- Select Event --</option>
-          <option *ngFor="let e of eventList" [value]="e.id">{{ e.title }}</option>
+        <label class="form-label">Event</label>
+        <select class="form-select" [(ngModel)]="selectedEventId">
+          <option [ngValue]="null">-- Select --</option>
+          <option *ngFor="let e of events" [ngValue]="e.id">{{e.title}}</option>
         </select>
-        <div *ngIf="itemForm.get('eventId')?.invalid && itemForm.get('eventId')?.touched"
-          class="text-danger small">Required.</div>
       </div>
+
       <div class="col-md-4">
-        <label class="form-label">Select Professional</label>
-        <select class="form-select" formControlName="userId">
-          <option value="">-- Select Professional --</option>
-          <option *ngFor="let p of professionalsList" [value]="p.id">{{ p.username }}</option>
+        <label class="form-label">Professional</label>
+        <select class="form-select" [(ngModel)]="selectedProfId">
+          <option [ngValue]="null">-- Select --</option>
+          <option *ngFor="let p of pros" [ngValue]="p.id">{{p.username}} ({{p.email}})</option>
         </select>
-        <div *ngIf="itemForm.get('userId')?.invalid && itemForm.get('userId')?.touched"
-          class="text-danger small">Required.</div>
       </div>
     </div>
+
     <div class="mt-3">
-      <button type="submit" class="btn btn-warning"
-        [disabled]="itemForm.invalid">Assign</button>
+      <button class="btn btn-warning" (click)="assign()">Assign</button>
     </div>
-  </form>
-
-  <div class="card p-3">
-    <h6>Professionals List</h6>
-    <table class="table table-sm" *ngIf="professionalsList.length > 0">
-      <thead><tr><th>ID</th><th>Username</th><th>Email</th></tr></thead>
-      <tbody>
-        <tr *ngFor="let p of professionalsList">
-          <td>{{ p.id }}</td><td>{{ p.username }}</td><td>{{ p.email }}</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </div>

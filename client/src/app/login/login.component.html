@@ -1,79 +1,24 @@
-<div class="login-page">
-  <div class="login-container">
-    
-    <div class="brand-section">
-      <div class="brand-content">
-        <div class="logo-circle">
-          <i class="bi bi-mic-fill"></i>
-        </div>
-        <p class="welcome-text">Welcome to</p>
-        <h1 class="main-title">SEMINAR <br><span>2026</span></h1>
-        <p class="tagline">Connect. Learn. Lead.</p>
-        
-        <div class="upcoming-card">
-          <div class="card-icon">
-            <i class="bi bi-calendar3"></i>
-          </div>
-          <div class="card-info">
-            <p class="event-name">Upcoming Seminar: AI & Future Tech 2026</p>
-            <p class="event-time">
-              <i class="bi bi-clock"></i> April 24, 2026 • 10:00 AM
-            </p>
-          </div>
-        </div>
-      </div>
+<div class="container mt-5" style="max-width:420px">
+  <h3 class="mb-3">Login</h3>
+
+  <div *ngIf="showError" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <form [formGroup]="itemForm" (ngSubmit)="onLogin()">
+    <div class="mb-3">
+      <label class="form-label">Username</label>
+      <input class="form-control" formControlName="username">
     </div>
 
-    <div class="form-section">
-      <div class="auth-card">
-        <div class="auth-header">
-          <h2>Login</h2>
-          <p>Sign in to access the Seminar Management Portal</p>
-        </div>
-
-        <div *ngIf="showError" class="alert alert-danger py-2 small">{{ errorMessage }}</div>
-
-        <form [formGroup]="itemForm" (ngSubmit)="onLogin()">
-          <div class="input-wrapper mb-3">
-            <i class="bi bi-envelope icon"></i>
-            <input 
-              type="text" 
-              class="custom-input" 
-              formControlName="username"
-              placeholder="Email Address" />
-            <div *ngIf="itemForm.get('username')?.invalid && itemForm.get('username')?.touched"
-              class="text-danger x-small">Username is required.</div>
-          </div>
-
-          <div class="input-wrapper mb-3">
-            <i class="bi bi-lock icon"></i>
-            <input 
-              type="password" 
-              class="custom-input" 
-              formControlName="password"
-              placeholder="Password" />
-            <div *ngIf="itemForm.get('password')?.invalid && itemForm.get('password')?.touched"
-              class="text-danger x-small">Password must be at least 4 characters.</div>
-          </div>
-
-          <div class="form-actions mb-4">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="rememberMe">
-              <label class="form-check-label small text-muted" for="rememberMe">
-                Remember Me
-              </label>
-            </div>
-          </div>
-
-          <button type="submit" class="btn-gradient w-100 mb-3">Login</button>
-
-          <p class="text-center mt-4 small text-muted">
-            New to the portal? 
-            <a (click)="registration()" class="fw-bold text-primary" style="cursor: pointer;">Register </a>
-          </p>
-        </form>
-      </div>
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-control" formControlName="password">
     </div>
 
-  </div>
+    <button class="btn btn-primary w-100" type="submit">Login</button>
+
+  <a (click)="registration()" class="fw-bold text-primary" style="cursor: pointer;">
+  Register
+</a>
+
+  </form>
 </div>

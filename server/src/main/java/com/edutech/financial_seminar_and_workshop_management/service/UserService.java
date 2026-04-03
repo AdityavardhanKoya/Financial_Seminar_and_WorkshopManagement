@@ -42,11 +42,23 @@
                 AuthorityUtils.createAuthorityList(user.getRole())
          );
      }
+public User registerUser(User user) {
 
-     public User registerUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-         return userRepository.save(user);
-     }
+    if (user.getRole() == null) {
+        throw new RuntimeException("Role is required");
+    }
+
+    // ✅ allow only valid roles
+    if (!List.of("PARTICIPANT", "INSTITUTION", "PROFESSIONAL")
+            .contains(user.getRole())) {
+        throw new RuntimeException("Invalid role");
+    }
+
+    // ✅ DO NOT override role
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    return userRepository.save(user);
+}
+
 
      public LoginResponse loginUser(String username, String password) {
          authenticationManager.authenticate(
@@ -69,4 +81,5 @@
      public List<User> getUsersByRole(String role) {
          return userRepository.findByRole(role);
     }
+
  }
