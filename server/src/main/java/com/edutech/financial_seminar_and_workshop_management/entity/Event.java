@@ -21,7 +21,8 @@ public class Event {
     private String status;
     private Integer maxEnrollment;
     private Integer enrollmentCount = 0;
-   
+    @Transient
+   private boolean enrolled;
 
 
 

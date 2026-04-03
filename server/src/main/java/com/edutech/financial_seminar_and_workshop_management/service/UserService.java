@@ -60,14 +60,28 @@ public User registerUser(User user) {
 }
 
 
-     public LoginResponse loginUser(String username, String password) {
-         authenticationManager.authenticate(
-                 new UsernamePasswordAuthenticationToken(username, password)
-         );
-         User user = userRepository.findByUsername(username);
-         String token = jwtUtil.generateToken(loadUserByUsername(username));
-         return new LoginResponse(token, user.getUsername(), user.getRole(), user.getId());
-     }
+   public LoginResponse loginUser(String username, String password) {
+
+    authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(username, password)
+    );
+
+    User user = userRepository.findByUsername(username);
+    if (user == null) {
+        throw new RuntimeException("User not found");
+    }
+
+    UserDetails userDetails = loadUserByUsername(username);
+    String token = jwtUtil.generateToken(userDetails);
+
+    return new LoginResponse(
+        token,
+        user.getUsername(),
+        user.getRole(),
+        user.getId()
+    );
+}
+
 
      public List<User> getAllUsers() {
          return userRepository.findAll();
