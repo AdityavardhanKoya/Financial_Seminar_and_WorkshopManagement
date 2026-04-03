@@ -1,78 +1,69 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
-import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-add-resource',
-  templateUrl: './add-resource.component.html',
-  styleUrls: ['./add-resource.component.scss']
+  templateUrl: './add-resource.component.html'
 })
 export class AddResourceComponent implements OnInit {
 
-  itemForm: FormGroup; 
-  formModel:any={status:null};
-  showError:boolean=false;
-  errorMessage:any;
- 
-  assignModel: any={};
+  events: any[] = [];
 
-  showMessage: any;
-  responseMessage: any;
-  eventList: any=[];
-  constructor(public router:Router, public httpService:HttpService, private formBuilder: FormBuilder, private authService:AuthService) 
-    {
-      this.itemForm = this.formBuilder.group({
-        eventId: [this.formModel.eventId,[ Validators.required]],
-        type: [this.formModel.type,[ Validators.required]],
-        description: [this.formModel.description,[ Validators.required]],
-        availabilityStatus: [this.formModel.availabilityStatus,[ Validators.required]]
-       
-    });
+  selectedEventId: number | null = null;
 
-   
-  }
+  resource = {
+    name: '',
+    type: '',
+    url: ''
+  };
+
+  constructor(
+    private http: HttpService,
+    private notif: NotificationService
+  ) {}
+
   ngOnInit(): void {
-    this.getEvent();
-    this.formModel.availabilityStatus=null;
+    this.loadEvents();
   }
 
-  getEvent() {
-    this.eventList=[];
-    const userIdString = localStorage.getItem('userId');
-    const userId = userIdString ? parseInt(userIdString, 10) : null;
-
-    this.httpService.getEventByInstitutionId(userId).subscribe((data: any) => {
-      this.eventList=data;
-      console.log(this.eventList);
-    }, error => {
-      // Handle error
-      this.showError = true;
-      this.errorMessage = "An error occurred.. Please try again later.";
-      console.error('Login error:', error);
-    });;
+  loadEvents(): void {
+    this.http.getInstitutionEvents().subscribe({
+      next: (res: any) => this.events = res || [],
+      error: () => this.notif.show('Failed to load events', 'danger', 4000)
+    });
   }
-  onSubmit()
-  {
-      debugger;
-      if (this.itemForm.valid) {
-        this.showError = false;
-        this.httpService.addResource(this.itemForm.value).subscribe((data: any) => {
-          this.itemForm.reset();
-          this.responseMessage="Saved Successfully";
-        }, error => {
-          // Handle error
-          this.showError = true;
-          this.errorMessage = "An error occurred while logging in. Please try again later.";
-          console.error('Login error:', error);
-        });;
-      } else {
-        this.itemForm.markAllAsTouched();
-      }
+
+  submit(): void {
+    if (!this.selectedEventId) {
+      this.notif.show('Please select an event', 'warning', 3500);
+      return;
     }
-    
-  
 
- 
+    if (!this.resource.name.trim() || !this.resource.type.trim()) {
+      this.notif.show('Resource name and type are required', 'warning', 3500);
+      return;
+    }
+
+    if (!confirm('Add this resource to the selected event?')) return;
+
+    this.http.addResource(this.selectedEventId, this.resource).subscribe({
+      next: () => {
+        this.notif.show('Resource added successfully', 'success', 4000);
+        this.resetForm();
+      },
+      error: () => {
+        this.notif.show('Failed to add resource', 'danger', 4000);
+      }
+    });
+  }
+
+  resetForm(): void {
+    this.selectedEventId = null;
+    this.resource = {
+      name: '',
+      type: '',
+      url: ''
+    };
+  }
 }

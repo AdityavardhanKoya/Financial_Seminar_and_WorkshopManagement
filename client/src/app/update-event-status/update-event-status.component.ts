@@ -1,144 +1,66 @@
 import { Component, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { HttpService } from '../../services/http.service';
+import { NotificationService } from '../notification.service';
+
 
 @Component({
   selector: 'app-update-event-status',
-  templateUrl: './update-event-status.component.html',
-  providers: [DatePipe]
+  templateUrl: './update-event-status.component.html'
 })
 export class UpdateEventStatusComponent implements OnInit {
+  events: any[] = [];
+  status: string | null = null;
+  selectedId: number | null = null;
 
-  formModel: any = { status: null };
-  showError: boolean = false;
-  errorMessage: any;
-  eventList: any = [];
-  assignModel: any = {};
-  selectedEvent: any = {};
-  showMessage: any;
-  responseMessage: any;
-  updateId: any;
-  isAddRemarks: boolean = false;
-
-  constructor(private httpService: HttpService, private datePipe: DatePipe) {}
+  constructor(private http: HttpService, private notif: NotificationService) {}
 
   ngOnInit(): void {
-    this.getEvent();
+    this.load();
   }
 
-  getEvent(): void {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      this.showError = true;
-      this.errorMessage = 'User ID is missing. Please log in again.';
-      return;
-    }
-
-    this.httpService.getEventByProfessional(userId).subscribe({
-      next: (res: any) => {
-        this.eventList = res;
-        this.showError = false;
-      },
-      error: (err: any) => {
-        this.showError = true;
-        if (err.status === 404) {
-          this.errorMessage = 'No events assigned to you.';
-        } else if (err.status === 403) {
-          this.errorMessage = 'Not authorized to view events.';
-        } else {
-          this.errorMessage = 'Failed to fetch events. Please try again.';
-        }
-      }
+  load(): void {
+    this.http.getProfessionalEvents().subscribe({
+      next: (res: any) => this.events = res || [],
+      error: () => this.notif.show('Failed to load events', 'danger', 4000)
     });
   }
 
-  addStatus(val: any): void {
-    if (!val || !val.id) return;
-    this.updateId = val.id;
-  }
+  respond(e: any, response: 'ACCEPTED' | 'REJECTED'): void {
+    const msg = response === 'ACCEPTED'
+      ? `Accept assignment for "${e.title}"?`
+      : `Reject assignment for "${e.title}"? Institution will be notified.`;
 
-  addRemarks(val: any): void {
-    if (!val || !val.id) return;
-    this.updateId = val.id;
-    this.selectedEvent = { ...val };
-    this.isAddRemarks = true;
-  }
+    if (!confirm(msg)) return;
 
-  updateStatus(): void {
-    if (!this.updateId) {
-      this.showError = true;
-      this.errorMessage = 'Please select an event to update.';
-      return;
-    }
-
-    if (!this.formModel.status) {
-      this.showError = true;
-      this.errorMessage = 'Please select a status.';
-      return;
-    }
-
-    this.httpService.UpdateEventStatus(this.updateId, this.formModel.status).subscribe({
+    this.http.respondToAssignment(e.id, response).subscribe({
       next: () => {
-        this.showMessage = true;
-        this.responseMessage = 'Status updated successfully!';
-        this.showError = false;
-        this.formModel.status = null;
-        this.updateId = null;
-        this.getEvent();
+        this.notif.show(`Assignment ${response} (email sent)`, response === 'ACCEPTED' ? 'success' : 'warning', 4000);
+        this.load();
       },
-      error: (err: any) => {
-        this.showError = true;
-        if (err.status === 403) {
-          this.errorMessage = 'Not authorized to update this event.';
-        } else {
-          this.errorMessage = 'Failed to update status. Please try again.';
-        }
-      }
+      error: (err: any) => this.notif.show(err?.error || 'Assignment update failed', 'danger', 4000)
     });
   }
 
-  saveFeedBack(): void {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      this.showError = true;
-      this.errorMessage = 'User ID is missing. Please log in again.';
+  selectForStatus(e: any): void {
+    this.selectedId = e.id;
+    this.status = null;
+  }
+
+  saveStatus(): void {
+    if (!this.selectedId || !this.status) {
+      this.notif.show('Choose status', 'warning', 3500);
       return;
     }
+    if (!confirm('Save status update?')) return;
 
-    if (!this.updateId) {
-      this.showError = true;
-      this.errorMessage = 'No event selected for feedback.';
-      return;
-    }
-
-    if (!this.formModel.content) {
-      this.showError = true;
-      this.errorMessage = 'Feedback content cannot be empty.';
-      return;
-    }
-
-const feedbackData = {
-  content: this.formModel.content,
-  timestamp: new Date().toISOString()
-};
-
-    this.httpService.AddFeedback(this.updateId, userId, feedbackData).subscribe({
+    this.http.updateEventStatus(this.selectedId, this.status).subscribe({
       next: () => {
-        this.showMessage = true;
-        this.responseMessage = 'Feedback submitted successfully!';
-        this.showError = false;
-        this.formModel.content = '';
-        this.isAddRemarks = false;
-        this.getEvent();
+        this.notif.show('Status updated (visible to all)', 'success', 4000);
+        this.selectedId = null;
+        this.status = null;
+        this.load();
       },
-      error: (err: any) => {
-        this.showError = true;
-        if (err.status === 403) {
-          this.errorMessage = 'Not authorized to submit feedback.';
-        } else {
-          this.errorMessage = 'Failed to submit feedback. Please try again.';
-        }
-      }
+      error: (err: any) => this.notif.show(err?.error || 'Status update failed', 'danger', 4000)
     });
   }
 }

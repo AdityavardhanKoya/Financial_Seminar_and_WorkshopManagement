@@ -1,8 +1,12 @@
 package com.edutech.financial_seminar_and_workshop_management.config;
+
+import com.edutech.financial_seminar_and_workshop_management.jwt.JwtRequestFilter;
+import com.edutech.financial_seminar_and_workshop_management.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,28 +15,23 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.edutech.financial_seminar_and_workshop_management.jwt.JwtRequestFilter;
-import com.edutech.financial_seminar_and_workshop_management.service.UserService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Lazy
-    @Autowired
-    private UserService userService;
+    @Autowired private UserService userService;
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+    @Autowired private JwtRequestFilter jwtRequestFilter;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService)
-            .passwordEncoder(passwordEncoder);
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -41,26 +40,53 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-            .authorizeRequests()
-                .antMatchers("/api/user/register", "/api/user/login").permitAll()
-                .antMatchers("/api/institution/event").hasAuthority("INSTITUTION")
-                .antMatchers("/api/institution/event/{id}").hasAuthority("INSTITUTION")
-                .antMatchers("/api/institution/events").hasAuthority("INSTITUTION")
-                .antMatchers("/api/institution/event/{eventId}/resource").hasAuthority("INSTITUTION")
-                .antMatchers("/api/institution/event/professionals").hasAuthority("INSTITUTION")
-                .antMatchers("/api/institution/event/{eventId}/professional").hasAuthority("INSTITUTION")
-                .antMatchers("/api/professional/events").hasAuthority("PROFESSIONAL")
-                .antMatchers("/api/professional/event/{id}/status").hasAuthority("PROFESSIONAL")
-                .antMatchers("/api/professional/event/{eventId}/feedback").hasAuthority("PROFESSIONAL")
-                .antMatchers("/api/participant/events").hasAuthority("PARTICIPANT")
-                .antMatchers("/api/participant/event/{eventId}/enroll").hasAuthority("PARTICIPANT")
-                .antMatchers("/api/participant/event/{id}/status").hasAuthority("PARTICIPANT")
-                .antMatchers("/api/participant/event/{eventId}/feedback").hasAuthority("PARTICIPANT")
-                .anyRequest().authenticated()
+        http.cors().and().csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .authorizeRequests()
+
+                // Public
+                .antMatchers("/api/user/register", "/api/user/login").permitAll()
+
+                // Institution
+                .antMatchers(HttpMethod.POST,   "/api/institution/event").hasAuthority("INSTITUTION")
+                .antMatchers(HttpMethod.PUT,    "/api/institution/event/*").hasAuthority("INSTITUTION")
+                .antMatchers(HttpMethod.DELETE, "/api/institution/event/*").hasAuthority("INSTITUTION")
+                .antMatchers(HttpMethod.GET,    "/api/institution/events").hasAuthority("INSTITUTION")
+                .antMatchers(HttpMethod.POST,   "/api/institution/event/*/resource").hasAuthority("INSTITUTION")
+                .antMatchers(HttpMethod.GET,    "/api/institution/event/professionals").hasAuthority("INSTITUTION")
+                .antMatchers(HttpMethod.POST,   "/api/institution/event/*/professional").hasAuthority("INSTITUTION")
+                .antMatchers(HttpMethod.GET,    "/api/institution/event/*/feedbacks").hasAuthority("INSTITUTION")
+
+                // Professional
+                .antMatchers(HttpMethod.GET, "/api/professional/events").hasAuthority("PROFESSIONAL")
+                .antMatchers(HttpMethod.PUT, "/api/professional/event/*/assignment").hasAuthority("PROFESSIONAL")
+                .antMatchers(HttpMethod.PUT, "/api/professional/event/*/status").hasAuthority("PROFESSIONAL")
+                .antMatchers(HttpMethod.POST,"/api/professional/event/*/feedback").hasAuthority("PROFESSIONAL")
+
+                // Participant
+                .antMatchers(HttpMethod.GET, "/api/participant/events").hasAuthority("PARTICIPANT")
+                .antMatchers(HttpMethod.POST,"/api/participant/event/*/enroll").hasAuthority("PARTICIPANT")
+                .antMatchers(HttpMethod.GET, "/api/participant/event/*/status").hasAuthority("PARTICIPANT")
+                .antMatchers(HttpMethod.POST,"/api/participant/event/*/feedback").hasAuthority("PARTICIPANT")
+
+                // Strong end guards
+                .antMatchers("/api/institution/**").hasAuthority("INSTITUTION")
+                .antMatchers("/api/professional/**").hasAuthority("PROFESSIONAL")
+                .antMatchers("/api/participant/**").hasAuthority("PARTICIPANT")
+
+                .anyRequest().authenticated()
+
+            .and()
+                .exceptionHandling()
+                .authenticationEntryPoint((req, res, ex) -> {
+                    res.setStatus(401);
+                    res.getWriter().write("Unauthorized");
+                })
+                .accessDeniedHandler((req, res, ex) -> {
+                    res.setStatus(403);
+                    res.getWriter().write("Forbidden: wrong role");
+                });
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }

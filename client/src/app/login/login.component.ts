@@ -7,13 +7,12 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'] // Ensured SCSS file is linked
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
 
   itemForm: FormGroup;
-  formModel: any = {};
-  showError: boolean = false;
+  showError = false;
   errorMessage: any;
 
   constructor(
@@ -30,6 +29,15 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  private getRoleFromToken(token: string): string | null {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role || payload.authority || null;
+    } catch {
+      return null;
+    }
+  }
+
   onLogin(): void {
     if (this.itemForm.invalid) {
       this.showError = true;
@@ -39,25 +47,41 @@ export class LoginComponent implements OnInit {
 
     this.httpService.Login(this.itemForm.value).subscribe({
       next: (res: any) => {
-        console.log('Login response:', res); 
+        console.log('Login response:', res);
 
-        if (!res || !res.token) {
+        if (!res?.token) {
           this.showError = true;
-          this.errorMessage = 'Invalid response from server.';
+          this.errorMessage = 'Invalid response from server (token missing).';
           return;
         }
-        this.authService.saveToken(res.token);
-        this.authService.SetRole(res.role);
-        this.authService.saveUserId(res.id.toString());
 
-        localStorage.setItem('username', res.username);
-        if (res.role === 'INSTITUTION') {
-          this.router.navigate(['/create-event']);
+        // ✅ role fallback if backend didn't send role properly
+        const role = (res.role || this.getRoleFromToken(res.token) || '').toUpperCase().trim();
+
+        if (!role) {
+          this.showError = true;
+          this.errorMessage = 'Role missing in login response. Please check backend LoginResponse.';
+          return;
         }
-        else if (res.role === 'PROFESSIONAL') {
-          this.router.navigate(['/update-event-status']);
-        } else if (res.role === 'PARTICIPANT') {
-          this.router.navigate(['/view-events']);
+
+        // ✅ store session
+        this.authService.saveToken(res.token);
+        this.authService.SetRole(role);
+        if (res.id) {
+          this.authService.saveUserId(res.id.toString());
+        } else {
+          // fallback decode id if backend doesn't send it
+          this.extractAndSaveUserIdFromToken(res.token);
+        }
+        localStorage.setItem('username', res.username || this.itemForm.value.username);
+
+        // ✅ navigation (navigateByUrl is more direct)
+        if (role === 'INSTITUTION') {
+          this.router.navigateByUrl('/create-event');
+        } else if (role === 'PROFESSIONAL') {
+          this.router.navigateByUrl('/update-event-status');
+        } else {
+          this.router.navigateByUrl('/view-events'); // PARTICIPANT default
         }
       },
       error: (err: any) => {
@@ -76,7 +100,6 @@ export class LoginComponent implements OnInit {
   private extractAndSaveUserIdFromToken(token: string): void {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      console.log('JWT payload:', payload);
       if (payload.userId) {
         this.authService.saveUserId(payload.userId.toString());
       } else if (payload.id) {
@@ -87,7 +110,6 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  // Updated to use the correct router path from your logic
   registration(): void {
     this.router.navigate(['/registration']);
   }

@@ -1,6 +1,8 @@
 package com.edutech.financial_seminar_and_workshop_management.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -12,14 +14,24 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ✅ Ignore event to avoid infinite recursion
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
 
-    @JsonIgnore
+    // ✅ Correct annotation (ONLY ONE @)
+    // ✅ User details will be visible in response (username, role)
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({
+        "password",
+        "events",
+        "enrollments",
+        "feedbacks",
+        "hibernateLazyInitializer",
+        "handler"
+    })
     private User user;
 
     private String content;
@@ -28,6 +40,7 @@ public class Feedback {
     @Column(name = "timestamp")
     private Date timestamp;
 
+    // ✅ Required no-arg constructor
     public Feedback() {}
 
     public Feedback(Long id, Event event, User user, String content, Date timestamp) {
@@ -38,14 +51,19 @@ public class Feedback {
         this.timestamp = timestamp;
     }
 
+    // -------- Getters & Setters --------
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
     public Event getEvent() { return event; }
     public void setEvent(Event event) { this.event = event; }
+
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
+
     public Date getTimestamp() { return timestamp; }
     public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
 }

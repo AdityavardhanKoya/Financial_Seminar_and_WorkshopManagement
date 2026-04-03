@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FinancialSeminarAndWorkshopManagementApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FinancialSeminarAndWorkshopManagementApplication.class, args);
-	}
+			SpringApplication.run(FinancialSeminarAndWorkshopManagementApplication.class, args);
+				}
 
-}
+				}
+				

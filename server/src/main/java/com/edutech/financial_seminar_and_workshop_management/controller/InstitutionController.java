@@ -1,24 +1,21 @@
 package com.edutech.financial_seminar_and_workshop_management.controller;
 
+import com.edutech.financial_seminar_and_workshop_management.entity.*;
+import com.edutech.financial_seminar_and_workshop_management.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.edutech.financial_seminar_and_workshop_management.entity.Event;
-import com.edutech.financial_seminar_and_workshop_management.entity.Resource;
-import com.edutech.financial_seminar_and_workshop_management.entity.User;
-import com.edutech.financial_seminar_and_workshop_management.service.EventService;
-import com.edutech.financial_seminar_and_workshop_management.service.ResourceService;
 import java.util.List;
-
+import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 @RestController
 @RequestMapping("/api/institution")
 public class InstitutionController {
 
-    @Autowired
-    private EventService eventService;
-
-    @Autowired
-    private ResourceService resourceService;
+    @Autowired private EventService eventService;
+    @Autowired private ResourceService resourceService;
+    @Autowired private FeedbackService feedbackService;
 
     @PostMapping("/event")
     public ResponseEntity<Event> createEvent(@RequestBody Event event) {
@@ -27,14 +24,25 @@ public class InstitutionController {
 
     @PutMapping("/event/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable Long id,
-                                              @RequestBody Event event) {
-        return ResponseEntity.ok(eventService.updateEvent(id, event));
+                                             @RequestParam Long institutionId,
+                                             @RequestBody Event event) {
+        return ResponseEntity.ok(eventService.updateEvent(id, institutionId, event));
     }
 
+    @DeleteMapping("/event/{id}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long id,
+                                            @RequestParam Long institutionId) {
+        eventService.deleteEvent(id, institutionId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/events")
+    public ResponseEntity<List<Event>> getMyEvents(@RequestParam Long institutionId) {
+        return ResponseEntity.ok(eventService.getEventsByInstitution(institutionId));
+    }
 
     @PostMapping("/event/{eventId}/resource")
-    public ResponseEntity<Resource> addResource(@PathVariable Long eventId,
-                                                 @RequestBody Resource resource) {
+    public ResponseEntity<Resource> addResource(@PathVariable Long eventId, @RequestBody Resource resource) {
         return ResponseEntity.ok(resourceService.addResource(eventId, resource));
     }
 
@@ -43,13 +51,29 @@ public class InstitutionController {
         return ResponseEntity.ok(eventService.getAllProfessionals());
     }
 
+
+    // ✅ Assign professional (Institution only)
+    // Endpoint matches the intended contract: /api/institution/event/{eventId}/professional?userId=...
     @PostMapping("/event/{eventId}/professional")
-    public ResponseEntity<Event> assignProfessional(@PathVariable Long eventId,
-                                                     @RequestParam Long userId) {
-        return ResponseEntity.ok(eventService.assignProfessional(eventId, userId));
+    public ResponseEntity<?> assignProfessional(@PathVariable Long eventId,
+                                                @RequestParam Long userId,
+                                                Authentication auth) {
+        try {
+            String institutionUsername = auth.getName(); // ✅ from JWT
+            Event updated = eventService.assignProfessional(eventId, userId, institutionUsername);
+            return ResponseEntity.ok(updated);
+        } catch (IllegalAccessException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", ex.getMessage()));
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", ex.getMessage()));
+        }
     }
-    @GetMapping("/events")
-public ResponseEntity<List<Event>> getAllEvents() {
-    return ResponseEntity.ok(eventService.getAllEvents());
-}
+
+
+    @GetMapping("/event/{eventId}/feedbacks")
+    public ResponseEntity<List<Feedback>> getFeedbacks(@PathVariable Long eventId) {
+        return ResponseEntity.ok(feedbackService.getFeedbacksByEvent(eventId));
+    }
 }

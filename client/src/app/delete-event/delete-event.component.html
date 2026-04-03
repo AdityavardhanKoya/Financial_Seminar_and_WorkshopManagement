@@ -1,0 +1,29 @@
+<div class="container mt-4">
+  <h3 class="text-danger fw-bold mb-3">Delete Event</h3>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0" *ngIf="events.length">
+        <thead class="table-dark">
+          <tr><th>ID</th><th>Title</th><th>Schedule</th><th>Status</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let e of pagedEvents">
+            <td>{{e.id}}</td>
+            <td>{{e.title}}</td>
+            <td>{{e.schedule}}</td>
+            <td>{{e.status}}</td>
+            <td><button class="btn btn-sm btn-danger" (click)="delete(e)">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="p-3 text-muted" *ngIf="!events.length">No events.</div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
+    <button class="btn btn-outline-secondary btn-sm" (click)="page=page-1" [disabled]="page===1">Prev</button>
+    <span class="small">Page {{page}} / {{totalPages}}</span>
+    <button class="btn btn-outline-secondary btn-sm" (click)="page=page+1" [disabled]="page===totalPages">Next</button>
+  </div>
+</div>
