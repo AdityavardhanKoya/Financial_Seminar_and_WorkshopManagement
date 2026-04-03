@@ -24,15 +24,21 @@
      }
 
      @PostMapping("/login")
-     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        try {
-             LoginResponse response = userService.loginUser(
-                     loginRequest.getUsername(),
-                     loginRequest.getPassword()
-            );
-            return ResponseEntity.ok(response);
-         } catch (AuthenticationException e) {
-             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-         }
-     }
+public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    try {
+        LoginResponse response = userService.loginUser(
+            loginRequest.getUsername(),
+            loginRequest.getPassword()
+        );
+        return ResponseEntity.ok(response);
+    } catch (AuthenticationException e) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid credentials");
+    } catch (Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+}
  }
