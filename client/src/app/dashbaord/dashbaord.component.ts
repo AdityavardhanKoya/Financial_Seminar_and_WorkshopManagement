@@ -4,7 +4,8 @@ import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashbaord',
-  templateUrl: './dashbaord.component.html'
+  templateUrl: './dashbaord.component.html',
+  styleUrls: ['./dashbaord.component.scss']
 })
 export class DashbaordComponent implements OnInit {
 
@@ -14,11 +15,8 @@ export class DashbaordComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void { 
-
-    // ✅ Load initial values
     this.loadValues();
 
-    // ✅ Auto-update dashboard whenever route changes
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {

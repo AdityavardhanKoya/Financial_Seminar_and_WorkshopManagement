@@ -1,72 +1,79 @@
-<!-- ✅ RESPONSIVE TOP NAVBAR (ROLE BASED) -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
+<div class="page-wrapper">
+  <div class="bg-scene">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
 
-    <!-- App Title -->
-    <a class="navbar-brand fw-bold">Finance Event Portal</a>
+  <nav class="navbar navbar-expand-lg navbar-dark glass-nav">
+    <div class="container">
+      <a class="navbar-brand fw-bold">
+        <span class="dot"></span> Finance Portal
+      </a>
 
-    <!-- Hamburger Button -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-            data-bs-target="#roleNavbar" aria-controls="roleNavbar" 
-            aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <!-- Navbar Items -->
-    <div class="collapse navbar-collapse" id="roleNavbar">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-        <!-- ✅ Institution Menu -->
-        <ng-container *ngIf="roleName === 'INSTITUTION'">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/create-event">Add Event</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/add-resource">Add Resource</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/assign-professional">Assign Professional</a>
-          </li>
-        </ng-container>
-
-        <!-- ✅ Professional Menu -->
-        <ng-container *ngIf="roleName === 'PROFESSIONAL'">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/update-event-status">Update Event</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/add-feedback">Add Feedback</a>
-          </li>
-        </ng-container>
-
-        <!-- ✅ Participant Menu -->
-        <ng-container *ngIf="roleName === 'PARTICIPANT'">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/view-events">View Events</a>
-          </li>
-        </ng-container>
-
-      </ul>
-
-      <!-- ✅ Logout Button -->
-      <button class="btn btn-outline-light" (click)="logout()">
-        Logout
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#roleNavbar">
+        <span class="navbar-toggler-icon"></span>
       </button>
+
+      <div class="collapse navbar-collapse" id="roleNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <ng-container *ngIf="roleName === 'INSTITUTION'">
+            <li class="nav-item"><a class="nav-link" routerLink="/create-event">Add Event</a></li>
+            <li class="nav-item"><a class="nav-link" routerLink="/add-resource">Add Resource</a></li>
+            <li class="nav-item"><a class="nav-link" routerLink="/assign-professional">Assign Professional</a></li>
+          </ng-container>
+
+          <ng-container *ngIf="roleName === 'PROFESSIONAL'">
+            <li class="nav-item"><a class="nav-link" routerLink="/update-event-status">Update Event</a></li>
+            <li class="nav-item"><a class="nav-link" routerLink="/add-feedback">Add Feedback</a></li>
+          </ng-container>
+
+          <ng-container *ngIf="roleName === 'PARTICIPANT'">
+            <li class="nav-item"><a class="nav-link" routerLink="/view-events">View Events</a></li>
+          </ng-container>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3">
+          <span class="user-badge d-none d-md-flex">
+            <span class="icon">👤</span> {{ username }}
+          </span>
+          <button class="btn-logout" (click)="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <div class="header-section mb-4">
+      <div class="card-badge">
+        <span class="dot"></span> Control Center
+      </div>
+      <h1 class="text-white fw-bold">Dashboard Overview</h1>
+      <p class="text-muted">Welcome back, <strong>{{ username }}</strong>. You are logged in as <strong>{{ roleName }}</strong>.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="glass-card p-4">
+          <div class="card-icon">📊</div>
+          <h3 class="text-white h5 mt-3">Quick Stats</h3>
+          <p class="text-muted small">View your current activity and progress across all financial events.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4">
+          <div class="card-icon">🔔</div>
+          <h3 class="text-white h5 mt-3">Notifications</h3>
+          <p class="text-muted small">Stay updated with the latest assignments and feedback requests.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4">
+          <div class="card-icon">⚙️</div>
+          <h3 class="text-white h5 mt-3">Settings</h3>
+          <p class="text-muted small">Manage your profile preferences and system configurations.</p>
+        </div>
+      </div>
     </div>
   </div>
-</nav>
-
-<!-- ✅ OPTIONAL CONTENT BELOW NAVBAR -->
-<div class="container mt-4">
-  <h2 class="fw-bold text-primary mb-3">Dashboard</h2>
-
-  <div class="alert alert-info">
-    <strong>Welcome {{ username }}!</strong>
-    <span class="ms-3">Role: <strong>{{ roleName }}</strong></span>
-  </div>
-
-  <!-- Show main card content if you want -->
 </div>

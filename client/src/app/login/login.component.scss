@@ -1,148 +1,168 @@
-.login-page {
-  min-height: 100vh;
-  width: 100%;
-  
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
-              url('/home/coder/app/client/src/assets/loginimage.jpeg') no-repeat center center;
-  
-  background-size: cover;
-  background-attachment: fixed; // Keeps background from scrolling
+:host {
+  --bg-deep: #060d2e;
+  --accent: #3b5bdb;
+  --accent-glow: #4c6ef5;
+  --text: #e8eaf6;
+  --muted: #8899cc;
+  --border: rgba(59,91,219,0.25);
+  --card-bg: rgba(10,18,69,0.65);
+  --input-bg: rgba(255,255,255,0.05);
+}
+
+.login-wrapper {
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0;
-  padding: 20px;
-}
-
-.login-container {
-  display: flex;
-  width: 100%;
-  max-width: 1100px;
-  min-height: 600px;
-  border-radius: 20px;
+  background: var(--bg-deep);
   overflow: hidden;
-  /* Adds a slight glow/shadow to separate the container from the background */
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5); 
+  position: relative;
 }
 
-// ... Rest of your existing SCSS remains the same
-.brand-section {
-  flex: 1.2;
+.bg-scene {
+  position: absolute;
+  inset: 0;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+.blob-1 { width: 500px; height: 500px; top: -100px; right: -60px; background: radial-gradient(circle, rgba(59,91,219,0.55), transparent 70%); }
+.blob-2 { width: 350px; height: 350px; top: 80px; right: 100px; border: 1px solid rgba(99,130,255,0.2); }
+.blob-3 { width: 200px; height: 200px; bottom: 80px; left: 60px; background: radial-gradient(circle, rgba(59,91,219,0.4), transparent 70%); }
+.blob-4 { width: 120px; height: 120px; bottom: 160px; left: 140px; border: 1px solid rgba(99,130,255,0.15); }
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  border-radius: 18px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+  z-index: 10;
+}
+
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(59,91,219,0.15);
+  border: 1px solid rgba(59,91,219,0.3);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--accent-glow);
+  margin-bottom: 15px;
+}
+
+.dot { width: 6px; height: 6px; background: var(--accent-glow); border-radius: 50%; }
+
+h1 { color: white; font-size: 28px; font-weight: 800; margin-bottom: 5px; }
+.sub { color: var(--muted); margin-bottom: 25px; }
+
+.form-group { margin-bottom: 15px; }
+label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 5px; font-weight: 600; }
+
+/* THE SQUARE BOX ALIGNMENT */
+.input-wrap {
   display: flex;
   align-items: center;
-  padding: 40px;
-  color: white;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
 
-  .logo-circle {
-    width: 60px;
-    height: 60px;
-    background: white;
-    border-radius: 50%;
+  /* RADIUM GLOW ON FOCUS */
+  &:focus-within {
+    border-color: var(--accent);
+    background: rgba(59,91,219,0.1);
+    box-shadow: 0 0 15px rgba(76, 110, 245, 0.4); /* Radium reflection */
+  }
+
+  .icon-box {
+    padding: 10px 14px;
+    color: var(--muted);
+    border-right: 1px solid var(--border); /* Seperation line */
+    background: rgba(255, 255, 255, 0.02);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #1a2a44;
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 16px;
   }
 
-  .welcome-text { font-size: 1.5rem; margin: 0; font-weight: 300; }
-  .main-title {
-    font-size: 5rem;
-    font-weight: 800;
-    line-height: 1;
-    margin: 10px 0;
-    span { color: #f39c12; }
-  }
-  .tagline { font-size: 1.2rem; letter-spacing: 1px; margin-bottom: 40px; opacity: 0.9; }
-
-  .upcoming-card {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 20px 30px;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    width: fit-content;
-
-    .card-icon { font-size: 1.8rem; color: #f39c12; }
-    .event-name { margin: 0; font-weight: 600; font-size: 1rem; }
-    .event-time { margin: 0; font-size: 0.9rem; opacity: 0.8; }
+  input {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    color: white;
+    outline: none;
+    &::placeholder { color: rgba(255, 255, 255, 0.2); }
   }
 }
 
-.form-section {
-  flex: 0.8;
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.remember {
   display: flex;
   align-items: center;
-  justify-content: center;
-
-  .auth-card {
-    background: white;
-    width: 100%;
-    max-width: 400px;
-    padding: 50px 40px;
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-
-    .auth-header {
-      text-align: center;
-      margin-bottom: 35px;
-      h2 { color: #1a2a44; font-weight: 700; font-size: 1.8rem; }
-      p { color: #777; font-size: 0.85rem; line-height: 1.4; }
-    }
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+  input[type="checkbox"] {
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    accent-color: var(--accent);
   }
 }
 
-.input-wrapper {
-  position: relative;
-  .icon {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #999;
-    z-index: 5;
-  }
-  .custom-input {
-    width: 100%;
-    padding: 14px 15px 14px 45px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    &:focus { 
-      outline: none; 
-      border-color: #f39c12; 
-      box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
-    }
-  }
+.forgot {
+  font-size: 13px;
+  color: var(--accent-glow);
+  text-decoration: none;
+  font-weight: 600;
+  &:hover { text-decoration: underline; }
 }
 
-.x-small { font-size: 0.75rem; margin-top: 5px; color: #dc3545; }
-
-.btn-gradient {
-  padding: 14px;
-  background: linear-gradient(90deg, #f39c12 0%, #e67e22 100%);
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   color: white;
   font-weight: 700;
-  font-size: 1rem;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  &:hover { 
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(230, 126, 34, 0.4);
-  }
+  transition: background 0.3s;
+  &:hover { background: var(--accent-glow); }
 }
 
-@media (max-width: 992px) {
-  .brand-section { display: none; }
-  .login-page { padding: 0; background: white; }
-  .login-container { min-height: 100vh; border-radius: 0; }
-  .form-section { flex: 1; background: #f8f9fa; }
-  .auth-card { box-shadow: none; max-width: 100%; }
+.error-box {
+  background: rgba(255, 77, 79, 0.2);
+  border: 1px solid rgba(255, 77, 79, 0.4);
+  color: #ffccc7;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 13px;
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 15px;
+  color: var(--muted);
+  a { color: var(--accent-glow); cursor: pointer; text-decoration: none; font-weight: 700; }
 }
