@@ -127,4 +127,18 @@ export class HttpService {
   Login(data: any) {
     return this.http.post(`${this.baseUrl}/api/user/login`, data);
   }
+  forgotPassword(body: any) {
+  return this.http.post(`${this.baseUrl}/api/user/forgot-password`, body);
+}
+
+resetPassword(body: any) {
+  return this.http.post(`${this.baseUrl}/api/user/reset-password`, body);
+}
+forgotPasswordOtp(body: any) {
+  return this.http.post(`${this.baseUrl}/api/user/forgot-password-otp`, body);
+}
+
+resetPasswordOtp(body: any) {
+  return this.http.post(`${this.baseUrl}/api/user/reset-password-otp`, body);
+}
 }

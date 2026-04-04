@@ -17,6 +17,10 @@ import { RoleGuard } from './role.guard';
 import { SelectedEventGuard } from './selected-event.guard';
 import { ViewInstitutionComponent } from './view-institution/view-institution.component';
 import { ViewProfessionalComponent } from './view-professional/view-professional.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ForgotPasswordOtpComponent } from './forgot-password-otp/forgot-password-otp.component';
+import { ResetPasswordOtpComponent } from './reset-password-otp/reset-password-otp.component';
 
 const routes: Routes = [
   // Landing Page
@@ -68,7 +72,10 @@ const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['INSTITUTION'] }
   },
- 
+  { path: 'forgot-password', component: ForgotPasswordOtpComponent },
+{ path: 'reset-password', component: ResetPasswordOtpComponent },
+ { path: 'forgot-password', component: ForgotPasswordComponent },
+{ path: 'reset-password', component: ResetPasswordComponent },
   { path: '**', redirectTo: '' }
 ];
 

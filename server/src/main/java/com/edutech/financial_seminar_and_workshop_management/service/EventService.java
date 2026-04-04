@@ -7,8 +7,11 @@ import com.edutech.financial_seminar_and_workshop_management.repository.Enrollme
 import com.edutech.financial_seminar_and_workshop_management.repository.EventRepository;
 import com.edutech.financial_seminar_and_workshop_management.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -19,7 +22,29 @@ public class EventService {
     @Autowired private EnrollmentRepository enrollmentRepository;
     @Autowired private EmailNotificationService emailNotificationService;
 
- 
+    // Background job that runs every 1 minute to auto-complete expired events
+    @Scheduled(fixedRate = 60000)
+    public void autoCompleteExpiredEvents() {
+        List<Event> ongoingEvents = eventRepository.findAll().stream()
+                .filter(e -> !"COMPLETED".equals(e.getStatus()))
+                .toList();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Event event : ongoingEvents) {
+            try {
+                if (event.getSchedule() != null && !event.getSchedule().isEmpty()) {
+                    LocalDateTime eventDateTime = LocalDateTime.parse(event.getSchedule(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                    if (now.isAfter(eventDateTime)) {
+                        event.setStatus("COMPLETED");
+                        eventRepository.save(event);
+                    }
+                }
+            } catch (Exception e) {
+                // Ignore parsing errors for malformed dates
+            }
+        }
+    }
 
     private void refreshEnrollmentCount(Event e) {
         int count = (int) enrollmentRepository.countByEvent_Id(e.getId());
@@ -42,7 +67,12 @@ public class EventService {
             User inst = userRepository.findById(e.getInstitutionId()).orElse(null);
             User prof = userRepository.findById(professionalId).orElse(null);
             if (inst != null && prof != null) {
-                emailNotificationService.mailInstitutionAssignmentResponse(inst, prof, e, "EXPIRED");
+                // ✅ Wrapped in try-catch to prevent application crash
+                try {
+                    emailNotificationService.mailInstitutionAssignmentResponse(inst, prof, e, "EXPIRED");
+                } catch (Exception ex) {
+                    System.err.println("Failed to send expiry email: " + ex.getMessage());
+                }
             }
         }
     }
@@ -103,17 +133,12 @@ public class EventService {
         return e;
     }
 
- 
-
     private Event getOrThrow(Long id) {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found: " + id));
     }
 
-    // ✅ UPDATED assignment method (JWT-based)
-    public Event assignProfessional(Long eventId, Long professionalId, String institutionUsername)
-            throws IllegalAccessException {
-
+    public Event assignProfessional(Long eventId, Long professionalId, String institutionUsername) throws IllegalAccessException {
         Event event = getOrThrow(eventId);
 
         User institution = userRepository.findByUsername(institutionUsername);
@@ -125,7 +150,6 @@ public class EventService {
             throw new IllegalAccessException("Only INSTITUTION can assign professionals");
         }
 
-        // ✅ ownership check (null-safe)
         if (event.getInstitutionId() == null || !event.getInstitutionId().equals(institution.getId())) {
             throw new IllegalAccessException("Not your event");
         }
@@ -137,44 +161,40 @@ public class EventService {
             throw new RuntimeException("Only PROFESSIONAL can be assigned");
         }
 
-        // ✅ add professional if not already present
         if (event.getProfessionals().stream().noneMatch(u -> u.getId().equals(professionalId))) {
             event.getProfessionals().add(prof);
         }
 
-        // ✅ mark assignment state
         event.getProfessionalStatus().put(professionalId, "PENDING");
         event.getProfessionalAssignedAt().put(professionalId, System.currentTimeMillis());
 
         Event saved = eventRepository.save(event);
 
-        // ✅ Email is optional; never crash assignment
         if (emailNotificationService != null) {
             try {
                 emailNotificationService.mailProfessionalAssigned(prof, institution, saved);
             } catch (Exception ignored) {
-                // ignore email failures (do not break core flow)
+                // Safely ignored
             }
         }
 
         return saved;
     }
 
-
     public Event respondToAssignment(Long eventId, Long professionalId, String status) {
         Event event = getOrThrow(eventId);
 
-        // must be assigned
         if (!event.getProfessionalStatus().containsKey(professionalId)) {
             throw new RuntimeException("Not assigned to this event");
         }
 
-        // expire check
         expireIfNeeded(event, professionalId);
 
         String current = event.getProfessionalStatus().get(professionalId);
         if (!"PENDING".equals(current)) {
-            throw new RuntimeException("Already responded: " + current);
+            // Note: If you assigned this event to yourself more than 24 hours ago, 
+            // the status is now "EXPIRED" and responding will trigger this 400 error.
+            throw new RuntimeException("Already responded or expired. Current status: " + current);
         }
 
         if (!("ACCEPTED".equals(status) || "REJECTED".equals(status))) {
@@ -182,18 +202,27 @@ public class EventService {
         }
 
         event.getProfessionalStatus().put(professionalId, status);
+
+        if ("ACCEPTED".equals(status)) {
+            event.setStatus("IN_PROGRESS");
+        }
+
         Event saved = eventRepository.save(event);
 
         User inst = userRepository.findById(saved.getInstitutionId()).orElse(null);
         User prof = userRepository.findById(professionalId).orElse(null);
         if (inst != null && prof != null) {
-            emailNotificationService.mailInstitutionAssignmentResponse(inst, prof, saved, status);
+            // ✅ Wrapped in try-catch to prevent 400 Bad Request crash
+            try {
+                emailNotificationService.mailInstitutionAssignmentResponse(inst, prof, saved, status);
+            } catch (Exception e) {
+                System.err.println("Failed to send assignment response email: " + e.getMessage());
+            }
         }
 
         return saved;
     }
 
-    // ---------- Event status update (only ACCEPTED professional) ----------
     public Event updateEventStatusByProfessional(Long eventId, Long professionalId, String newStatus) {
         Event event = getOrThrow(eventId);
 
@@ -236,13 +265,17 @@ public class EventService {
                 .toList();
 
         if (inst != null) {
-            emailNotificationService.mailParticipantEnrolled(participant, inst, event, acceptedPros);
+            // ✅ Wrapped in try-catch
+            try {
+                emailNotificationService.mailParticipantEnrolled(participant, inst, event, acceptedPros);
+            } catch (Exception e) {
+                System.err.println("Failed to send enrollment email: " + e.getMessage());
+            }
         }
 
         return saved;
     }
 
-    // ---------- Professionals list ----------
     public List<User> getAllProfessionals() {
         return userRepository.findByRole("PROFESSIONAL");
     }
