@@ -8,21 +8,21 @@ type RuleKey = 'minLength' | 'upper' | 'lower' | 'number' | 'special';
 interface RuleUI {
   key: RuleKey;
   text: string;
-  flashGreen: boolean; // shows green briefly
-  hidden: boolean;     // disappears
+  flashGreen: boolean;
+  hidden: boolean;
 }
 
 @Component({
   selector: 'app-registration',
-  templateUrl: './registration.component.html'
+  templateUrl: './registration.component.html',
+  styleUrls: ['./registration.component.scss']
 })
 export class RegistrationComponent implements OnInit {
 
   itemForm: FormGroup;
   showMessage = false;
-  responseMessage: any;
+  responseMessage: string = '';
 
-  // ✅ password rules UI
   rules: RuleUI[] = [
     { key: 'minLength', text: 'Minimum 8 characters', flashGreen: false, hidden: false },
     { key: 'upper', text: 'At least one uppercase letter (A-Z)', flashGreen: false, hidden: false },
@@ -45,12 +45,11 @@ export class RegistrationComponent implements OnInit {
       password: ['', [Validators.required, this.passwordRulesValidator.bind(this)]],
       email: ['', [Validators.required, Validators.email]],
       role: [null, [Validators.required]],
-      authCode: [''] // ✅ new field
+      authCode: ['']
     });
   }
 
   ngOnInit(): void {
-    // ✅ authCode required only for Institution/Professional
     this.itemForm.get('role')!.valueChanges.subscribe(role => {
       const authCtrl = this.itemForm.get('authCode');
       if (role === 'INSTITUTION' || role === 'PROFESSIONAL') {
@@ -62,7 +61,6 @@ export class RegistrationComponent implements OnInit {
       authCtrl?.updateValueAndValidity();
     });
 
-    // ✅ update rules UI as user types
     this.itemForm.get('password')!.valueChanges.subscribe(val => {
       this.updateRuleUI(val || '');
     });
@@ -78,13 +76,11 @@ export class RegistrationComponent implements OnInit {
     };
   }
 
-  // ✅ validator blocks submit until all rules pass
   private passwordRulesValidator(control: AbstractControl): ValidationErrors | null {
     const r = this.evalRules(control.value || '');
     return Object.values(r).every(v => v) ? null : { passwordRules: true };
   }
 
-  // ✅ makes rules turn green briefly then disappear one-by-one
   private updateRuleUI(password: string): void {
     const now = this.evalRules(password);
 
@@ -92,13 +88,11 @@ export class RegistrationComponent implements OnInit {
       const was = this.prevState[rule.key];
       const isNow = now[rule.key];
 
-      // if user deletes and rule becomes false -> show again
       if (!isNow) {
         rule.hidden = false;
         rule.flashGreen = false;
       }
 
-      // newly satisfied -> flash green then hide
       if (!was && isNow) {
         rule.flashGreen = true;
         setTimeout(() => {
@@ -112,7 +106,9 @@ export class RegistrationComponent implements OnInit {
   }
 
   get allRulesDone(): boolean {
-    return this.rules.every(r => r.hidden || this.evalRules(this.itemForm.get('password')?.value || '')[r.key]);
+    const password = this.itemForm.get('password')?.value || '';
+    const results = this.evalRules(password);
+    return Object.values(results).every(v => v);
   }
 
   onRegister(): void {
@@ -127,11 +123,11 @@ export class RegistrationComponent implements OnInit {
         this.showMessage = true;
         this.responseMessage = 'Registration successful! Redirecting to login...';
         this.itemForm.reset();
-        setTimeout(() => this.router.navigate(['/login']), 1200);
+        setTimeout(() => this.router.navigate(['/login']), 1500);
       },
       error: (err: any) => {
         this.showMessage = true;
-        this.responseMessage = err?.error || 'Registration failed. Please try again.';
+        this.responseMessage = err?.error?.message || 'Registration failed. Please check your details.';
       }
     });
   }
