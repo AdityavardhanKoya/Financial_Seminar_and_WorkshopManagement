@@ -3,7 +3,6 @@ import { HttpService } from '../../services/http.service';
 import { NotificationService } from '../notification.service';
 
 type AssignmentResponse = 'ACCEPTED' | 'REJECTED';
-type EventProgressStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
 
 @Component({
   selector: 'app-update-event-status',
@@ -11,9 +10,6 @@ type EventProgressStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
 })
 export class UpdateEventStatusComponent implements OnInit {
   events: any[] = [];
-  status: EventProgressStatus | null = null;
-  selectedId: number | null = null;
-
   userId = Number(localStorage.getItem('userId'));
 
   constructor(private http: HttpService, private notif: NotificationService) {}
@@ -69,42 +65,11 @@ export class UpdateEventStatusComponent implements OnInit {
           response === 'ACCEPTED' ? 'success' : 'warning',
           4000
         );
-        this.load();
+        this.load(); // Reloads the table to reflect the UI changes
       },
       error: (err: any) => {
-        // Extract a clean string from the error response object
         const errorMsg = err?.error?.message || err?.error || err?.message || 'Assignment update failed';
-        // Check if errorMsg is still an object to prevent [object Object] display
         const finalMsg = typeof errorMsg === 'object' ? 'Assignment update failed' : errorMsg;
-        this.notif.show(finalMsg, 'danger', 4000);
-      }
-    });
-  }
-
-  selectForStatus(e: any): void {
-    this.selectedId = e?.id ?? null;
-    this.status = null;
-  }
-
-  saveStatus(): void {
-    if (!this.selectedId || !this.status) {
-      this.notif.show('Choose status', 'warning', 3500);
-      return;
-    }
-    if (!confirm('Save status update?')) return;
-
-    this.http.updateEventStatus(this.selectedId, this.status).subscribe({
-      next: () => {
-        this.notif.show('Status updated (visible to all)', 'success', 4000);
-        this.selectedId = null;
-        this.status = null;
-        this.load();
-      },
-      error: (err: any) => {
-        // Extract a clean string from the error response object
-        const errorMsg = err?.error?.message || err?.error || err?.message || 'Status update failed';
-        // Check if errorMsg is still an object
-        const finalMsg = typeof errorMsg === 'object' ? 'Status update failed' : errorMsg;
         this.notif.show(finalMsg, 'danger', 4000);
       }
     });

@@ -25,27 +25,23 @@
         <td>{{ professionalsText(e) }}</td>
         <td>{{ assignedAt(e) }}</td>
 
-        <td class="d-flex gap-2 flex-wrap">
-          <button class="btn btn-sm btn-success" (click)="respond(e,'ACCEPTED')">Accept</button>
-          <button class="btn btn-sm btn-danger" (click)="respond(e,'REJECTED')">Reject</button>
-          <button class="btn btn-sm btn-warning" (click)="selectForStatus(e)">Update Status</button>
+        <td class="d-flex gap-2 flex-wrap align-items-center">
+          
+          <ng-container *ngIf="myResponse(e) === 'PENDING'; else respondedTpl">
+            <button class="btn btn-sm btn-success" (click)="respond(e, 'ACCEPTED')">Accept</button>
+            <button class="btn btn-sm btn-danger" (click)="respond(e, 'REJECTED')">Reject</button>
+          </ng-container>
+
+          <ng-template #respondedTpl>
+            <span class="badge px-3 py-2" [ngClass]="myResponse(e) === 'ACCEPTED' ? 'bg-success' : 'bg-danger'">
+              {{ myResponse(e) }}
+            </span>
+          </ng-template>
+
         </td>
       </tr>
     </tbody>
   </table>
 
   <div *ngIf="!events.length" class="alert alert-info">No assignments.</div>
-
-  <div class="card p-3 mt-3" *ngIf="selectedId">
-    <h6>Update Status — Event ID: {{ selectedId }}</h6>
-
-    <select class="form-select w-auto" [(ngModel)]="status">
-      <option [ngValue]="null">-- Select --</option>
-      <option value="PENDING">PENDING</option>
-      <option value="IN_PROGRESS">IN_PROGRESS</option>
-      <option value="COMPLETED">COMPLETED</option>
-    </select>
-
-    <button class="btn btn-primary mt-2" (click)="saveStatus()">Save</button>
-  </div>
 </div>
