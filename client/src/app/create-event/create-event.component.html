@@ -5,7 +5,7 @@
     <div class="blob blob-3"></div>
   </div>
 
-  <div class="container-fluid py-5 px-md-5">
+  <div class="container-fluid py-5 px-md-5 position-relative z-1">
     <div class="header-section mb-4">
       <div class="card-badge">
         <span class="dot"></span> Institution Portal
@@ -33,8 +33,11 @@
             <label class="form-label-custom">SCHEDULE</label>
             <div class="input-wrap">
               <div class="icon-box">📅</div>
-              <input class="input-field" formControlName="schedule" placeholder="yyyy-MM-dd HH:mm">
+              <input type="datetime-local" class="input-field" formControlName="schedule" [min]="getCurrentDateTime()">
             </div>
+            <small *ngIf="form.get('schedule')?.hasError('pastDate') && form.get('schedule')?.touched" class="text-danger mt-1 d-block fw-bold" style="font-size: 0.75rem;">
+              Date/time cannot be in the past.
+            </small>
           </div>
 
           <div class="col-md-4">
@@ -49,12 +52,9 @@
             <label class="form-label-custom">STATUS</label>
             <div class="input-wrap">
               <div class="icon-box">⚙️</div>
-              <select class="select-field" formControlName="status">
-                <option value="PENDING">PENDING</option>
-                <option value="IN_PROGRESS">IN_PROGRESS</option>
-                <option value="COMPLETED">COMPLETED</option>
-              </select>
+              <input class="input-field" formControlName="status" readonly title="Status is managed automatically by the system">
             </div>
+            <small class="text-muted mt-1 d-block" style="font-size: 0.75rem;">Status updates automatically when professionals accept.</small>
           </div>
 
           <div class="col-md-4">
@@ -109,18 +109,23 @@
               <td>{{e.enrollmentCount || 0}}</td>
               <td>{{e.maxEnrollment || '∞'}}</td>
               <td class="text-end">
-                <button class="btn-edit" (click)="selectForEdit(e)">Edit</button>
+                <button class="btn-edit btn btn-sm btn-outline-light rounded-pill px-3" (click)="selectForEdit(e)">Edit</button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+      
+      <div *ngIf="!events.length" class="p-5 text-center text-muted">
+        <div class="fs-1 mb-3">📋</div>
+        <h5>No events created yet</h5>
+      </div>
     </div>
 
-    <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
-      <button class="btn-page" (click)="page=page-1" [disabled]="page===1">Prev</button>
+    <div class="d-flex justify-content-center align-items-center gap-3 mt-4" *ngIf="events.length > 0">
+      <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" (click)="page=page-1" [disabled]="page===1">Prev</button>
       <span class="text-muted small fw-bold">Page {{page}} of {{totalPages}}</span>
-      <button class="btn-page" (click)="page=page+1" [disabled]="page===totalPages">Next</button>
+      <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" (click)="page=page+1" [disabled]="page===totalPages">Next</button>
     </div>
   </div>
 </div>
