@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { environment } from '../environments/environment.development';
@@ -7,9 +7,16 @@ import { environment } from '../environments/environment.development';
 @Injectable({ providedIn: 'root' })
 export class HttpService {
   
-  baseUrl = environment.apiUrl; // change if needed
+  baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private auth: AuthService) {}
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.auth.getToken();
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  }
 
   // Auth
   login(body: any): Observable<any> {
@@ -17,7 +24,6 @@ export class HttpService {
   }
 
   registerParticipant(body: any): Observable<any> {
-    // Backend must force PARTICIPANT role
     return this.http.post(`${this.baseUrl}/api/user/register`, body);
   }
 
@@ -50,11 +56,12 @@ export class HttpService {
   }
 
   assignProfessional(eventId: number, profId: number) {
-  return this.http.post(
-    `${this.baseUrl}/api/institution/event/${eventId}/professional?userId=${profId}`,
-    {}
-  );
-}
+    // Replaced {} with null
+    return this.http.post(
+      `${this.baseUrl}/api/institution/event/${eventId}/professional?userId=${profId}`,
+      null
+    );
+  }
 
   getInstitutionFeedbacks(eventId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/institution/event/${eventId}/feedbacks`);
@@ -68,17 +75,19 @@ export class HttpService {
 
   respondToAssignment(eventId: number, status: 'ACCEPTED' | 'REJECTED'): Observable<any> {
     const userId = this.auth.getUserId();
+    // Use explicitly null for the body to avoid sending [object Object]
     return this.http.put(
       `${this.baseUrl}/api/professional/event/${eventId}/assignment?userId=${userId}&status=${status}`,
-      {}
+      null
     );
   }
 
   updateEventStatus(eventId: number, status: string): Observable<any> {
     const userId = this.auth.getUserId();
+    // Use explicitly null for the body
     return this.http.put(
       `${this.baseUrl}/api/professional/event/${eventId}/status?userId=${userId}&status=${status}`,
-      {}
+      null
     );
   }
 
@@ -91,12 +100,16 @@ export class HttpService {
   getParticipantEvents(): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/participant/events`);
   }
-enrollEvent(eventId: number) {
-  return this.http.post(
-    `${this.baseUrl}/api/participant/event/${eventId}/enroll`,
-    {}
-  );
-}
+
+  enrollEvent(eventId: number) {
+    const userId = this.auth.getUserId();
+    // Use explicitly null for the body
+    return this.http.post(
+      `${this.baseUrl}/api/participant/event/${eventId}/enroll?userId=${userId}`,
+      null,
+      { headers: this.getAuthHeaders() }
+    );
+  }
 
   addParticipantFeedback(eventId: number, body: any): Observable<any> {
     const userId = this.auth.getUserId();
@@ -107,12 +120,11 @@ enrollEvent(eventId: number) {
     return this.http.get(`${this.baseUrl}/api/participant/event/${eventId}/status`);
   }
   
-registerUser(data: any) {
-  return this.http.post(`${this.baseUrl}/api/user/register`, data);
-}
+  registerUser(data: any) {
+    return this.http.post(`${this.baseUrl}/api/user/register`, data);
+  }
 
-Login(data: any) {
-  return this.http.post(`${this.baseUrl}/api/user/login`, data);
-}
-
+  Login(data: any) {
+    return this.http.post(`${this.baseUrl}/api/user/login`, data);
+  }
 }

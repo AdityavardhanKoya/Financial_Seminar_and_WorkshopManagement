@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
+import { HomeComponent } from './home/home.component'; // Added Home import
 
 import { CreateEventComponent } from './create-event/create-event.component';
 import { DeleteEventComponent } from './delete-event/delete-event.component';
@@ -19,6 +20,8 @@ import { UpdateEventStatusComponent } from './update-event-status/update-event-s
 import { AddFeedbackComponent } from './add-feedback/add-feedback.component';
 import { ViewFeedbacksComponent } from './view-feedback/view-feedback.component';
 import { JwtInterceptor } from './jwt.interceptor';
+import { ViewInstitutionComponent } from './view-institution/view-institution.component';
+import { ViewProfessionalComponent } from './view-professional/view-professional.component';
 
 @NgModule({
   declarations: [
@@ -26,9 +29,12 @@ import { JwtInterceptor } from './jwt.interceptor';
     NavbarComponent,
     LoginComponent,
     RegistrationComponent,
+    HomeComponent, // Added to declarations
     CreateEventComponent,
     DeleteEventComponent,
     AddResourceComponent,
+    ViewInstitutionComponent,
+    ViewProfessionalComponent,
     AssignProfessionalComponent,
     ViewEventsComponent,
     UpdateEventStatusComponent,
