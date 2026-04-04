@@ -40,15 +40,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http.cors().and().csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
 
-                // Public
-                .antMatchers("/api/user/register", "/api/user/login").permitAll()
+                /* ================= PUBLIC ================= */
+                .antMatchers(
+                        "/api/user/register",
+                        "/api/user/login",
+                        "/api/user/forgot-password",
+                        "/api/user/reset-password",
+                        "/api/user/forgot-password-otp",
+                        "/api/user/reset-password-otp"
+                ).permitAll()
 
-                // Institution
+                /* ================= INSTITUTION ================= */
                 .antMatchers(HttpMethod.POST,   "/api/institution/event").hasAuthority("INSTITUTION")
                 .antMatchers(HttpMethod.PUT,    "/api/institution/event/*").hasAuthority("INSTITUTION")
                 .antMatchers(HttpMethod.DELETE, "/api/institution/event/*").hasAuthority("INSTITUTION")
@@ -58,19 +66,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST,   "/api/institution/event/*/professional").hasAuthority("INSTITUTION")
                 .antMatchers(HttpMethod.GET,    "/api/institution/event/*/feedbacks").hasAuthority("INSTITUTION")
 
-                // Professional
-                .antMatchers(HttpMethod.GET, "/api/professional/events").hasAuthority("PROFESSIONAL")
-                .antMatchers(HttpMethod.PUT, "/api/professional/event/*/assignment").hasAuthority("PROFESSIONAL")
-                .antMatchers(HttpMethod.PUT, "/api/professional/event/*/status").hasAuthority("PROFESSIONAL")
-                .antMatchers(HttpMethod.POST,"/api/professional/event/*/feedback").hasAuthority("PROFESSIONAL")
+                /* ================= PROFESSIONAL ================= */
+                .antMatchers(HttpMethod.GET,  "/api/professional/events").hasAuthority("PROFESSIONAL")
+                .antMatchers(HttpMethod.PUT,  "/api/professional/event/*/assignment").hasAuthority("PROFESSIONAL")
+                .antMatchers(HttpMethod.PUT,  "/api/professional/event/*/status").hasAuthority("PROFESSIONAL")
+                .antMatchers(HttpMethod.POST, "/api/professional/event/*/feedback").hasAuthority("PROFESSIONAL")
 
-                // Participant
-                .antMatchers(HttpMethod.GET, "/api/participant/events").hasAuthority("PARTICIPANT")
-                .antMatchers(HttpMethod.POST,"/api/participant/event/*/enroll").hasAuthority("PARTICIPANT")
-                .antMatchers(HttpMethod.GET, "/api/participant/event/*/status").hasAuthority("PARTICIPANT")
-                .antMatchers(HttpMethod.POST,"/api/participant/event/*/feedback").hasAuthority("PARTICIPANT")
+                /* ================= PARTICIPANT ================= */
+                .antMatchers(HttpMethod.GET,  "/api/participant/events").hasAuthority("PARTICIPANT")
+                .antMatchers(HttpMethod.POST, "/api/participant/event/*/enroll").hasAuthority("PARTICIPANT")
+                .antMatchers(HttpMethod.GET,  "/api/participant/event/*/status").hasAuthority("PARTICIPANT")
+                .antMatchers(HttpMethod.POST, "/api/participant/event/*/feedback").hasAuthority("PARTICIPANT")
 
-                // Strong end guards
+                /* ================= STRONG END GUARDS ================= */
                 .antMatchers("/api/institution/**").hasAuthority("INSTITUTION")
                 .antMatchers("/api/professional/**").hasAuthority("PROFESSIONAL")
                 .antMatchers("/api/participant/**").hasAuthority("PARTICIPANT")

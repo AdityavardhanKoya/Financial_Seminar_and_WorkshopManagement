@@ -22,6 +22,10 @@ import { ViewFeedbacksComponent } from './view-feedback/view-feedback.component'
 import { JwtInterceptor } from './jwt.interceptor';
 import { ViewInstitutionComponent } from './view-institution/view-institution.component';
 import { ViewProfessionalComponent } from './view-professional/view-professional.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ForgotPasswordOtpComponent } from './forgot-password-otp/forgot-password-otp.component';
+import { ResetPasswordOtpComponent } from './reset-password-otp/reset-password-otp.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +43,14 @@ import { ViewProfessionalComponent } from './view-professional/view-professional
     ViewEventsComponent,
     UpdateEventStatusComponent,
     AddFeedbackComponent,
-    ViewFeedbacksComponent
+    ViewFeedbacksComponent,
+    ForgotPasswordComponent,
+
+    ResetPasswordComponent,
+    
+ForgotPasswordOtpComponent,
+    ResetPasswordOtpComponent
+
   ],
   imports: [
     BrowserModule,
