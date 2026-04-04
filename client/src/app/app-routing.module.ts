@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { HomeComponent } from './home/home.component'; // Added Home import
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { CreateEventComponent } from './create-event/create-event.component';
@@ -14,17 +15,30 @@ import { ViewFeedbacksComponent } from './view-feedback/view-feedback.component'
 import { AuthGuard } from './auth.guard';
 import { RoleGuard } from './role.guard';
 import { SelectedEventGuard } from './selected-event.guard';
-
+import { ViewInstitutionComponent } from './view-institution/view-institution.component';
+import { ViewProfessionalComponent } from './view-professional/view-professional.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  // Landing Page
+  { path: '', component: HomeComponent }, 
+  { path: 'home', component: HomeComponent },
 
   { path: 'login', component: LoginComponent },
   { path: 'registration', component: RegistrationComponent },
 
-  // Shared view events (any logged in role)
-  { path: 'view-events', component: ViewEventsComponent, canActivate: [AuthGuard] },
-
+  // Portal Routes (Require Authentication)
+  {
+    path: 'view-events',
+    component: ViewEventsComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['PARTICIPANT'] }
+  },
+ {
+    path: 'view-events',
+    component: ViewInstitutionComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['PARTICIPANT'] }
+  },
   // Institution
   { path: 'create-event', component: CreateEventComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['INSTITUTION'] } },
   { path: 'delete-event', component: DeleteEventComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['INSTITUTION'] } },
@@ -34,11 +48,28 @@ const routes: Routes = [
   // Professional
   { path: 'update-event-status', component: UpdateEventStatusComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['PROFESSIONAL'] } },
   { path: 'add-feedback', component: AddFeedbackComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['PROFESSIONAL'] } },
-
-  // Selected-event feedbacks (Institution or Participant, must have selected event)
-  { path: 'view-feedbacks', component: ViewFeedbacksComponent, canActivate: [AuthGuard, SelectedEventGuard] },
-
-  { path: '**', redirectTo: 'login' }
+  {
+    path: 'view-professional',
+    component: ViewProfessionalComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['PROFESSIONAL'] }
+  },
+  // Selected-event feedbacks
+  // ✅ INSTITUTION ONLY — View feedbacks from PROFESSIONAL + PARTICIPANT
+  {
+    path: 'view-feedbacks',
+    component: ViewFeedbacksComponent,
+    canActivate: [AuthGuard, RoleGuard, SelectedEventGuard],
+    data: { roles: ['INSTITUTION'] }
+  },
+    {
+    path: 'view-institution',
+    component: ViewInstitutionComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['INSTITUTION'] }
+  },
+ 
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

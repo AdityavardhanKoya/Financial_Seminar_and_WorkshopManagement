@@ -4,19 +4,26 @@
   <table class="table table-bordered table-hover" *ngIf="events.length">
     <thead class="table-dark">
       <tr>
-        <th>ID</th><th>Title</th><th>Schedule</th><th>Status</th>
-        <th>My Response</th><th>Actions</th>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Schedule</th>
+        <th>Status</th>
+        <th>My Response</th>
+        <th>Assigned Professionals</th>
+        <th>Assigned At</th>
+        <th>Actions</th>
       </tr>
     </thead>
-    <tbody>
-      <tr *ngFor="let e of events">
-        <td>{{e.id}}</td>
-        <td>{{e.title}}</td>
-        <td>{{e.schedule}}</td>
-        <td>{{e.status}}</td>
 
-        <!-- Your backend returns professionalStatus map; professional sees own in event.professionalStatus[userId] if included -->
-        <td>{{ e.assignmentStatus || 'PENDING' }}</td>
+    <tbody>
+      <tr *ngFor="let e of events; trackBy: trackById">
+        <td>{{ e.id }}</td>
+        <td>{{ e.title }}</td>
+        <td>{{ e.schedule }}</td>
+        <td>{{ e.status }}</td>
+        <td>{{ myResponse(e) }}</td>
+        <td>{{ professionalsText(e) }}</td>
+        <td>{{ assignedAt(e) }}</td>
 
         <td class="d-flex gap-2 flex-wrap">
           <button class="btn btn-sm btn-success" (click)="respond(e,'ACCEPTED')">Accept</button>
@@ -30,13 +37,15 @@
   <div *ngIf="!events.length" class="alert alert-info">No assignments.</div>
 
   <div class="card p-3 mt-3" *ngIf="selectedId">
-    <h6>Update Status — Event ID: {{selectedId}}</h6>
+    <h6>Update Status — Event ID: {{ selectedId }}</h6>
+
     <select class="form-select w-auto" [(ngModel)]="status">
       <option [ngValue]="null">-- Select --</option>
       <option value="PENDING">PENDING</option>
       <option value="IN_PROGRESS">IN_PROGRESS</option>
       <option value="COMPLETED">COMPLETED</option>
     </select>
+
     <button class="btn btn-primary mt-2" (click)="saveStatus()">Save</button>
   </div>
 </div>

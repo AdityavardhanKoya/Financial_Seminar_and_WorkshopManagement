@@ -1,36 +1,53 @@
 <div class="container mt-4">
-  <h3 class="mb-3">All Events</h3>
-
-  <div *ngIf="showError" class="alert alert-danger">{{ errorMessage }}</div>
-
-  <table class="table table-bordered" *ngIf="eventList.length > 0">
-    <thead class="table-dark">
-      <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Schedule</th>
-        <th>Location</th>
-        <th>Status</th>
-        <th>Professional</th>
-        <th>Participants</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let e of eventList">
-        <td>{{ e.id }}</td>
-        <td>{{ e.title }}</td>
-        <td>{{ e.schedule }}</td>
-        <td>{{ e.location }}</td>
-        <td>{{ e.status }}</td>
-        <td>
-          <ng-container *ngIf="e.professionals && e.professionals.length > 0; else noPro">
-            {{formatProfessionals(e.professionals)}}
+  <h3 class="mb-3 text-primary fw-bold">Institution Events</h3>
+ 
+  <div class="row">
+    <div class="col-md-4 mb-3" *ngFor="let e of pagedEvents">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ e.title }}</h5>
+ 
+          <p class="card-text mb-1"><strong>Schedule:</strong> {{ e.schedule }}</p>
+          <p class="card-text mb-1"><strong>Location:</strong> {{ e.location }}</p>
+ 
+          <p class="card-text mb-1">
+            <strong>Status:</strong>
+            <span class="badge bg-info">{{ e.status }}</span>
+          </p>
+ 
+          <p class="card-text mb-1">
+            <strong>Enrolled Participants:</strong> {{ e.enrollmentCount || 0 }}
+          </p>
+ 
+          <ng-container *ngIf="getProfessional(e) as p; else noProf">
+            <p class="card-text mb-1"><strong>Professional:</strong> {{ p.username }}</p>
+            <p class="card-text mb-0"><strong>Email:</strong> {{ p.email }}</p>
           </ng-container>
-          <ng-template #noPro>-</ng-template>
-        </td>
-        <td>{{ e.participantsCount ?? (e.enrollments?.length || 0) }}</td>
-      </tr>
-    </tbody>
-  </table>
+ 
+          <ng-template #noProf>
+            <p class="card-text text-muted mb-0"><strong>Professional:</strong> Not Assigned</p>
+          </ng-template>
+        </div>
+ 
+        <div class="card-footer">
+          <button class="btn btn-outline-secondary btn-sm w-100" (click)="openFeedbacks(e)">
+            View Feedbacks
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="d-flex justify-content-center mt-3">
+    <button class="btn btn-outline-secondary btn-sm me-2"
+            [disabled]="page === 1"
+            (click)="page = page - 1">Prev</button>
+ 
+    <span class="align-self-center">Page {{ page }} of {{ totalPages }}</span>
+ 
+    <button class="btn btn-outline-secondary btn-sm ms-2"
+            [disabled]="page === totalPages"
+            (click)="page = page + 1">Next</button>
+  </div>
 </div>
+ 
