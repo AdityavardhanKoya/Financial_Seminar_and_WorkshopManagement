@@ -25,6 +25,19 @@ public class EmailNotificationService {
         mailSender.send(msg);
     }
 
+    // ✅ New method for Registration Welcome Email
+    public void mailUserRegistrationSuccess(User user) {
+        send(
+            user.getEmail(),
+            "Welcome to Fin Event.",
+            "Hello " + user.getUsername() + ",\n\n" +
+            "Your registration was successful!\n\n" +
+            "You are registered as: " + user.getRole() + "\n" +
+            "You can now log in and access the platform.\n\n" +
+            "~ Fin Event Platform."
+        );
+    }
+
     public void mailProfessionalAssigned(User professional, User institution, Event event) {
         send(
             professional.getEmail(),
@@ -36,7 +49,7 @@ public class EmailNotificationService {
             "Location: " + event.getLocation() + "\n\n" +
             "Please ACCEPT/REJECT within 24 hours.\n\n" +
             "Institution: " + institution.getUsername() + " (" + institution.getEmail() + ")\n\n" +
-            "— Financial Seminar Platform"
+            "~ Fin Event Platform."
         );
     }
 
@@ -51,7 +64,7 @@ public class EmailNotificationService {
             "Location: " + event.getLocation() + "\n\n" +
             "Professional: " + professional.getUsername() + " (" + professional.getEmail() + ")\n" +
             "Response: " + response + "\n\n" +
-            "— Financial Seminar Platform"
+            "~ Fin Event Platform."
         );
     }
 
@@ -72,7 +85,7 @@ public class EmailNotificationService {
             "Location: " + event.getLocation() + "\n\n" +
             pros + "\n\n" +
             "Institution Contact: " + institution.getUsername() + " (" + institution.getEmail() + ")\n\n" +
-            "— Financial Seminar Platform"
+            "~ Fin Event Platform."
         );
     }
 }
