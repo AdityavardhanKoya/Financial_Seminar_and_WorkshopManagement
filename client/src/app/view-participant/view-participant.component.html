@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <h3 class="mb-3">All Events</h3>
+
+  <div *ngIf="showError" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="showMessage" class="alert alert-success">{{ responseMessage }}</div>
+  <table class="table table-bordered" *ngIf="eventList.length > 0">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Schedule</th>
+        <th>Location</th>
+        <th>Status</th>
+        <th>Professional</th>
+        <th>Participants</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let e of eventList" (click)="viewDetails(e)" style="cursor:pointer;">
+        <td>{{ e.id }}</td>
+        <td>{{ e.title }}</td>
+        <td>{{ e.schedule }}</td>
+        <td>{{ e.location }}</td>
+        <td>{{ e.status }}</td>
+        <td>
+          <ng-container *ngIf="e.professionals && e.professionals.length > 0; else noPro">
+            {{ formatProfessionals(e.professionals) }}
+          </ng-container>
+          <ng-template #noPro>-</ng-template>
+        </td>
+        <td>{{ e.participantsCount ?? (e.enrollments?.length || 0) }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card p-3 mt-3" *ngIf="selectedEvent?.id">
+    <h6>Selected: {{ selectedEvent.title }}</h6>
+
+    <button class="btn btn-outline-info btn-sm mb-3" (click)="checkStatus()">Check Status</button>
+
+    <div *ngIf="status" class="alert alert-secondary">
+      Status: <strong>{{ status }}</strong>
+    </div>
+
+    <label class="form-label">Your Feedback</label>
+    <textarea
+      class="form-control mb-2"
+      rows="3"
+      [(ngModel)]="formModel.content"
+      placeholder="Enter your feedback..."
+    ></textarea>
+
+    <button class="btn btn-success" (click)="saveFeedBack()">Submit Feedback</button>
+  </div>
+</div>

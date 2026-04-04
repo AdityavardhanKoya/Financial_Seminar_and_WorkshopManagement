@@ -1,0 +1,36 @@
+<div class="container mt-4">
+  <h3 class="mb-3">All Events</h3>
+
+  <div *ngIf="showError" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <table class="table table-bordered" *ngIf="eventList.length > 0">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Schedule</th>
+        <th>Location</th>
+        <th>Status</th>
+        <th>Professional</th>
+        <th>Participants</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let e of eventList">
+        <td>{{ e.id }}</td>
+        <td>{{ e.title }}</td>
+        <td>{{ e.schedule }}</td>
+        <td>{{ e.location }}</td>
+        <td>{{ e.status }}</td>
+        <td>
+          <ng-container *ngIf="e.professionals && e.professionals.length > 0; else noPro">
+            {{formatProfessionals(e.professionals)}}
+          </ng-container>
+          <ng-template #noPro>-</ng-template>
+        </td>
+        <td>{{ e.participantsCount ?? (e.enrollments?.length || 0) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

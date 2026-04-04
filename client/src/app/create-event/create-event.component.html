@@ -1,84 +1,126 @@
-<div class="container mt-4">
-  <h3 class="text-primary fw-bold mb-3">Create / Update Event</h3>
-
-  <div class="card p-3 mb-4 shadow-sm">
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <div class="row g-3">
-        <div class="col-md-4">
-          <label class="form-label">Title</label>
-          <input class="form-control" formControlName="title">
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Schedule</label>
-          <input class="form-control" formControlName="schedule" placeholder="yyyy-MM-dd HH:mm">
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Location</label>
-          <input class="form-control" formControlName="location">
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Status</label>
-          <select class="form-select" formControlName="status">
-            <option value="PENDING">PENDING</option>
-            <option value="IN_PROGRESS">IN_PROGRESS</option>
-            <option value="COMPLETED">COMPLETED</option>
-          </select>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Max Enrollment</label>
-          <input type="number" class="form-control" formControlName="maxEnrollment" min="1">
-        </div>
-
-        <div class="col-md-8">
-          <label class="form-label">Description</label>
-          <textarea rows="2" class="form-control" formControlName="description"></textarea>
-        </div>
-      </div>
-
-      <div class="mt-3 d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-secondary" *ngIf="editId" (click)="cancelEdit()">Cancel</button>
-        <button class="btn btn-primary" type="submit">
-          {{ editId ? 'Update' : 'Create' }}
-        </button>
-      </div>
-    </form>
+<div class="page-wrapper">
+  <div class="bg-scene">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
   </div>
 
-  <div class="card shadow-sm">
-    <div class="card-header fw-semibold">My Events</div>
-    <div class="card-body p-0">
-      <table class="table table-hover mb-0" *ngIf="events.length">
-        <thead class="table-dark">
-          <tr>
-            <th>ID</th><th>Title</th><th>Schedule</th><th>Status</th><th>Enrolled</th><th>Capacity</th><th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let e of pagedEvents" [class.table-warning]="editId===e.id">
-            <td>{{e.id}}</td>
-            <td>{{e.title}}</td>
-            <td>{{e.schedule}}</td>
-            <td>{{e.status}}</td>
-            <td>{{e.enrollmentCount || 0}}</td>
-            <td>{{e.maxEnrollment || '∞'}}</td>
-            <td>
-              <button class="btn btn-sm btn-warning" (click)="selectForEdit(e)">Edit</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="p-3 text-muted" *ngIf="!events.length">No events.</div>
+  <div class="container-fluid py-5 px-md-5">
+    <div class="header-section mb-4">
+      <div class="card-badge">
+        <span class="dot"></span> Institution Portal
+      </div>
+      <h1 class="text-white fw-bold">Event Management</h1>
+      <p class="text-muted">Create new financial seminars or update existing schedules.</p>
     </div>
-  </div>
 
-  <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
-    <button class="btn btn-outline-secondary btn-sm" (click)="page=page-1" [disabled]="page===1">Prev</button>
-    <span class="small">Page {{page}} / {{totalPages}}</span>
-    <button class="btn btn-outline-secondary btn-sm" (click)="page=page+1" [disabled]="page===totalPages">Next</button>
+    <div class="glass-card p-4 mb-5">
+      <h3 class="text-white mb-4 fs-5 fw-bold">
+        {{ editId ? 'Update Event Details' : 'Create New Event' }}
+      </h3>
+      
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="row g-4">
+          <div class="col-md-4">
+            <label class="form-label-custom">TITLE</label>
+            <div class="input-wrap">
+              <div class="icon-box">👤</div>
+              <input class="input-field" formControlName="title" placeholder="Event Title">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label-custom">SCHEDULE</label>
+            <div class="input-wrap">
+              <div class="icon-box">📅</div>
+              <input class="input-field" formControlName="schedule" placeholder="yyyy-MM-dd HH:mm">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label-custom">LOCATION</label>
+            <div class="input-wrap">
+              <div class="icon-box">📍</div>
+              <input class="input-field" formControlName="location" placeholder="Venue or Online Link">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label-custom">STATUS</label>
+            <div class="input-wrap">
+              <div class="icon-box">⚙️</div>
+              <select class="select-field" formControlName="status">
+                <option value="PENDING">PENDING</option>
+                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                <option value="COMPLETED">COMPLETED</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label-custom">MAX ENROLLMENT</label>
+            <div class="input-wrap">
+              <div class="icon-box">👥</div>
+              <input type="number" class="input-field" formControlName="maxEnrollment">
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label-custom">DESCRIPTION</label>
+            <div class="input-wrap">
+              <div class="icon-box">ℹ️</div>
+              <textarea rows="2" class="input-field" formControlName="description" placeholder="Brief event summary..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-end gap-3">
+          <button type="button" class="btn-secondary-custom" *ngIf="editId" (click)="cancelEdit()">Cancel</button>
+          <button class="btn-primary-vibrant" type="submit">
+            {{ editId ? 'Update Event' : 'Create Event' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="glass-card overflow-hidden">
+      <div class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center">
+        <h3 class="text-white fs-5 fw-bold mb-0">My Published Events</h3>
+        <span class="badge bg-primary px-3 py-2 rounded-pill">{{events.length}} Total</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-dark-custom mb-0" *ngIf="events.length">
+          <thead>
+            <tr>
+              <th>TITLE</th>
+              <th>SCHEDULE</th>
+              <th>STATUS</th>
+              <th>ENROLLED</th>
+              <th>CAPACITY</th>
+              <th class="text-end">ACTION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let e of pagedEvents" [class.active-row]="editId===e.id">
+              <td class="fw-bold">{{e.title}}</td>
+              <td><small class="text-muted">{{e.schedule}}</small></td>
+              <td><span class="status-pill" [attr.data-status]="e.status">{{e.status}}</span></td>
+              <td>{{e.enrollmentCount || 0}}</td>
+              <td>{{e.maxEnrollment || '∞'}}</td>
+              <td class="text-end">
+                <button class="btn-edit" (click)="selectForEdit(e)">Edit</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
+      <button class="btn-page" (click)="page=page-1" [disabled]="page===1">Prev</button>
+      <span class="text-muted small fw-bold">Page {{page}} of {{totalPages}}</span>
+      <button class="btn-page" (click)="page=page+1" [disabled]="page===totalPages">Next</button>
+    </div>
   </div>
 </div>

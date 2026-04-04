@@ -5,10 +5,10 @@ import { AppNotification, NotificationService } from '../notification.service';
 import { AuthService } from '../../services/auth.service';
 import { SelectedEventService } from '../selected-event.service';
 
-
 @Component({
   selector: 'app-navbar',
-  templateUrl: './navbar.component.html'
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   roleName: string | null = null;
@@ -30,10 +30,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.refresh();
 
-    this.sub.add(this.notif.notification$.subscribe(n => this.notification = n));
+    this.sub.add(this.notif.notification$.subscribe(n => {
+      this.notification = n;
+      if (n) {
+        setTimeout(() => this.notification = null, 4000);
+      }
+    }));
 
-    // lightweight poll (optional) for selected event, since service holds in memory
-    // For route-based changes it’s enough.
     this.selectedEvent = this.selected.get();
   }
 
@@ -44,9 +47,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-  this.auth.logout();      // ✅ FIX
-  this.router.navigate(['/login']);
-}
+    this.auth.logout();
+    this.isLoggedIn = false;
+    this.router.navigate(['/login']);
+  }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();

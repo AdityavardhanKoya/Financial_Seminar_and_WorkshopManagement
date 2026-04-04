@@ -6,7 +6,8 @@ import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-create-event',
-  templateUrl: './create-event.component.html'
+  templateUrl: './create-event.component.html',
+  styleUrls: ['./create-event.component.scss'] // Updated extension
 })
 export class CreateEventComponent implements OnInit {
   form: FormGroup;
@@ -34,7 +35,10 @@ export class CreateEventComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.form.patchValue({ institutionId: Number(this.auth.getUserId()) });
+    const userId = this.auth.getUserId();
+    if (userId) {
+      this.form.patchValue({ institutionId: Number(userId) });
+    }
     this.load();
   }
 
@@ -49,6 +53,7 @@ export class CreateEventComponent implements OnInit {
     const start = (this.page - 1) * this.pageSize;
     return this.events.slice(start, start + this.pageSize);
   }
+  
   get totalPages() {
     return Math.max(1, Math.ceil(this.events.length / this.pageSize));
   }
@@ -56,41 +61,47 @@ export class CreateEventComponent implements OnInit {
   selectForEdit(e: any): void {
     this.editId = e.id;
     this.form.patchValue(e);
-    this.notif.show(`Editing "${e.title}"`, 'info', 3000);
+    // Smooth scroll to form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   cancelEdit(): void {
     this.editId = null;
-    this.form.reset({ status: 'PENDING', maxEnrollment: 10, institutionId: Number(this.auth.getUserId()) });
+    const userId = this.auth.getUserId();
+    this.form.reset({ 
+      status: 'PENDING', 
+      maxEnrollment: 10, 
+      institutionId: userId ? Number(userId) : null 
+    });
   }
 
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notif.show('Please complete all required fields', 'warning', 3000);
       return;
     }
 
-    const body = { ...this.form.value, institutionId: Number(this.auth.getUserId()) };
+    const userId = this.auth.getUserId();
+    const body = { ...this.form.value, institutionId: Number(userId) };
 
     if (!this.editId) {
-      if (!confirm('Create this event?')) return;
       this.http.createEvent(body).subscribe({
         next: () => {
-          this.notif.show('Event created', 'success', 4000);
+          this.notif.show('Event successfully created', 'success', 4000);
           this.cancelEdit();
           this.load();
         },
-        error: () => this.notif.show('Create failed', 'danger', 4000)
+        error: () => this.notif.show('Failed to create event', 'danger', 4000)
       });
     } else {
-      if (!confirm('Update this event?')) return;
       this.http.updateEvent(this.editId, body).subscribe({
         next: () => {
-          this.notif.show('Event updated', 'success', 4000);
+          this.notif.show('Event successfully updated', 'success', 4000);
           this.cancelEdit();
           this.load();
         },
-        error: () => this.notif.show('Update failed (not your event?)', 'danger', 4000)
+        error: () => this.notif.show('Update failed: Authorization issue', 'danger', 4000)
       });
     }
   }
