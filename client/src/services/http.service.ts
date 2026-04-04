@@ -72,24 +72,25 @@ export class HttpService {
     const userId = this.auth.getUserId();
     return this.http.get(`${this.baseUrl}/api/professional/events?userId=${userId}`);
   }
+getParticipantFeedbacks(): Observable<any> {
+   const userId = this.auth.getUserId();
+  return this.http.get(`${this.baseUrl}/api/professional/events?userId=${userId}`);
+}
+respondToAssignment(eventId: number, status: 'ACCEPTED' | 'REJECTED'): Observable<any> {
+  const userId = this.auth.getUserId();
+  return this.http.put(
+    `${this.baseUrl}/api/professional/event/${eventId}/assignment?userId=${userId}&status=${status}`,
+    null
+  );
+}
 
-  respondToAssignment(eventId: number, status: 'ACCEPTED' | 'REJECTED'): Observable<any> {
-    const userId = this.auth.getUserId();
-    // Use explicitly null for the body to avoid sending [object Object]
-    return this.http.put(
-      `${this.baseUrl}/api/professional/event/${eventId}/assignment?userId=${userId}&status=${status}`,
-      null
-    );
-  }
-
-  updateEventStatus(eventId: number, status: string): Observable<any> {
-    const userId = this.auth.getUserId();
-    // Use explicitly null for the body
-    return this.http.put(
-      `${this.baseUrl}/api/professional/event/${eventId}/status?userId=${userId}&status=${status}`,
-      null
-    );
-  }
+updateEventStatus(eventId: number, status: string): Observable<any> {
+  const userId = this.auth.getUserId();
+  return this.http.put(
+    `${this.baseUrl}/api/professional/event/${eventId}/status?userId=${userId}&status=${status}`,
+    null
+  );
+}
 
   addProfessionalFeedback(eventId: number, body: any): Observable<any> {
     const userId = this.auth.getUserId();

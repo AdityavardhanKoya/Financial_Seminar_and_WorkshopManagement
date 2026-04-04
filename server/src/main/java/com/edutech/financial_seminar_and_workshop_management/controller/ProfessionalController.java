@@ -21,16 +21,8 @@ public class ProfessionalController {
         return ResponseEntity.ok(eventService.getEventsByProfessional(userId));
     }
 
-    @PutMapping("/event/{id}/status")
-    public ResponseEntity<Event> updateStatus(@PathVariable Long id,
-                                              @RequestParam Long userId,
-                                              @RequestParam String status) {
-        try {
-            return ResponseEntity.ok(eventService.updateEventStatusByProfessional(id, userId, status));
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-    }
+    // Note: The manual /event/{id}/status endpoint was removed here 
+    // because status is now automated by the system.
 
     @PutMapping("/event/{eventId}/assignment")
     public ResponseEntity<Event> respondToAssignment(@PathVariable Long eventId,

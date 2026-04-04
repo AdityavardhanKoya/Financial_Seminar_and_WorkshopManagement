@@ -25,8 +25,9 @@ public class EventService {
     // Background job that runs every 1 minute to auto-complete expired events
     @Scheduled(fixedRate = 60000)
     public void autoCompleteExpiredEvents() {
+        // Check for UPCOMING events
         List<Event> ongoingEvents = eventRepository.findAll().stream()
-                .filter(e -> !"COMPLETED".equals(e.getStatus()))
+                .filter(e -> "UPCOMING".equals(e.getStatus())) 
                 .toList();
 
         LocalDateTime now = LocalDateTime.now();
@@ -36,6 +37,7 @@ public class EventService {
                 if (event.getSchedule() != null && !event.getSchedule().isEmpty()) {
                     LocalDateTime eventDateTime = LocalDateTime.parse(event.getSchedule(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                     if (now.isAfter(eventDateTime)) {
+                        // Auto-complete when time passes
                         event.setStatus("COMPLETED");
                         eventRepository.save(event);
                     }
@@ -67,7 +69,6 @@ public class EventService {
             User inst = userRepository.findById(e.getInstitutionId()).orElse(null);
             User prof = userRepository.findById(professionalId).orElse(null);
             if (inst != null && prof != null) {
-                // ✅ Wrapped in try-catch to prevent application crash
                 try {
                     emailNotificationService.mailInstitutionAssignmentResponse(inst, prof, e, "EXPIRED");
                 } catch (Exception ex) {
@@ -77,13 +78,35 @@ public class EventService {
         }
     }
 
+    // Validation to prevent creating events in the past
+    private void validateFutureSchedule(String schedule) {
+        if (schedule == null || schedule.isEmpty()) {
+            throw new RuntimeException("Schedule is required");
+        }
+        try {
+            LocalDateTime eventDateTime = LocalDateTime.parse(schedule, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            if (eventDateTime.isBefore(LocalDateTime.now())) {
+                throw new RuntimeException("Event schedule cannot be in the past");
+            }
+        } catch (Exception e) {
+            if (e instanceof RuntimeException && e.getMessage().equals("Event schedule cannot be in the past")) {
+                throw e; 
+            }
+            throw new RuntimeException("Invalid date format. Expected yyyy-MM-dd'T'HH:mm");
+        }
+    }
+
     // ---------- CRUD ----------
     public Event createEvent(Event event) {
+        validateFutureSchedule(event.getSchedule());
         event.setEnrollmentCount(0);
+        event.setStatus("PENDING"); 
         return eventRepository.save(event);
     }
 
     public Event updateEvent(Long id, Long institutionId, Event updated) {
+        validateFutureSchedule(updated.getSchedule());
+        
         Event e = getOrThrow(id);
         if (!e.getInstitutionId().equals(institutionId)) {
             throw new RuntimeException("Not your event");
@@ -92,7 +115,7 @@ public class EventService {
         e.setDescription(updated.getDescription());
         e.setSchedule(updated.getSchedule());
         e.setLocation(updated.getLocation());
-        e.setStatus(updated.getStatus());
+        // Status updates are restricted from this endpoint
         e.setMaxEnrollment(updated.getMaxEnrollment());
         return eventRepository.save(e);
     }
@@ -173,9 +196,7 @@ public class EventService {
         if (emailNotificationService != null) {
             try {
                 emailNotificationService.mailProfessionalAssigned(prof, institution, saved);
-            } catch (Exception ignored) {
-                // Safely ignored
-            }
+            } catch (Exception ignored) {}
         }
 
         return saved;
@@ -192,8 +213,6 @@ public class EventService {
 
         String current = event.getProfessionalStatus().get(professionalId);
         if (!"PENDING".equals(current)) {
-            // Note: If you assigned this event to yourself more than 24 hours ago, 
-            // the status is now "EXPIRED" and responding will trigger this 400 error.
             throw new RuntimeException("Already responded or expired. Current status: " + current);
         }
 
@@ -203,8 +222,9 @@ public class EventService {
 
         event.getProfessionalStatus().put(professionalId, status);
 
+        // If Professional accepts, change status to UPCOMING
         if ("ACCEPTED".equals(status)) {
-            event.setStatus("IN_PROGRESS");
+            event.setStatus("UPCOMING");
         }
 
         Event saved = eventRepository.save(event);
@@ -212,7 +232,6 @@ public class EventService {
         User inst = userRepository.findById(saved.getInstitutionId()).orElse(null);
         User prof = userRepository.findById(professionalId).orElse(null);
         if (inst != null && prof != null) {
-            // ✅ Wrapped in try-catch to prevent 400 Bad Request crash
             try {
                 emailNotificationService.mailInstitutionAssignmentResponse(inst, prof, saved, status);
             } catch (Exception e) {
@@ -221,18 +240,6 @@ public class EventService {
         }
 
         return saved;
-    }
-
-    public Event updateEventStatusByProfessional(Long eventId, Long professionalId, String newStatus) {
-        Event event = getOrThrow(eventId);
-
-        String assign = event.getProfessionalStatus().get(professionalId);
-        if (!"ACCEPTED".equals(assign)) {
-            throw new RuntimeException("Only ACCEPTED professional can update event status");
-        }
-
-        event.setStatus(newStatus);
-        return eventRepository.save(event);
     }
 
     // ---------- Enrollment ----------
@@ -265,7 +272,6 @@ public class EventService {
                 .toList();
 
         if (inst != null) {
-            // ✅ Wrapped in try-catch
             try {
                 emailNotificationService.mailParticipantEnrolled(participant, inst, event, acceptedPros);
             } catch (Exception e) {
