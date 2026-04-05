@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { NotificationService } from '../notification.service';
 
@@ -6,7 +6,9 @@ type AssignmentResponse = 'ACCEPTED' | 'REJECTED';
 
 @Component({
   selector: 'app-update-event-status',
-  templateUrl: './update-event-status.component.html'
+  templateUrl: './update-event-status.component.html',
+  styleUrls: ['./update-event-status.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class UpdateEventStatusComponent implements OnInit {
   events: any[] = [];
@@ -51,8 +53,7 @@ export class UpdateEventStatusComponent implements OnInit {
 
   respond(e: any, response: AssignmentResponse): void {
     const title = e?.title ?? 'this event';
-    const msg =
-      response === 'ACCEPTED'
+    const msg = response === 'ACCEPTED'
         ? `Accept assignment for "${title}"?`
         : `Reject assignment for "${title}"? Institution will be notified.`;
 
@@ -65,12 +66,11 @@ export class UpdateEventStatusComponent implements OnInit {
           response === 'ACCEPTED' ? 'success' : 'warning',
           4000
         );
-        this.load(); // Reloads the table to reflect the UI changes
+        this.load();
       },
       error: (err: any) => {
         const errorMsg = err?.error?.message || err?.error || err?.message || 'Assignment update failed';
-        const finalMsg = typeof errorMsg === 'object' ? 'Assignment update failed' : errorMsg;
-        this.notif.show(finalMsg, 'danger', 4000);
+        this.notif.show(errorMsg, 'danger', 4000);
       }
     });
   }

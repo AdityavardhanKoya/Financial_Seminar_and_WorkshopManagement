@@ -1,26 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { NotificationService } from '../notification.service';
 
-
 @Component({
   selector: 'app-assign-professional',
-  templateUrl: './assign-professional.component.html'
+  templateUrl: './assign-professional.component.html',
+  styleUrls: ['./assign-professional.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AssignProfessionalComponent implements OnInit {
   events: any[] = [];
   pros: any[] = [];
   selectedEventId: number | null = null;
   selectedProfId: number | null = null;
-allEvents:any[]=[];
-eventSearch!:string;
-profSearch!:string;
-allPros:any[]=[];
+
   constructor(private http: HttpService, private notif: NotificationService) {}
 
   ngOnInit(): void {
-    this.http.getInstitutionEvents().subscribe({ next: r => this.events = r || [] });
-    this.http.getProfessionals().subscribe({ next: r => this.pros = r || [] });
+    this.http.getInstitutionEvents().subscribe({ 
+      next: r => this.events = r || [] 
+    });
+    this.http.getProfessionals().subscribe({ 
+      next: r => this.pros = r || [] 
+    });
   }
 
   assign(): void {
@@ -35,15 +37,4 @@ allPros:any[]=[];
       error: () => this.notif.show('Assign failed', 'danger', 4000)
     });
   }
-  searchEvents() {
-  this.events = this.allEvents.filter(e =>
-    e.title.toLowerCase().includes(this.eventSearch.toLowerCase())
-  );
-}
-
-searchProfessionals() {
-  this.pros = this.allPros.filter(p =>
-    p.username.toLowerCase().includes(this.profSearch.toLowerCase())
-  );
-}
 }

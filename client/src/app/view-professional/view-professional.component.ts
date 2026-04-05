@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-view-professional',
-  templateUrl: './view-professional.component.html'
+  templateUrl: './view-professional.component.html',
+  styleUrls: ['./view-professional.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ViewProfessionalComponent implements OnInit {
-
   events: any[] = [];
   page = 1;
   pageSize = 6;
@@ -40,5 +41,4 @@ export class ViewProfessionalComponent implements OnInit {
   getEnrolledCount(e: any): number {
     return Number(e?.enrollmentCount ?? 0);
   }
-
 }

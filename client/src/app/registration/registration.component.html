@@ -12,7 +12,7 @@
     </div>
 
     <h1>Create Account</h1>
-    <p class="sub">Join our financial seminar platform</p>
+    <p class="sub">Join our Fin Event Platform</p>
 
     <div *ngIf="showMessage" class="info-box">
       {{ responseMessage }}
@@ -75,11 +75,15 @@
         </ul>
       </div>
 
-      <button type="submit" class="btn-primary w-100 mt-3">Register Account</button>
+      <button type="submit" class="btn-primary w-100 mt-3">REGISTER</button>
 
       <p class="signup-link">
         Already have an account? 
         <a routerLink="/login">Login</a>
+      </p>
+
+      <p class="signup-link" style="margin-top: 15px;">
+        <a routerLink="/home">Return to Homepage</a>
       </p>
     </form>
   </div>

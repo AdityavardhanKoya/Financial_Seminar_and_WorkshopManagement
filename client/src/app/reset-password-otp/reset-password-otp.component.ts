@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpService } from '../../services/http.service';
@@ -6,7 +6,9 @@ import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-reset-password-otp',
-  templateUrl: './reset-password-otp.component.html'
+  templateUrl: './reset-password-otp.component.html',
+  styleUrls: ['./reset-password-otp.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ResetPasswordOtpComponent implements OnInit {
 
@@ -46,7 +48,8 @@ export class ResetPasswordOtpComponent implements OnInit {
         this.router.navigateByUrl('/login');
       },
       error: (err) => {
-        this.notif.show(err?.error || 'OTP invalid/expired', 'danger', 4000);
+        const errorMsg = err?.error?.message || err?.error || 'OTP invalid or expired';
+        this.notif.show(errorMsg, 'danger', 4000);
       }
     });
   }

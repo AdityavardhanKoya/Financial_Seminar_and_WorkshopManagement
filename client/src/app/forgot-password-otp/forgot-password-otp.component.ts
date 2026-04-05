@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
@@ -6,10 +6,11 @@ import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-forgot-password-otp',
-  templateUrl: './forgot-password-otp.component.html'
+  templateUrl: './forgot-password-otp.component.html',
+  styleUrls: ['./forgot-password-otp.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ForgotPasswordOtpComponent {
-
   form: FormGroup;
 
   constructor(
@@ -36,7 +37,7 @@ export class ForgotPasswordOtpComponent {
         this.notif.show('OTP sent to email (if registered)', 'success', 4000);
         this.router.navigate(['/reset-password'], { queryParams: { email } });
       },
-      error: () => this.notif.show('Failed to send OTP', 'danger', 4000)
+      error: () => this.notif.show('Failed to send OTP. Please check your connection.', 'danger', 4000)
     });
   }
 }

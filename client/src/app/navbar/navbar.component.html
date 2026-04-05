@@ -1,57 +1,52 @@
 <ng-container *ngIf="showNavbar">
   
-  <div *ngIf="notification" class="alert alert-{{notification.type}} m-0 rounded-0 text-center">
-    {{ notification.message }}
+  <div *ngIf="notification" class="alert-custom-toast alert-{{notification.type}}">
+    <span class="dot"></span> {{ notification.message }}
   </div>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-    <a class="navbar-brand fw-bold" routerLink="/view-events">Fin Event.</a>
-    
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  <nav class="navbar navbar-expand-lg custom-transparent-nav" [class.scrolled]="isScrolled">
+    <div class="container-fluid px-md-5">
+      
+      <a class="navbar-brand logo" routerLink="/view-events">Fin Event.</a>
+      
+      <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
   
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto">
+      <div class="collapse navbar-collapse" id="navbarNav">
+        
+        <div class="nav-links me-auto mt-3 mt-lg-0">
+          
+          <ng-container *ngIf="roleName === 'INSTITUTION'">
+            <a routerLink="/create-event">Manage Event</a>
+            <a routerLink="/delete-event">Delete Event</a>
+            <a routerLink="/add-resource">Add Resource</a>
+            <a routerLink="/assign-professional">Assign Professional</a>
+            <a routerLink="/view-institution">View Events</a>
+          </ng-container>
   
-        <ng-container *ngIf="roleName === 'INSTITUTION'">
-          <li class="nav-item"><a class="nav-link" routerLink="/create-event">Manage Event</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/delete-event">Delete Event</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/add-resource">Add Resource</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/assign-professional">Assign Professional</a></li>
+          <ng-container *ngIf="roleName === 'PROFESSIONAL'">
+            <a routerLink="/update-event-status">My Events</a>
+            <a routerLink="/add-feedback">Add Feedback</a>
+            <a routerLink="/view-professional">View Events</a>
+          </ng-container>
   
-          <li class="nav-item"><a class="nav-link" routerLink="/view-institution">View Events</a></li>
+          <ng-container *ngIf="roleName === 'PARTICIPANT'">
+            <a routerLink="/view-events">View Events</a>
+          </ng-container>
+
+        </div>
   
-          <li class="nav-item" *ngIf="selectedEvent?.id">
-          </li>
-        </ng-container>
-  
-        <ng-container *ngIf="roleName === 'PROFESSIONAL'">
-          <li class="nav-item"><a class="nav-link" routerLink="/update-event-status">My Events</a></li>
-  
-          <li class="nav-item"><a class="nav-link" routerLink="/add-feedback">Add Feedback</a></li>
-  
-          <li class="nav-item"><a class="nav-link" routerLink="/view-professional">View Events</a></li>
-        </ng-container>
-  
-        <ng-container *ngIf="roleName === 'PARTICIPANT'">
-          <li class="nav-item"><a class="nav-link" routerLink="/view-events">View Events</a></li>
-        </ng-container>
-  
-      </ul>
-  
-      <ul class="navbar-nav ms-auto align-items-center" *ngIf="isLoggedIn">
-        <li class="nav-item me-3">
-          <span class="text-light small">
-            Welcome, <strong>{{ username }}</strong>
-            <span class="badge bg-secondary ms-1">{{ roleName }}</span>
+        <div class="nav-links ms-auto align-items-center mt-3 mt-lg-0" *ngIf="isLoggedIn">
+          <span class="user-pill">
+            Welcome, <strong class="text-white">{{ username }}</strong>
+            <span class="role-badge">{{ roleName }}</span>
           </span>
-        </li>
-  
-        <li class="nav-item">
-          <a class="nav-link text-warning fw-semibold" style="cursor:pointer" (click)="logout()">Logout</a>
-        </li>
-      </ul>
+          
+          <a class="logout-link" (click)="logout()">Logout</a>
+        </div>
+
+      </div>
     </div>
   </nav>
 
