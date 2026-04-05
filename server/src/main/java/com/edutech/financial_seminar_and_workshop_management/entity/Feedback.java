@@ -6,8 +6,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.util.Date;
 
+
 @Entity
-@Table(name = "feedbacks")
+@Table(
+  name = "feedbacks",
+  uniqueConstraints = @UniqueConstraint(columnNames = {"event_id", "user_id"})
+)
+
 public class Feedback {
 
     @Id

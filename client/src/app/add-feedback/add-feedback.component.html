@@ -2,15 +2,24 @@
   <h3 class="mb-3">Add Feedback</h3>
 
   <div class="card p-3 shadow-sm">
-    <label class="form-label fw-semibold">Select Event</label>
+    <label class="form-label fw-semibold">Select Completed Event</label>
     <select class="form-select mb-3" [(ngModel)]="selectedId">
       <option [ngValue]="null">-- Select --</option>
-      <option *ngFor="let e of events" [ngValue]="e.id">{{e.title}}</option>
+      <option *ngFor="let e of events" [ngValue]="e.id">
+        {{ e.title }}
+      </option>
     </select>
 
     <label class="form-label fw-semibold">Feedback</label>
-    <textarea class="form-control mb-2" rows="3" [(ngModel)]="content"></textarea>
+    <textarea
+      class="form-control mb-2"
+      rows="3"
+      [(ngModel)]="content"
+      placeholder="Enter your feedback"
+    ></textarea>
 
-    <button class="btn btn-success" (click)="submit()">Submit</button>
+    <button class="btn btn-success" type="button" (click)="submit()">
+      Submit
+    </button>
   </div>
 </div>
