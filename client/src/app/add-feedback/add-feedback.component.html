@@ -1,25 +1,57 @@
-<div class="container mt-4">
-  <h3 class="mb-3">Add Feedback</h3>
+<div class="pro-glass-dashboard">
+  <div class="container-fluid px-md-5">
+    
+    <div class="header-section mb-4">
+      <div class="role-badge">
+        <span class="pulse-dot"></span> Professional Portal
+      </div>
+      <h1 class="page-title">Add Feedback</h1>
+      <p class="subtitle">Share your insights and professional evaluation for completed financial seminars.</p>
+    </div>
 
-  <div class="card p-3 shadow-sm">
-    <label class="form-label fw-semibold">Select Completed Event</label>
-    <select class="form-select mb-3" [(ngModel)]="selectedId">
-      <option [ngValue]="null">-- Select --</option>
-      <option *ngFor="let e of events" [ngValue]="e.id">
-        {{ e.title }}
-      </option>
-    </select>
+    <div class="glass-panel mb-5">
+      <div class="panel-header">
+        <h3 class="panel-title">Submit Evaluation</h3>
+      </div>
+      
+      <div class="panel-body">
+        <div class="row g-4">
+          
+          <div class="col-md-12">
+            <label class="glass-label">Select Completed Event</label>
+            <div class="glass-input-wrap">
+              <span class="input-icon">🏆</span>
+              <select class="glass-input" [(ngModel)]="selectedId">
+                <option [ngValue]="null">-- Select Event --</option>
+                <option *ngFor="let e of events" [ngValue]="e.id">
+                  {{ e.title }}
+                </option>
+              </select>
+            </div>
+          </div>
 
-    <label class="form-label fw-semibold">Feedback</label>
-    <textarea
-      class="form-control mb-2"
-      rows="3"
-      [(ngModel)]="content"
-      placeholder="Enter your feedback"
-    ></textarea>
+          <div class="col-md-12">
+            <label class="glass-label">Feedback Details</label>
+            <div class="glass-input-wrap align-items-start">
+              <span class="input-icon mt-2">💬</span>
+              <textarea
+                class="glass-input"
+                rows="4"
+                [(ngModel)]="content"
+                placeholder="Describe the event outcome, participant engagement, or areas for improvement..."
+              ></textarea>
+            </div>
+          </div>
 
-    <button class="btn btn-success" type="button" (click)="submit()">
-      Submit
-    </button>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-end">
+          <button class="btn-glass-submit" type="button" (click)="submit()">
+            Submit Feedback
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

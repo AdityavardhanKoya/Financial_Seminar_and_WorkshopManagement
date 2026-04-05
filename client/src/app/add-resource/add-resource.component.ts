@@ -1,17 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-add-resource',
-  templateUrl: './add-resource.component.html'
+  templateUrl: './add-resource.component.html',
+  styleUrls: ['./add-resource.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AddResourceComponent implements OnInit {
 
   events: any[] = [];
-
   selectedEventId: number | null = null;
-
   resource = {
     name: '',
     type: '',

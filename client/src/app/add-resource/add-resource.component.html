@@ -1,55 +1,67 @@
-<div class="container mt-4">
-  <h3 class="mb-3 text-primary fw-bold">Add Resource</h3>
-
-  <div class="card p-3 shadow-sm">
-
-    <!-- Event Selection -->
-    <div class="mb-3">
-      <label class="form-label fw-semibold">Select Event</label>
-      <select class="form-select" [(ngModel)]="selectedEventId">
-        <option [ngValue]="null">-- Select Event --</option>
-        <option *ngFor="let e of events" [ngValue]="e.id">
-          {{ e.title }} ({{ e.schedule }})
-        </option>
-      </select>
+<div class="pro-glass-dashboard">
+  <div class="container-fluid px-md-5">
+    
+    <div class="header-section mb-4">
+      <div class="role-badge">
+        <span class="pulse-dot"></span> Institution Portal
+      </div>
+      <h1 class="page-title">Add Resource</h1>
+      <p class="subtitle">Attach educational materials, slides, or links to your scheduled events.</p>
     </div>
 
-    <!-- Resource Name -->
-    <div class="mb-3">
-      <label class="form-label fw-semibold">Resource Name</label>
-      <input
-        type="text"
-        class="form-control"
-        [(ngModel)]="resource.name"
-        placeholder="e.g. Presentation Slides"
-      >
-    </div>
+    <div class="glass-panel mb-5">
+      <div class="panel-header">
+        <h3 class="panel-title">Resource Details</h3>
+      </div>
+      
+      <div class="panel-body">
+        <div class="row g-4">
+          
+          <div class="col-md-6">
+            <label class="glass-label">Select Event</label>
+            <div class="glass-input-wrap">
+              <span class="input-icon">📅</span>
+              <select class="glass-input" [(ngModel)]="selectedEventId">
+                <option [ngValue]="null">-- Select Event --</option>
+                <option *ngFor="let e of events" [ngValue]="e.id">
+                  {{ e.title }} ({{ e.schedule }})
+                </option>
+              </select>
+            </div>
+          </div>
 
-    <!-- Resource Type -->
-    <div class="mb-3">
-      <label class="form-label fw-semibold">Resource Type</label>
-      <input
-        type="text"
-        class="form-control"
-        [(ngModel)]="resource.type"
-        placeholder="e.g. PDF / Video / Link"
-      >
-    </div>
+          <div class="col-md-6">
+            <label class="glass-label">Resource Name</label>
+            <div class="glass-input-wrap">
+              <span class="input-icon">📝</span>
+              <input type="text" class="glass-input" [(ngModel)]="resource.name" placeholder="e.g. Presentation Slides">
+            </div>
+          </div>
 
-    <!-- Resource URL (optional) -->
-    <div class="mb-3">
-      <label class="form-label fw-semibold">Resource URL (optional)</label>
-      <input
-        type="text"
-        class="form-control"
-        [(ngModel)]="resource.url"
-        placeholder="https://..."
-      >
-    </div>
+          <div class="col-md-6">
+            <label class="glass-label">Resource Type</label>
+            <div class="glass-input-wrap">
+              <span class="input-icon">📁</span>
+              <input type="text" class="glass-input" [(ngModel)]="resource.type" placeholder="e.g. PDF / Video / Link">
+            </div>
+          </div>
 
-    <!-- Submit -->
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-success" (click)="submit()">Add Resource</button>
+          <div class="col-md-6">
+            <label class="glass-label">Resource URL (Optional)</label>
+            <div class="glass-input-wrap">
+              <span class="input-icon">🔗</span>
+              <input type="text" class="glass-input" [(ngModel)]="resource.url" placeholder="https://...">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="mt-5 d-flex justify-content-end">
+          <button class="btn-glass-submit" (click)="submit()">
+            Add Resource
+          </button>
+        </div>
+      </div>
     </div>
 
   </div>

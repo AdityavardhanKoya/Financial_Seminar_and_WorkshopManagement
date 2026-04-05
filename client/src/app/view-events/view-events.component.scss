@@ -1,19 +1,78 @@
-.modal-backdrop-custom{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1050;
-  padding: 16px;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+$primary-red: #fc0114;
+$primary-blue: #234a99;
+$dark-bg: #020042;
+$text-main: #ffffff;
+$text-muted: #cbd5e1;
+$glass-border: rgba(255, 255, 255, 0.15);
+$glass-bg: rgba(255, 255, 255, 0.08);
+
+:host { display: block !important; width: 100% !important; min-height: 100vh !important; }
+
+.pro-glass-dashboard {
+  background: radial-gradient(circle at 15% 20%, rgba(53, 8, 201, 0.5), transparent 55%),
+              radial-gradient(circle at 85% 30%, rgba(130, 11, 113, 0.5), transparent 55%),
+              radial-gradient(circle at 50% 85%, rgba(252, 1, 20, 0.4), transparent 60%),
+              radial-gradient(circle at 10% 80%, rgba(35, 74, 153, 0.5), transparent 60%), $dark-bg;
+  background-size: cover; background-attachment: fixed; min-height: 100vh;
+  width: 100%; font-family: 'Inter', sans-serif; color: $text-main; padding-top: 110px; 
 }
 
-.modal-card-custom{
-  width: 100%;
-  max-width: 420px;
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+.glass-tabs {
+  display: inline-flex; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 12px; border: 1px solid $glass-border;
+  .tab-btn {
+    padding: 8px 24px; border: none; background: transparent; color: $text-muted; font-weight: 600; border-radius: 8px; transition: 0.3s;
+    &.active { background: $primary-blue; color: white; box-shadow: 0 4px 15px rgba($primary-blue, 0.3); }
+  }
 }
+
+.glass-panel {
+  background: $glass-bg; backdrop-filter: blur(24px); border-radius: 16px; border: 1px solid $glass-border;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); overflow: hidden;
+  .panel-header { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); }
+  .panel-body { padding: 20px; }
+}
+
+.glass-input-wrap {
+  display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid $glass-border; border-radius: 8px; padding: 0 15px;
+  .glass-input { flex: 1; background: transparent; border: none; padding: 12px 10px; color: white; outline: none; }
+}
+
+.btn-glass-submit { background: $primary-red; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; transition: 0.3s; &:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba($primary-red, 0.4); } }
+.btn-glass-cancel { background: rgba(255,255,255,0.05); color: white; border: 1px solid $glass-border; padding: 10px 20px; border-radius: 8px; transition: 0.3s; &:hover { background: rgba(255,255,255,0.1); } }
+
+.btn-glass-action {
+  background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid $glass-border; padding: 8px; border-radius: 6px; font-weight: 600; transition: 0.3s;
+  &.success:hover { background: #10b981; border-color: #10b981; }
+
+  &.enrolled-btn {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #6ee7b7 !important;
+    border: 1px solid rgba(16, 185, 129, 0.5) !important;
+    cursor: not-allowed;
+    opacity: 1 !important;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+}
+
+.status-badge { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; &[data-status="COMPLETED"] { background: rgba(35, 74, 153, 0.3); color: #93c5fd; } &:not([data-status="COMPLETED"]) { background: rgba(252, 1, 20, 0.15); color: #ffb3b3; } }
+
+.glass-modal-backdrop { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+.glass-modal-card { 
+  background: #060b19; border: 1px solid $glass-border; padding: 40px; border-radius: 20px; max-width: 450px; width: 90%; text-align: center;
+  h4 { color: #ffffff !important; font-weight: 800; }
+  p { color: #ffffff !important; font-size: 15px; opacity: 0.95; }
+  span { color: #ffffff !important; font-weight: 700; }
+}
+
+.glass-label { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 2px; }
+.pagination-container { display: flex; justify-content: center; align-items: center; gap: 20px; .btn-glass-page { background: rgba(255,255,255,0.05); border: 1px solid $glass-border; color: white; padding: 8px 20px; border-radius: 8px; &:disabled { opacity: 0.3; } } }
+
+.role-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba($primary-blue, 0.3); border: 1px solid rgba($primary-blue, 0.6); color: #93c5fd; padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; .pulse-dot { width: 6px; height: 6px; background: #93c5fd; border-radius: 50%; box-shadow: 0 0 10px #93c5fd; animation: pulse 2s infinite; } }
+.page-title { font-size: 32px; font-weight: 800; }
+.subtitle { color: $text-muted; font-size: 15px; }
+
+@keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }

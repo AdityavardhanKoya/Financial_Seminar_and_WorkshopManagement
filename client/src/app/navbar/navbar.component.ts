@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -17,6 +17,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   username: string | null = null;
   isLoggedIn = false;
   showNavbar = true; 
+  isScrolled = false; // Added to track scrolling
 
   notification: AppNotification | null = null;
   selectedEvent: any | null = null;
@@ -29,6 +30,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private notif: NotificationService,
     private selected: SelectedEventService
   ) {}
+
+  // Listens to scroll events to toggle the transparent/glass effect
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 50;
+  }
 
   ngOnInit(): void {
     this.refresh();
@@ -46,12 +53,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   checkVisibility(url: string): void {
-    // Normalize URL: remove query params and trailing slashes to avoid "ghost" navbar
     const cleanUrl = url.split('?')[0].split('#')[0].replace(/\/$/, "") || '/';
-    
-    // List of routes where the BLACK navbar must be HIDDEN
-    const hiddenRoutes = ['/', '/home', '/login', '/registration'];
-    
+    const hiddenRoutes = ['/', '/home', '/login', '/registration', '/forgot-password', '/reset-password'];
     this.showNavbar = !hiddenRoutes.includes(cleanUrl);
   }
 
@@ -63,7 +66,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.auth.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/home']);
   }
 
   ngOnDestroy(): void {

@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-add-feedback',
-  templateUrl: './add-feedback.component.html'
+  templateUrl: './add-feedback.component.html',
+  styleUrls: ['./add-feedback.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AddFeedbackComponent implements OnInit {
   events: any[] = [];
