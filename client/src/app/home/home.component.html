@@ -1,17 +1,18 @@
 <div class="home-container">
   
-  <nav class="navbar">
+  <nav class="navbar" [class.scrolled]="isScrolled">
     <div class="logo">Fin Event.</div>
     <div class="nav-links">
-      <a href="#hero">Home</a>
       <a href="#about">About</a>
-      <a routerLink="/login">Login</a>
+      <a href="#features">Features</a>
+      <a href="#roles">Roles</a>
       <a routerLink="/registration">Signup</a>
     </div>
   </nav>
 
   <div class="scroll-dots">
     <div class="dot active"></div>
+    <div class="dot"></div>
     <div class="dot"></div>
     <div class="dot"></div>
     <div class="dot"></div>
@@ -35,6 +36,7 @@
   </section>
 
   <section class="section about-section" id="about">
+    <div class="wireframe-design"></div>
     <div class="about-container">
       <div class="about-content-wrapper">
         <div class="vertical-line-red"></div>
@@ -44,12 +46,99 @@
             Fin Event<br>2026
           </div>
           <div class="paragraphs">
-            <p>I'm a paragraph. Click here to add your own text and edit me...</p>
-            <p>I'm a paragraph. Click here to add your own text and edit me...</p>
+            <p>Fin Event is a comprehensive platform designed to bridge the gap between educational institutions, financial industry experts, and eager learners. We provide a centralized, intuitive hub where organizations can effortlessly host, manage, and promote high-quality financial seminars and workshops, ensuring vital knowledge reaches the right audience.</p>
+            <p>Our dynamic ecosystem simplifies the entire event lifecycle. From assigning expert professionals and tracking real-time status updates, to managing secure participant enrollments and collecting actionable feedback, our platform empowers you to deliver impactful learning experiences. Join us in shaping the future of financial education through seamless collaboration.</p>
           </div>
         </div>
       </div>
-      <img src="https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&w=1200&q=80" alt="VR Experience" class="about-image">
+      <img src="assets/aboutimage.jpeg" alt="VR Experience" class="about-image">
     </div>
   </section>
+
+  <section class="section features-section" id="features">
+    <div class="features-container">
+      
+      <div class="features-header">
+        <span class="features-label">PLATFORM FEATURES</span>
+        <h2 class="features-title">Everything you need in<br>one platform</h2>
+        <p class="features-subtitle">Streamlined tools for every stakeholder in the educational ecosystem.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon-wrapper" style="background-color: #f0f4ff;">📅</div>
+          <h3>Event Management</h3>
+          <p>Create, schedule, and manage educational events with full resource tracking and participant management.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon-wrapper" style="background-color: #fff4e6;">📦</div>
+          <h3>Resource Allocation</h3>
+          <p>Assign venues, equipment, and materials to events seamlessly. Track availability in real-time.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon-wrapper" style="background-color: #ffeef2;">🎟️</div>
+          <h3>Smart Registration</h3>
+          <p>Students can discover and register for events. Automated booking confirmations sent through the email.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon-wrapper" style="background-color: #f3f0ff;">🏛️</div>
+          <h3>Institution Portal</h3>
+          <p>A single dashboard allows institutions to manage events, allocate resources, and track student bookings effortlessly.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon-wrapper" style="background-color: #e6fffa;">📊</div>
+          <h3>Booking Analytics</h3>
+          <p>Detailed insights on registrations and resource utilization across all events.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon-wrapper" style="background-color: #fff8eb;">🔒</div>
+          <h3>Role-based Access</h3>
+          <p>JWT-secured access control ensures every user sees only what's relevant to their role.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section roles-section" id="roles">
+    <div class="roles-container">
+      
+      <div class="roles-header">
+        <span class="roles-label">ROLE-BASED ACCESS</span>
+        <h2 class="roles-title">Tailored portals for every<br>member of the ecosystem</h2>
+      </div>
+
+      <div class="roles-grid">
+        <a routerLink="/registration" class="role-card">
+          <div class="icon-wrapper" style="background-color: #f0f4ff;">🏛️</div>
+          <h3>Institution</h3>
+          <p>Create schedules and manage educational events. Complete resource tracking and participant management.</p>
+        </a>
+        
+        <a routerLink="/registration" class="role-card">
+          <div class="icon-wrapper" style="background-color: #fff4e6;">👨‍💼</div>
+          <h3>Professional</h3>
+          <p>Accept invitations to speak at events, manage your availability, and engage directly with participants.</p>
+        </a>
+
+        <a routerLink="/registration" class="role-card">
+          <div class="icon-wrapper" style="background-color: #ffeef2;">🎓</div>
+          <h3>Participant</h3>
+          <p>Discover high-quality financial seminars, register with one click, and track all your upcoming learning sessions.</p>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer-cta">
+    <div class="cta-container">
+      <h2>Ready to get started?</h2>
+      <div class="cta-buttons">
+        <a routerLink="/registration" class="btn-primary-red">Create Your Account</a>
+        <a routerLink="/login" class="btn-outline-dark">Sign In Instead</a>
+      </div>
+    </div>
+  </footer>
+
 </div>
