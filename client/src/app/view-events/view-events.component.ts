@@ -3,17 +3,14 @@ import { HttpService } from '../../services/http.service';
 
 @Component({
   selector: 'app-view-events',
-  templateUrl: './view-events.component.html'
+  templateUrl: './view-events.component.html',
+  styleUrls: ['./view-events.component.scss']
 })
 export class ViewEventsComponent implements OnInit {
 
-  // all events from backend
   allEvents: any[] = [];
-
-  // current shown list (available or past)
   events: any[] = [];
 
-  // toggle
   viewMode: 'AVAILABLE' | 'PAST' = 'AVAILABLE';
 
   page = 1;
@@ -21,25 +18,20 @@ export class ViewEventsComponent implements OnInit {
 
   message = '';
 
-  // ✅ Inline feedback
   openFeedbackEventId: number | null = null;
   feedbackText = '';
 
-  // ✅ Enroll confirmation modal
   confirmEnrollPopup = false;
   enrollTargetEvent: any | null = null;
 
-  // ✅ Enroll result popup
   enrollPopup = false;
   enrollPopupText = '';
   enrollPopupType: 'success' | 'danger' = 'success';
 
-  // ✅ Feedback popup
   feedbackPopup = false;
   feedbackPopupText = '';
   feedbackPopupType: 'success' | 'danger' = 'success';
 
-  // ✅ SEARCH
   searchInput = '';
   appliedSearch = '';
 
@@ -55,8 +47,6 @@ export class ViewEventsComponent implements OnInit {
       next: (r) => {
         this.allEvents = r || [];
         this.page = 1;
-
-        // default view
         this.switchMode('AVAILABLE');
       },
       error: () => {
@@ -66,27 +56,26 @@ export class ViewEventsComponent implements OnInit {
   }
 
   /* ================= MODE SWITCH ================= */
-  switchMode(mode: 'AVAILABLE' | 'PAST'): void {
-    this.viewMode = mode;
-    this.appliedSearch = '';
-    this.searchInput = '';
-    this.page = 1;
+ switchMode(mode: 'AVAILABLE' | 'PAST'): void {
+  this.viewMode = mode;
+  this.appliedSearch = '';
+  this.searchInput = '';
+  this.page = 1;
 
-    if (mode === 'AVAILABLE') {
-      // show NOT completed
-      this.events = this.allEvents.filter((ev: any) => {
-        const s = (ev.status || '').toString().trim().toUpperCase();
-        return s !== 'COMPLETED';
-      });
-    } else {
-      // show completed as past
-      this.events = this.allEvents.filter((ev: any) => {
-        const s = (ev.status || '').toString().trim().toUpperCase();
-        return s === 'COMPLETED';
-      });
-    }
+  if (mode === 'AVAILABLE') {
+    // Available: show NOT completed (any)
+    this.events = this.allEvents.filter((ev: any) => {
+      const s = (ev.status || '').toString().trim().toUpperCase();
+      return s !== 'COMPLETED';
+    });
+  } else {
+    // Past: show ONLY completed + enrolled
+    this.events = this.allEvents.filter((ev: any) => {
+      const s = (ev.status || '').toString().trim().toUpperCase();
+      return s === 'COMPLETED' && ev.enrolled === true;
+    });
   }
-
+}
   /* ================= SEARCH ================= */
   onSearch(): void {
     this.appliedSearch = (this.searchInput || '').trim();
@@ -118,17 +107,17 @@ export class ViewEventsComponent implements OnInit {
   get filteredEvents(): any[] {
     const term = (this.appliedSearch || '').trim();
     if (!term) return this.events;
-    return this.events.filter(ev => this.matchesSearch(ev, term));
+    return this.events.filter((ev) => this.matchesSearch(ev, term));
   }
 
   /* ================= PAGINATION ================= */
-  get pagedEvents() {
+  get pagedEvents(): any[] {
     const list = this.filteredEvents;
     const start = (this.page - 1) * this.pageSize;
     return list.slice(start, start + this.pageSize);
   }
 
-  get totalPages() {
+  get totalPages(): number {
     return Math.max(1, Math.ceil(this.filteredEvents.length / this.pageSize));
   }
 
@@ -170,14 +159,12 @@ export class ViewEventsComponent implements OnInit {
   }
 
   private markEnrolled(eventId: number): void {
-    // update in allEvents
-    const idxAll = this.allEvents.findIndex(ev => ev.id === eventId);
+    const idxAll = this.allEvents.findIndex((ev) => ev.id === eventId);
     if (idxAll !== -1) {
       this.allEvents[idxAll] = { ...this.allEvents[idxAll], enrolled: true };
     }
 
-    // update in current visible list
-    const idx = this.events.findIndex(ev => ev.id === eventId);
+    const idx = this.events.findIndex((ev) => ev.id === eventId);
     if (idx !== -1) {
       this.events[idx] = { ...this.events[idx], enrolled: true };
       this.events = [...this.events];
@@ -195,7 +182,7 @@ export class ViewEventsComponent implements OnInit {
     }, 2500);
   }
 
-  /* ================= FEEDBACK (only after enrolled) ================= */
+  /* ================= FEEDBACK (PAST + ENROLLED) ================= */
   toggleAddFeedback(e: any): void {
     this.message = '';
 
@@ -215,7 +202,7 @@ export class ViewEventsComponent implements OnInit {
       return;
     }
 
-    this.http.addParticipantFeedback(e.id, { content: this.feedbackText }).subscribe({
+    this.http.addParticipantFeedback(e.id, { content: this.feedbackText.trim() }).subscribe({
       next: () => {
         this.feedbackPopupText = 'Feedback submitted successfully!';
         this.feedbackPopupType = 'success';
@@ -230,13 +217,17 @@ export class ViewEventsComponent implements OnInit {
         }, 2500);
       },
       error: (err) => {
+        const msg = err?.error?.message || err?.error || 'Feedback submission failed';
+
         if (err.status === 409) {
-          this.feedbackPopupText = 'Feedback given already';
-          this.feedbackPopupType = 'danger';
+          this.feedbackPopupText = 'Feedback submitted already';
+        } else if (err.status === 403) {
+          this.feedbackPopupText = msg || 'You must enroll to give feedback';
         } else {
-          this.feedbackPopupText = 'Feedback submission failed!';
-          this.feedbackPopupType = 'danger';
+          this.feedbackPopupText = msg;
         }
+
+        this.feedbackPopupType = 'danger';
         this.feedbackPopup = true;
 
         setTimeout(() => {

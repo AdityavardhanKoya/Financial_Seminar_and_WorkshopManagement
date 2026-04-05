@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,6 @@ public class ParticipantController {
     @Autowired private EnrollmentRepository enrollmentRepo;
     @Autowired private EventRepository eventRepo;
 
-    // ✅ single events endpoint
     @GetMapping("/events")
     public ResponseEntity<List<Event>> getParticipantEvents(Authentication auth) {
 
@@ -45,10 +45,9 @@ public class ParticipantController {
                 .map(en -> en.getEvent().getId())
                 .collect(Collectors.toSet());
 
-        List<Event> events = eventRepo.findAllByOrderByIdDesc(); // ✅ recent first
+        List<Event> events = eventRepo.findAllByOrderByIdDesc();
 
         events.forEach(e -> {
-            // Participant sees only ACCEPTED professionals
             if (e.getProfessionals() != null && e.getProfessionalStatus() != null) {
                 e.setProfessionals(
                         e.getProfessionals().stream()
@@ -56,34 +55,68 @@ public class ParticipantController {
                                 .collect(Collectors.toList())
                 );
             }
-            e.setEnrolled(enrolledIds.contains(e.getId())); // ✅ used by UI
+            e.setEnrolled(enrolledIds.contains(e.getId()));
         });
 
         return ResponseEntity.ok(events);
     }
 
-    @PostMapping("/event/{eventId}/enroll")
-    public ResponseEntity<Enrollment> enroll(@PathVariable Long eventId,
-                                             @RequestParam Long userId) {
-        try {
-            return ResponseEntity.ok(eventService.enrollParticipant(eventId, userId));
-        } catch (RuntimeException e) {
-            if (e.getMessage() != null && e.getMessage().contains("capacity")) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-            }
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
+  @PostMapping("/event/{eventId}/enroll")
+public ResponseEntity<?> enroll(@PathVariable Long eventId, Authentication auth) {
+
+    User participant = userRepo.findByUsername(auth.getName());
+    if (participant == null) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message", "Unauthorized"));
     }
+
+    try {
+        return ResponseEntity.ok(eventService.enrollParticipant(eventId, participant.getId()));
+    } catch (RuntimeException e) {
+        if (e.getMessage() != null && e.getMessage().contains("capacity")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+    }
+}
+
 
     @GetMapping("/event/{id}/status")
     public ResponseEntity<Event> getEventStatus(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.getEventById(id));
     }
 
+    // ✅ Feedback submit (JWT-based, NO userId param)
     @PostMapping("/event/{eventId}/feedback")
-    public ResponseEntity<Feedback> provideFeedback(@PathVariable Long eventId,
-                                                    @RequestParam Long userId,
-                                                    @RequestBody Feedback feedback) {
-        return ResponseEntity.ok(feedbackService.addFeedback(eventId, userId, feedback));
+    public ResponseEntity<?> provideFeedback(@PathVariable Long eventId,
+                                             @RequestBody Feedback feedback,
+                                             Authentication auth) {
+        try {
+            User participant = userRepo.findByUsername(auth.getName());
+            if (participant == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message", "Unauthorized"));
+            }
+
+            boolean enrolled = enrollmentRepo.existsByEvent_IdAndUser_Id(eventId, participant.getId());
+            if (!enrolled) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "You must enroll to give feedback"));
+            }
+
+            Feedback saved = feedbackService.addFeedback(eventId, participant.getId(), feedback);
+            return ResponseEntity.ok(saved);
+
+        } catch (RuntimeException e) {
+            if (e.getMessage() != null && e.getMessage().toLowerCase().contains("already")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(Map.of("message", "Feedback submitted already"));
+            }
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Server error while saving feedback"));
+        }
     }
 }

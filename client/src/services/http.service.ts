@@ -6,7 +6,7 @@ import { environment } from '../environments/environment.development';
 
 @Injectable({ providedIn: 'root' })
 export class HttpService {
-  
+
   baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private auth: AuthService) {}
@@ -18,7 +18,8 @@ export class HttpService {
     });
   }
 
-  // Auth
+  /* ================= AUTH ================= */
+
   login(body: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/api/user/login`, body);
   }
@@ -27,100 +28,6 @@ export class HttpService {
     return this.http.post(`${this.baseUrl}/api/user/register`, body);
   }
 
-  // Institution
-  createEvent(body: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/api/institution/event`, body);
-  }
-
-  updateEvent(eventId: number, body: any): Observable<any> {
-    const instId = this.auth.getUserId();
-    return this.http.put(`${this.baseUrl}/api/institution/event/${eventId}?institutionId=${instId}`, body);
-  }
-
-  deleteEvent(eventId: number): Observable<any> {
-    const instId = this.auth.getUserId();
-    return this.http.delete(`${this.baseUrl}/api/institution/event/${eventId}?institutionId=${instId}`);
-  }
-
-  getInstitutionEvents(): Observable<any> {
-    const instId = this.auth.getUserId();
-    return this.http.get(`${this.baseUrl}/api/institution/events?institutionId=${instId}`);
-  }
-
-  addResource(eventId: number, body: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/api/institution/event/${eventId}/resource`, body);
-  }
-
-  getProfessionals(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/api/institution/event/professionals`);
-  }
-
-  assignProfessional(eventId: number, profId: number) {
-    // Replaced {} with null
-    return this.http.post(
-      `${this.baseUrl}/api/institution/event/${eventId}/professional?userId=${profId}`,
-      null
-    );
-  }
-
-  getInstitutionFeedbacks(eventId: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/api/institution/event/${eventId}/feedbacks`);
-  }
-
-  // Professional
-  getProfessionalEvents(): Observable<any> {
-    const userId = this.auth.getUserId();
-    return this.http.get(`${this.baseUrl}/api/professional/events?userId=${userId}`);
-  }
-getParticipantFeedbacks(): Observable<any> {
-   const userId = this.auth.getUserId();
-  return this.http.get(`${this.baseUrl}/api/professional/events?userId=${userId}`);
-}
-respondToAssignment(eventId: number, status: 'ACCEPTED' | 'REJECTED'): Observable<any> {
-  const userId = this.auth.getUserId();
-  return this.http.put(
-    `${this.baseUrl}/api/professional/event/${eventId}/assignment?userId=${userId}&status=${status}`,
-    null
-  );
-}
-
-updateEventStatus(eventId: number, status: string): Observable<any> {
-  const userId = this.auth.getUserId();
-  return this.http.put(
-    `${this.baseUrl}/api/professional/event/${eventId}/status?userId=${userId}&status=${status}`,
-    null
-  );
-}
-
-  addProfessionalFeedback(eventId: number, body: any): Observable<any> {
-    const userId = this.auth.getUserId();
-    return this.http.post(`${this.baseUrl}/api/professional/event/${eventId}/feedback?userId=${userId}`, body);
-  }
-
-  // Participant
-  getParticipantEvents(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/api/participant/events`);
-  }
-
-  enrollEvent(eventId: number) {
-    const userId = this.auth.getUserId();
-    // Use explicitly null for the body
-    return this.http.post(
-      `${this.baseUrl}/api/participant/event/${eventId}/enroll?userId=${userId}`,
-      null,
-      { headers: this.getAuthHeaders() }
-    );
-  }
-
-  addParticipantFeedback(eventId: number, body: any): Observable<any> {
-    const userId = this.auth.getUserId();
-    return this.http.post(`${this.baseUrl}/api/participant/event/${eventId}/feedback?userId=${userId}`, body);
-  }
-
-  viewEventStatus(eventId: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/api/participant/event/${eventId}/status`);
-  }
-  
   registerUser(data: any) {
     return this.http.post(`${this.baseUrl}/api/user/register`, data);
   }
@@ -128,18 +35,148 @@ updateEventStatus(eventId: number, status: string): Observable<any> {
   Login(data: any) {
     return this.http.post(`${this.baseUrl}/api/user/login`, data);
   }
+
   forgotPassword(body: any) {
-  return this.http.post(`${this.baseUrl}/api/user/forgot-password`, body);
+    return this.http.post(`${this.baseUrl}/api/user/forgot-password`, body);
+  }
+
+  resetPassword(body: any) {
+    return this.http.post(`${this.baseUrl}/api/user/reset-password`, body);
+  }
+
+  forgotPasswordOtp(body: any) {
+    return this.http.post(`${this.baseUrl}/api/user/forgot-password-otp`, body);
+  }
+
+  resetPasswordOtp(body: any) {
+    return this.http.post(`${this.baseUrl}/api/user/reset-password-otp`, body);
+  }
+
+  /* ================= INSTITUTION ================= */
+
+  createEvent(body: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/institution/event`, body, { headers: this.getAuthHeaders() });
+  }
+
+  updateEvent(eventId: number, body: any): Observable<any> {
+    const instId = this.auth.getUserId();
+    return this.http.put(
+      `${this.baseUrl}/api/institution/event/${eventId}?institutionId=${instId}`,
+      body,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  deleteEvent(eventId: number): Observable<any> {
+    const instId = this.auth.getUserId();
+    return this.http.delete(
+      `${this.baseUrl}/api/institution/event/${eventId}?institutionId=${instId}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getInstitutionEvents(): Observable<any> {
+    const instId = this.auth.getUserId();
+    return this.http.get(
+      `${this.baseUrl}/api/institution/events?institutionId=${instId}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  addResource(eventId: number, body: any): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/api/institution/event/${eventId}/resource`,
+      body,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getProfessionals(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/institution/event/professionals`, { headers: this.getAuthHeaders() });
+  }
+
+  assignProfessional(eventId: number, profId: number) {
+    return this.http.post(
+      `${this.baseUrl}/api/institution/event/${eventId}/professional?userId=${profId}`,
+      null,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getInstitutionFeedbacks(eventId: number): Observable<any> {
+    return this.http.get(
+      `${this.baseUrl}/api/institution/event/${eventId}/feedbacks`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  /* ================= PROFESSIONAL ================= */
+
+  getProfessionalEvents(): Observable<any> {
+    const userId = this.auth.getUserId();
+    return this.http.get(
+      `${this.baseUrl}/api/professional/events?userId=${userId}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  respondToAssignment(eventId: number, status: 'ACCEPTED' | 'REJECTED'): Observable<any> {
+    const userId = this.auth.getUserId();
+    return this.http.put(
+      `${this.baseUrl}/api/professional/event/${eventId}/assignment?userId=${userId}&status=${status}`,
+      null,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  updateEventStatus(eventId: number, status: string): Observable<any> {
+    const userId = this.auth.getUserId();
+    return this.http.put(
+      `${this.baseUrl}/api/professional/event/${eventId}/status?userId=${userId}&status=${status}`,
+      null,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  addProfessionalFeedback(eventId: number, body: any): Observable<any> {
+    const userId = this.auth.getUserId();
+    return this.http.post(
+      `${this.baseUrl}/api/professional/event/${eventId}/feedback?userId=${userId}`,
+      body,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  /* ================= PARTICIPANT ================= */
+
+  getParticipantEvents(): Observable<any> {
+    return this.http.get(
+      `${this.baseUrl}/api/participant/events`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  enrollEvent(eventId: number) {
+  return this.http.post(
+    `${this.baseUrl}/api/participant/event/${eventId}/enroll`,
+    null,
+    { headers: this.getAuthHeaders() }
+  );
 }
 
-resetPassword(body: any) {
-  return this.http.post(`${this.baseUrl}/api/user/reset-password`, body);
-}
-forgotPasswordOtp(body: any) {
-  return this.http.post(`${this.baseUrl}/api/user/forgot-password-otp`, body);
-}
 
-resetPasswordOtp(body: any) {
-  return this.http.post(`${this.baseUrl}/api/user/reset-password-otp`, body);
-}
+  addParticipantFeedback(eventId: number, body: any): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/api/participant/event/${eventId}/feedback`,
+      body,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  viewEventStatus(eventId: number): Observable<any> {
+    return this.http.get(
+      `${this.baseUrl}/api/participant/event/${eventId}/status`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
 }

@@ -4,7 +4,7 @@
     <h3 class="mb-0">Participant Events</h3>
   </div>
 
-  <!-- ✅ Toggle Buttons -->
+  <!-- Toggle Buttons -->
   <div class="btn-group mb-3 w-100">
     <button class="btn"
             [ngClass]="viewMode === 'AVAILABLE' ? 'btn-primary' : 'btn-outline-primary'"
@@ -19,7 +19,7 @@
     </button>
   </div>
 
-  <!-- ✅ Search -->
+  <!-- Search -->
   <div class="row g-2 align-items-center mb-3">
     <div class="col-md-8">
       <input type="text" class="form-control"
@@ -40,7 +40,7 @@
     Showing results for: <strong>{{ appliedSearch }}</strong> ({{ filteredEvents.length }} found)
   </div>
 
-  <!-- ✅ Events list -->
+  <!-- Events list -->
   <div class="row">
     <div class="col-md-4 mb-3" *ngFor="let e of pagedEvents">
       <div class="card h-100 shadow-sm">
@@ -56,6 +56,9 @@
             <span class="badge bg-info">{{ e.status }}</span>
           </p>
         </div>
+          <div class="small text-muted">
+  mode={{ viewMode }} | enrolled={{ e.enrolled }} | status={{ e.status }} | id={{ e.id }}
+</div>
 
         <div class="card-footer">
 
@@ -64,7 +67,7 @@
             <span *ngIf="e.enrolled" class="badge bg-success">Enrolled</span>
           </div>
 
-          <!-- ✅ Enroll only in Available mode -->
+          <!-- Enroll only in Available mode -->
           <button
             type="button"
             *ngIf="viewMode === 'AVAILABLE' && !e.enrolled"
@@ -73,32 +76,30 @@
             Enroll
           </button>
 
-          <!-- ✅ Feedback only after enrolled (both modes allowed if you want) -->
+          <!-- ✅ Feedback only after completion + enrolled -->
           <button
-  type="button"
-  *ngIf="viewMode === 'AVAILABLE' && e.enrolled"
-  class="btn btn-outline-success btn-sm w-100"
-  (click)="toggleAddFeedback(e)">
-  Add Feedback
-</button>
+            type="button"
+            *ngIf="viewMode === 'PAST' && e.enrolled"
+            class="btn btn-outline-success btn-sm w-100"
+            (click)="toggleAddFeedback(e)">
+            Add Feedback
+          </button>
 
-         <div *ngIf="viewMode === 'AVAILABLE' && e.enrolled && openFeedbackEventId === e.id" class="mt-3">
-  <label class="mb-1"><strong>Your Feedback</strong></label>
+          <div *ngIf="viewMode === 'PAST' && e.enrolled && openFeedbackEventId === e.id" class="mt-3">
+          
+            <label class="mb-1"><strong>Your Feedback</strong></label>
 
-  <textarea
-    class="form-control"
-    rows="3"
-    [(ngModel)]="feedbackText"
-    placeholder="Enter your feedback">
-  </textarea>
+            <textarea class="form-control"
+                      rows="3"
+                      [(ngModel)]="feedbackText"
+                      placeholder="Enter your feedback"></textarea>
 
-  <button
-    type="button"
-    class="btn btn-success btn-sm w-100 mt-2"
-    (click)="submitInlineFeedback(e)">
-    Submit Feedback
-  </button>
-</div>
+            <button type="button"
+                    class="btn btn-success btn-sm w-100 mt-2"
+                    (click)="submitInlineFeedback(e)">
+              Submit Feedback
+            </button>
+          </div>
 
         </div>
       </div>
@@ -153,24 +154,3 @@
   </div>
 
 </div>
-
-<style>
-  .modal-backdrop-custom{
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1050;
-    padding: 16px;
-  }
-  .modal-card-custom{
-    width: 100%;
-    max-width: 420px;
-    background: #fff;
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-  }
-</style>
