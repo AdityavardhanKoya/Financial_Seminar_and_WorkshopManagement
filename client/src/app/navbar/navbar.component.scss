@@ -10,16 +10,17 @@ $white: #ffffff;
   width: 100%;
   padding: 30px 0;
   z-index: 1000;
-  background-color: transparent !important;
+  background-color: transparent !important; // Forces transparency
   transition: all 0.4s ease;
 
   &.scrolled {
     padding: 15px 0;
-    background-color: rgba(6, 11, 25, 0.85) !important;
+    /* Updated: Removed solid dark background, kept glass blur and border only */
+    background-color: transparent !important; 
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: none; 
   }
 
   .logo {
@@ -29,7 +30,7 @@ $white: #ffffff;
     letter-spacing: -0.5px;
     color: $white !important;
     text-decoration: none;
-    margin-right: 60px; /* More space between logo and Manage Event */
+    margin-right: 60px;
   }
 
   .nav-links {
@@ -54,7 +55,7 @@ $white: #ffffff;
 
   .user-pill {
     display: inline-flex;
-    align-items: center; /* Vertically centers name and badge */
+    align-items: center;
     gap: 12px;
     font-size: 13px;
     color: rgba(255, 255, 255, 0.85);
@@ -68,13 +69,13 @@ $white: #ffffff;
 
   .role-badge {
     display: inline-flex;
-    align-items: center; /* Perfect vertical centering of text */
-    justify-content: center; /* Perfect horizontal centering of text */
+    align-items: center;
+    justify-content: center;
     background: rgba($primary-red, 0.15);
     border: 1px solid rgba($primary-red, 0.3);
     color: #ffb3b3;
     padding: 0 12px;
-    height: 22px; /* Fixed height forces center alignment */
+    height: 22px;
     border-radius: 12px;
     font-size: 10px;
     font-weight: 700;
@@ -108,13 +109,12 @@ $white: #ffffff;
 
 @media (max-width: 991px) {
   .custom-transparent-nav {
+    /* Kept solid for mobile so links are readable over content */
     background-color: rgba(6, 11, 25, 0.95) !important;
     padding: 15px 0;
   }
   
-  .logo {
-    margin-right: 0;
-  }
+  .logo { margin-right: 0; }
 
   .nav-links {
     flex-direction: column;
@@ -124,6 +124,7 @@ $white: #ffffff;
   }
 }
 
+/* ================= Custom Toast Notification ================= */
 .alert-custom-toast {
   position: fixed;
   top: 90px;
