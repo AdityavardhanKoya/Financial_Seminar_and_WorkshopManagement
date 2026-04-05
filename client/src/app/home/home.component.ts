@@ -6,15 +6,40 @@ import { Component, HostListener } from '@angular/core';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  // Variable to track scroll state
   isScrolled = false;
+  currentSection = 'hero'; // Defaults to the first section
 
   constructor() {}
 
-  // Listen to window scroll events
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    // If the user scrolls down more than 100 pixels, set isScrolled to true
+    // 1. Handle navbar transparency
     this.isScrolled = window.scrollY > 100;
+
+    // 2. Scroll Spy Logic for the dots
+    const sections = ['hero', 'about', 'features', 'roles'];
+    let current = 'hero';
+
+    for (const section of sections) {
+      const element = document.getElementById(section);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        // If the top of the section is past the middle of the screen, it's the active one
+        if (rect.top <= window.innerHeight / 2) {
+          current = section;
+        }
+      }
+    }
+    
+    // Update the active section
+    this.currentSection = current;
+  }
+
+  // Smooth scroll when a dot is clicked
+  scrollTo(sectionId: string) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }

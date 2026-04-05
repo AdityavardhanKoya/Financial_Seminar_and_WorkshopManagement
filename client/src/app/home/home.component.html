@@ -3,19 +3,19 @@
   <nav class="navbar" [class.scrolled]="isScrolled">
     <div class="logo">Fin Event.</div>
     <div class="nav-links">
-      <a href="#about">About</a>
-      <a href="#features">Features</a>
-      <a href="#roles">Roles</a>
+      <a (click)="scrollTo('hero')" style="cursor: pointer;">Home</a>
+      <a (click)="scrollTo('about')" style="cursor: pointer;">About</a>
+      <a (click)="scrollTo('features')" style="cursor: pointer;">Features</a>
+      <a (click)="scrollTo('roles')" style="cursor: pointer;">Roles</a>
       <a routerLink="/registration">Signup</a>
     </div>
   </nav>
 
   <div class="scroll-dots">
-    <div class="dot active"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
+    <div class="dot" [class.active]="currentSection === 'hero'" (click)="scrollTo('hero')"></div>
+    <div class="dot" [class.active]="currentSection === 'about'" (click)="scrollTo('about')"></div>
+    <div class="dot" [class.active]="currentSection === 'features'" (click)="scrollTo('features')"></div>
+    <div class="dot" [class.active]="currentSection === 'roles'" (click)="scrollTo('roles')"></div>
   </div>
 
   <section class="section hero-section" id="hero">
