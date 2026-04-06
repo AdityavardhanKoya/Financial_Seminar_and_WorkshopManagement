@@ -76,7 +76,10 @@ export class ViewEventsComponent implements OnInit {
       }
     });
   }
-
+    getProfessional(e: any): any | null {
+    if (Array.isArray(e?.professionals) && e.professionals.length > 0) return e.professionals[0];
+    return null;
+  }
   private markEnrolled(id: number): void {
     const update = (list: any[]) => { const i = list.findIndex(ev => ev.id === id); if (i !== -1) list[i].enrolled = true; };
     update(this.allEvents); update(this.events);

@@ -45,6 +45,7 @@
           </div>
           
           <div class="panel-body flex-grow-1">
+             <span class="glass-label">Description</span>
             <p class="text-muted-light small mb-3 description-text">{{ e.description }}</p>
             
             <div class="info-row mb-2">
@@ -56,6 +57,19 @@
               <span class="glass-label">Location</span>
               <div class="text-white small">{{ e.location }}</div>
             </div>
+            
+              <ng-container *ngIf="getProfessional(e) as p">
+                
+            <div class="info-row mb-2">
+                  <span class="glass-label ">Professional</span>
+                  <span class="text-white small">{{ p.username }}</span>
+                </div>
+               
+            <div class="info-row mb-2">
+                  <span class="glass-label ">Email</span>
+                  <span class="text-white small">{{ p.email }}</span>
+                </div>
+              </ng-container>
 
             <div class="info-row">
               <span class="glass-label">Status</span>
