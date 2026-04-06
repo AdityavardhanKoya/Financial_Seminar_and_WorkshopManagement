@@ -23,14 +23,12 @@ public class EventService {
     @Autowired private EnrollmentRepository enrollmentRepository;
     @Autowired private EmailNotificationService emailNotificationService;
 
-    // ✅ Runs every minute: if schedule time passed, mark COMPLETED
-    @Scheduled(cron = "0 * * * * *") // every minute at second 0
+    private final ZoneId zone = ZoneId.of("Asia/Kolkata");
+    private final DateTimeFormatter iso = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+    @Scheduled(cron = "0 * * * * *")
     public void autoCompleteExpiredEvents() {
-
-        ZoneId zone = ZoneId.of("Asia/Kolkata");
         LocalDateTime now = LocalDateTime.now(zone);
-
-        DateTimeFormatter iso = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
         List<Event> candidates = eventRepository.findAll().stream()
                 .filter(e -> e.getStatus() != null && !"COMPLETED".equalsIgnoreCase(e.getStatus()))
@@ -40,8 +38,6 @@ public class EventService {
         for (Event event : candidates) {
             try {
                 LocalDateTime eventTime = LocalDateTime.parse(event.getSchedule().trim(), iso);
-
-                // ✅ if now >= eventTime → COMPLETED
                 if (!now.isBefore(eventTime)) {
                     event.setStatus("COMPLETED");
                     eventRepository.save(event);
@@ -83,16 +79,31 @@ public class EventService {
         }
     }
 
-    // ✅ ISO validation: schedule must be future, format must be 2026-03-06T09:54
+    private boolean autoCompleteIfSchedulePassed(Event e) {
+        if (e == null) return false;
+        if (e.getSchedule() == null || e.getSchedule().trim().isEmpty()) return false;
+        if ("COMPLETED".equalsIgnoreCase(e.getStatus())) return true;
+
+        try {
+            LocalDateTime now = LocalDateTime.now(zone);
+            LocalDateTime eventTime = LocalDateTime.parse(e.getSchedule().trim(), iso);
+            if (!now.isBefore(eventTime)) {
+                e.setStatus("COMPLETED");
+                eventRepository.save(e);
+                return true;
+            }
+        } catch (Exception ignored) {
+        }
+        return "COMPLETED".equalsIgnoreCase(e.getStatus());
+    }
+
     private void validateFutureSchedule(String schedule) {
         if (schedule == null || schedule.trim().isEmpty()) {
             throw new RuntimeException("Schedule is required");
         }
 
         try {
-            ZoneId zone = ZoneId.of("Asia/Kolkata");
             LocalDateTime now = LocalDateTime.now(zone);
-
             LocalDateTime eventDateTime =
                     LocalDateTime.parse(schedule.trim(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
@@ -106,11 +117,10 @@ public class EventService {
         }
     }
 
-    // ---------- CRUD ----------
     public Event createEvent(Event event) {
         validateFutureSchedule(event.getSchedule());
         event.setEnrollmentCount(0);
-        event.setStatus("PENDING"); // ✅ Institution creates as PENDING
+        event.setStatus("PENDING");
         return eventRepository.save(event);
     }
 
@@ -128,7 +138,6 @@ public class EventService {
         e.setLocation(updated.getLocation());
         e.setMaxEnrollment(updated.getMaxEnrollment());
 
-        // ✅ Do NOT allow institution to manually set status here
         return eventRepository.save(e);
     }
 
@@ -140,7 +149,6 @@ public class EventService {
         eventRepository.deleteById(id);
     }
 
-    // ---------- Views ----------
     public List<Event> getAllEvents() {
         List<Event> all = eventRepository.findAll();
         all.forEach(this::refreshEnrollmentCount);
@@ -155,16 +163,22 @@ public class EventService {
 
     public List<Event> getEventsByProfessional(Long userId) {
         List<Event> list = eventRepository.findByProfessionalsId(userId);
+
         list.forEach(e -> {
             refreshEnrollmentCount(e);
+            autoCompleteIfSchedulePassed(e);
             expireIfNeeded(e, userId);
         });
-        return list;
+
+        return list.stream()
+                .filter(e -> e.getStatus() == null || !"COMPLETED".equalsIgnoreCase(e.getStatus()))
+                .toList();
     }
 
     public Event getEventById(Long id) {
         Event e = getOrThrow(id);
         refreshEnrollmentCount(e);
+        autoCompleteIfSchedulePassed(e);
         return e;
     }
 
@@ -175,6 +189,11 @@ public class EventService {
 
     public Event assignProfessional(Long eventId, Long professionalId, String institutionUsername) throws IllegalAccessException {
         Event event = getOrThrow(eventId);
+
+        autoCompleteIfSchedulePassed(event);
+        if ("COMPLETED".equalsIgnoreCase(event.getStatus())) {
+            throw new RuntimeException("Cannot assign professionals to a completed event");
+        }
 
         User institution = userRepository.findByUsername(institutionUsername);
         if (institution == null) throw new RuntimeException("Institution user not found from token");
@@ -213,6 +232,11 @@ public class EventService {
     public Event respondToAssignment(Long eventId, Long professionalId, String status) {
         Event event = getOrThrow(eventId);
 
+        autoCompleteIfSchedulePassed(event);
+        if ("COMPLETED".equalsIgnoreCase(event.getStatus())) {
+            throw new RuntimeException("Event already completed. Response not allowed.");
+        }
+
         if (!event.getProfessionalStatus().containsKey(professionalId)) {
             throw new RuntimeException("Not assigned to this event");
         }
@@ -230,7 +254,6 @@ public class EventService {
 
         event.getProfessionalStatus().put(professionalId, status);
 
-        // ✅ If Professional accepts, set status to UPCOMING
         if ("ACCEPTED".equals(status)) {
             event.setStatus("UPCOMING");
         }
@@ -250,9 +273,13 @@ public class EventService {
         return saved;
     }
 
-    // ---------- Enrollment ----------
     public Enrollment enrollParticipant(Long eventId, Long userId) {
         Event event = getOrThrow(eventId);
+
+        autoCompleteIfSchedulePassed(event);
+        if ("COMPLETED".equalsIgnoreCase(event.getStatus())) {
+            throw new RuntimeException("Event already completed");
+        }
 
         User participant = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));

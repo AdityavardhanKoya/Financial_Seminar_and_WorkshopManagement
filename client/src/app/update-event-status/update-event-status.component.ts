@@ -20,11 +20,24 @@ export class UpdateEventStatusComponent implements OnInit {
     this.load();
   }
 
+  private normalizeStatus(s: any): string {
+    return (s ?? '').toString().trim().toUpperCase();
+  }
+
+  private isVisibleForProfessionalDashboard(e: any): boolean {
+    const status = this.normalizeStatus(e?.status);
+    if (!status) return true;
+    if (status === 'COMPLETED') return false;
+    if (status === 'CANCELLED') return false;
+    return true;
+  }
+
   load(): void {
     this.http.getProfessionalEvents().subscribe({
       next: (res: any) => {
         const list = Array.isArray(res) ? res : (res?.data ?? []);
-        this.events = Array.isArray(list) ? list : [];
+        const arr = Array.isArray(list) ? list : [];
+        this.events = arr.filter(e => this.isVisibleForProfessionalDashboard(e));
       },
       error: () => this.notif.show('Failed to load events', 'danger', 4000)
     });
@@ -52,12 +65,13 @@ export class UpdateEventStatusComponent implements OnInit {
   }
 
   respond(e: any, response: AssignmentResponse): void {
-    const title = e?.title ?? 'this event';
-    const msg = response === 'ACCEPTED'
-        ? `Accept assignment for "${title}"?`
-        : `Reject assignment for "${title}"? Institution will be notified.`;
+    const status = this.normalizeStatus(e?.status);
+    if (status === 'COMPLETED' || status === 'CANCELLED') {
+      this.notif.show('This event is already closed. Response is not allowed.', 'warning', 4000);
+      this.load();
+      return;
+    }
 
-  
     this.http.respondToAssignment(e.id, response).subscribe({
       next: () => {
         this.notif.show(
