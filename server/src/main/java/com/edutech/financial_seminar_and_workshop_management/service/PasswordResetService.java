@@ -28,32 +28,7 @@ public class PasswordResetService {
     @Autowired 
     private PasswordEncoder encoder;
 
-    public void sendResetLink(String email) {
-
-        // Assuming you have findByEmail in UserRepository
-     User user = userRepo.findByEmail(email)
-        .orElseThrow(() -> new RuntimeException("Invalid email"));
-        // remove old tokens
-        tokenRepo.deleteByUser(user);
-
-        String token = UUID.randomUUID().toString();
-        PasswordResetToken prt = new PasswordResetToken();
-        prt.setUser(user);
-        prt.setToken(token);
-        prt.setExpiryDate(new Date(System.currentTimeMillis() + 15 * 60 * 1000)); // 15 mins
-
-        tokenRepo.save(prt);
-
-        String link = "http://localhost:4200/reset-password?token=" + token;
-
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(user.getEmail());
-        msg.setSubject("Reset Password - FinEvent");
-        msg.setText(
-            "Click below link to reset your password (valid for 15 minutes):\n\n" + link
-        );
-        mailSender.send(msg);
-    }
+   
 
     public void resetPassword(String token, String newPassword) {
 

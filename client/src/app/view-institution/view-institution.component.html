@@ -19,7 +19,7 @@
           <div class="panel-body flex-grow-1">
             <div class="info-row mb-2">
               <span class="glass-label">Schedule</span>
-              <p class="text-white mb-0">{{ e.schedule }}</p>
+              <p class="text-white mb-0"> {{ e.schedule.replace('T', ' ') }}</p>
             </div>
 
             <div class="info-row mb-2">
@@ -30,7 +30,7 @@
             <div class="info-row mb-3">
               <span class="glass-label">Status</span>
               <div>
-                <span class="status-badge" [attr.data-status]="e.status">{{ e.status }}</span>
+                <span class="status-badge" [attr.data-status]="(e.status || '').toUpperCase()">{{ e.status | uppercase}}</span>
               </div>
             </div>
 

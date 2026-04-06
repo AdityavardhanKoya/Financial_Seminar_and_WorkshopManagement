@@ -21,7 +21,6 @@
             <div class="col-md-4">
               <label class="glass-label">Event Title</label>
               <div class="glass-input-wrap">
-                <span class="input-icon">📝</span>
                 <input type="text" class="glass-input" formControlName="title" placeholder="Enter title">
               </div>
             </div>
@@ -29,7 +28,6 @@
             <div class="col-md-4">
               <label class="glass-label">Schedule</label>
               <div class="glass-input-wrap">
-                <span class="input-icon">📅</span>
                 <input type="datetime-local" class="glass-input" formControlName="schedule" [min]="getCurrentDateTime()">
               </div>
               <small *ngIf="form.get('schedule')?.hasError('pastDate') && form.get('schedule')?.touched" class="text-danger mt-1 d-block fw-bold" style="font-size: 0.75rem;">
@@ -40,7 +38,6 @@
             <div class="col-md-4">
               <label class="glass-label">Location</label>
               <div class="glass-input-wrap">
-                <span class="input-icon">📍</span>
                 <input type="text" class="glass-input" formControlName="location" placeholder="Venue or Online Link">
               </div>
             </div>
@@ -48,7 +45,6 @@
             <div class="col-md-4">
               <label class="glass-label">Status</label>
               <div class="glass-input-wrap bg-disabled-wrap">
-                <span class="input-icon">⚙️</span>
                 <input type="text" class="glass-input bg-disabled" formControlName="status" readonly title="Status is managed automatically by the system">
               </div>
               <small class="text-muted mt-1 d-block" style="font-size: 0.75rem;">Updates automatically.</small>
@@ -57,7 +53,6 @@
             <div class="col-md-4">
               <label class="glass-label">Max Enrollment</label>
               <div class="glass-input-wrap">
-                <span class="input-icon">👥</span>
                 <input type="number" class="glass-input" formControlName="maxEnrollment" placeholder="e.g. 100">
               </div>
             </div>
@@ -65,7 +60,6 @@
             <div class="col-md-12">
               <label class="glass-label">Description</label>
               <div class="glass-input-wrap align-items-start">
-                <span class="input-icon mt-2">ℹ️</span>
                 <textarea rows="2" class="glass-input" formControlName="description" placeholder="Brief event summary..."></textarea>
               </div>
             </div>

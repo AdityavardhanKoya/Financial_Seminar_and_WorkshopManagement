@@ -36,7 +36,7 @@
               </td>
               <td class="text-muted-light">{{ e.schedule }}</td>
               <td>
-                <span class="status-badge" [attr.data-status]="e.status">{{ e.status }}</span>
+                <span class="status-badge" [attr.data-status]="(e.status || '').toUpperCase()">{{ e.status | uppercase}}</span>
               </td>
               <td class="text-white-50 small">
                 {{ professionalsText(e) }}

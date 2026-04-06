@@ -57,8 +57,7 @@ export class UpdateEventStatusComponent implements OnInit {
         ? `Accept assignment for "${title}"?`
         : `Reject assignment for "${title}"? Institution will be notified.`;
 
-    if (!confirm(msg)) return;
-
+  
     this.http.respondToAssignment(e.id, response).subscribe({
       next: () => {
         this.notif.show(

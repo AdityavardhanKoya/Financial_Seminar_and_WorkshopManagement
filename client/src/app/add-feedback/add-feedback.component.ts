@@ -33,7 +33,7 @@ export class AddFeedbackComponent implements OnInit {
       return;
     }
 
-    if (!confirm('Submit feedback?')) return;
+
 
     this.http.addProfessionalFeedback(this.selectedId, {
       content: this.content.trim(),
@@ -46,7 +46,7 @@ export class AddFeedbackComponent implements OnInit {
       },
       error: (err) => {
         if (err.status === 409) {
-          this.notif.show('Feedback given already', 'warning', 4000);
+          this.notif.show('Feedback already given', 'warning', 4000);
         } else {
           this.notif.show(err?.error?.message || 'Feedback failed', 'danger', 4000);
         }

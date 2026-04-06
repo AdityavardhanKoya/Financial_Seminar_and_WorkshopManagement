@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@EnableScheduling // <-- Add this annotation
+@EnableScheduling 
 public class FinancialSeminarAndWorkshopManagementApplication {
 
 	public static void main(String[] args) {

@@ -20,7 +20,6 @@
           <div class="col-md-12">
             <label class="glass-label">Select Completed Event</label>
             <div class="glass-input-wrap">
-              <span class="input-icon">🏆</span>
               <select class="glass-input" [(ngModel)]="selectedId">
                 <option [ngValue]="null">-- Select Event --</option>
                 <option *ngFor="let e of events" [ngValue]="e.id">
@@ -33,7 +32,6 @@
           <div class="col-md-12">
             <label class="glass-label">Feedback Details</label>
             <div class="glass-input-wrap align-items-start">
-              <span class="input-icon mt-2">💬</span>
               <textarea
                 class="glass-input"
                 rows="4"

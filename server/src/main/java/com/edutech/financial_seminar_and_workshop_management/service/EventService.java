@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -22,28 +23,32 @@ public class EventService {
     @Autowired private EnrollmentRepository enrollmentRepository;
     @Autowired private EmailNotificationService emailNotificationService;
 
-    // Background job that runs every 1 minute to auto-complete expired events
-    @Scheduled(fixedRate = 60000)
+    // ✅ Runs every minute: if schedule time passed, mark COMPLETED
+    @Scheduled(cron = "0 * * * * *") // every minute at second 0
     public void autoCompleteExpiredEvents() {
-        // Check for UPCOMING events
-        List<Event> ongoingEvents = eventRepository.findAll().stream()
-                .filter(e -> "UPCOMING".equals(e.getStatus())) 
+
+        ZoneId zone = ZoneId.of("Asia/Kolkata");
+        LocalDateTime now = LocalDateTime.now(zone);
+
+        DateTimeFormatter iso = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        List<Event> candidates = eventRepository.findAll().stream()
+                .filter(e -> e.getStatus() != null && !"COMPLETED".equalsIgnoreCase(e.getStatus()))
+                .filter(e -> e.getSchedule() != null && !e.getSchedule().trim().isEmpty())
                 .toList();
 
-        LocalDateTime now = LocalDateTime.now();
-
-        for (Event event : ongoingEvents) {
+        for (Event event : candidates) {
             try {
-                if (event.getSchedule() != null && !event.getSchedule().isEmpty()) {
-                    LocalDateTime eventDateTime = LocalDateTime.parse(event.getSchedule(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                    if (now.isAfter(eventDateTime)) {
-                        // Auto-complete when time passes
-                        event.setStatus("COMPLETED");
-                        eventRepository.save(event);
-                    }
+                LocalDateTime eventTime = LocalDateTime.parse(event.getSchedule().trim(), iso);
+
+                // ✅ if now >= eventTime → COMPLETED
+                if (!now.isBefore(eventTime)) {
+                    event.setStatus("COMPLETED");
+                    eventRepository.save(event);
                 }
-            } catch (Exception e) {
-                // Ignore parsing errors for malformed dates
+            } catch (Exception ex) {
+                System.err.println("Schedule parse failed for eventId=" + event.getId()
+                        + " schedule='" + event.getSchedule() + "' err=" + ex.getMessage());
             }
         }
     }
@@ -78,21 +83,26 @@ public class EventService {
         }
     }
 
-    // Validation to prevent creating events in the past
+    // ✅ ISO validation: schedule must be future, format must be 2026-03-06T09:54
     private void validateFutureSchedule(String schedule) {
-        if (schedule == null || schedule.isEmpty()) {
+        if (schedule == null || schedule.trim().isEmpty()) {
             throw new RuntimeException("Schedule is required");
         }
+
         try {
-            LocalDateTime eventDateTime = LocalDateTime.parse(schedule, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            if (eventDateTime.isBefore(LocalDateTime.now())) {
+            ZoneId zone = ZoneId.of("Asia/Kolkata");
+            LocalDateTime now = LocalDateTime.now(zone);
+
+            LocalDateTime eventDateTime =
+                    LocalDateTime.parse(schedule.trim(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+            if (eventDateTime.isBefore(now)) {
                 throw new RuntimeException("Event schedule cannot be in the past");
             }
+        } catch (RuntimeException re) {
+            throw re;
         } catch (Exception e) {
-            if (e instanceof RuntimeException && e.getMessage().equals("Event schedule cannot be in the past")) {
-                throw e; 
-            }
-            throw new RuntimeException("Invalid date format. Expected yyyy-MM-dd'T'HH:mm");
+            throw new RuntimeException("Invalid date format. Expected ISO like 2026-03-06T09:54");
         }
     }
 
@@ -100,23 +110,25 @@ public class EventService {
     public Event createEvent(Event event) {
         validateFutureSchedule(event.getSchedule());
         event.setEnrollmentCount(0);
-        event.setStatus("PENDING"); 
+        event.setStatus("PENDING"); // ✅ Institution creates as PENDING
         return eventRepository.save(event);
     }
 
     public Event updateEvent(Long id, Long institutionId, Event updated) {
         validateFutureSchedule(updated.getSchedule());
-        
+
         Event e = getOrThrow(id);
         if (!e.getInstitutionId().equals(institutionId)) {
             throw new RuntimeException("Not your event");
         }
+
         e.setTitle(updated.getTitle());
         e.setDescription(updated.getDescription());
         e.setSchedule(updated.getSchedule());
         e.setLocation(updated.getLocation());
-        // Status updates are restricted from this endpoint
         e.setMaxEnrollment(updated.getMaxEnrollment());
+
+        // ✅ Do NOT allow institution to manually set status here
         return eventRepository.save(e);
     }
 
@@ -165,9 +177,7 @@ public class EventService {
         Event event = getOrThrow(eventId);
 
         User institution = userRepository.findByUsername(institutionUsername);
-        if (institution == null) {
-            throw new RuntimeException("Institution user not found from token");
-        }
+        if (institution == null) throw new RuntimeException("Institution user not found from token");
 
         if (!"INSTITUTION".equals(institution.getRole())) {
             throw new IllegalAccessException("Only INSTITUTION can assign professionals");
@@ -193,11 +203,9 @@ public class EventService {
 
         Event saved = eventRepository.save(event);
 
-        if (emailNotificationService != null) {
-            try {
-                emailNotificationService.mailProfessionalAssigned(prof, institution, saved);
-            } catch (Exception ignored) {}
-        }
+        try {
+            emailNotificationService.mailProfessionalAssigned(prof, institution, saved);
+        } catch (Exception ignored) {}
 
         return saved;
     }
@@ -222,7 +230,7 @@ public class EventService {
 
         event.getProfessionalStatus().put(professionalId, status);
 
-        // If Professional accepts, change status to UPCOMING
+        // ✅ If Professional accepts, set status to UPCOMING
         if ("ACCEPTED".equals(status)) {
             event.setStatus("UPCOMING");
         }
@@ -245,6 +253,7 @@ public class EventService {
     // ---------- Enrollment ----------
     public Enrollment enrollParticipant(Long eventId, Long userId) {
         Event event = getOrThrow(eventId);
+
         User participant = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

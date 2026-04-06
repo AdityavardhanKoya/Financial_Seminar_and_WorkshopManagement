@@ -17,7 +17,6 @@
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/entity/Enrollment.java
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/entity/Event.java
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/jwt/JwtRequestFilter.java
-/home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/dto/ForgotPasswordRequest.java
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/entity/Feedback.java
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/repository/UserRepository.java
 /home/coder/app/server/src/main/java/com/edutech/financial_seminar_and_workshop_management/service/UserService.java

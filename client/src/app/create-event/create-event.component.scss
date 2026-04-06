@@ -183,7 +183,7 @@ $glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   padding: 6px 14px;
   border-radius: 20px;
   &[data-status="PENDING"] { background-color: rgba(217, 119, 6, 0.2); color: #fcd34d; border: 1px solid rgba(217, 119, 6, 0.4); }
-  &[data-status="IN_PROGRESS"] { background-color: rgba(37, 99, 235, 0.2); color: #93c5fd; border: 1px solid rgba(37, 99, 235, 0.4); }
+  &[data-status="UPCOMING"] { background-color: rgba(37, 99, 235, 0.2); color: #93c5fd; border: 1px solid rgba(37, 99, 235, 0.4); }
   &[data-status="COMPLETED"] { background-color: rgba(5, 150, 105, 0.2); color: #6ee7b7; border: 1px solid rgba(5, 150, 105, 0.4); }
 }
 

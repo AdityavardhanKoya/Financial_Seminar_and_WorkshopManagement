@@ -41,11 +41,7 @@ public class InstitutionController {
         return ResponseEntity.ok(eventService.getEventsByInstitution(institutionId));
     }
 
-    @PostMapping("/event/{eventId}/resource")
-    public ResponseEntity<Resource> addResource(@PathVariable Long eventId, @RequestBody Resource resource) {
-        return ResponseEntity.ok(resourceService.addResource(eventId, resource));
-    }
-
+  
     @GetMapping("/event/professionals")
     public ResponseEntity<List<User>> getProfessionals() {
         return ResponseEntity.ok(eventService.getAllProfessionals());

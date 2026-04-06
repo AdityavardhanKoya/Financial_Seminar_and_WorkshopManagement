@@ -88,4 +88,18 @@ public class EmailNotificationService {
             "~ Fin Event Platform."
         );
     }
+    public void mailEventCancelled(User recipient, User institution, Event event, String recipientType) {
+    send(
+        recipient.getEmail(),
+        "Event Cancelled: " + event.getTitle(),
+        "Hello " + recipient.getUsername() + ",\n\n" +
+        "The following event has been CANCELLED by the institution.\n\n" +
+        "Event: " + event.getTitle() + "\n" +
+        "Date/Time: " + (event.getSchedule() != null ? event.getSchedule() : "-") + "\n" +
+        "Location: " + (event.getLocation() != null ? event.getLocation() : "-") + "\n\n" +
+        "You are receiving this email as a " + recipientType + ".\n\n" +
+        "Institution Contact: " + institution.getUsername() + " (" + institution.getEmail() + ")\n\n" +
+        "~ Fin Event Platform."
+    );
+}
 }

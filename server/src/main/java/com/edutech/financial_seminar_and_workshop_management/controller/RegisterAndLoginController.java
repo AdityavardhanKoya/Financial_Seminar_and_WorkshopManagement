@@ -2,7 +2,7 @@ package com.edutech.financial_seminar_and_workshop_management.controller;
 import com.edutech.financial_seminar_and_workshop_management.service.PasswordOtpService;
 import com.edutech.financial_seminar_and_workshop_management.dto.ForgotPasswordOtpRequest;
 import com.edutech.financial_seminar_and_workshop_management.dto.ResetPasswordOtpRequest;
-import com.edutech.financial_seminar_and_workshop_management.dto.ForgotPasswordRequest;
+
 import com.edutech.financial_seminar_and_workshop_management.dto.LoginRequest;
 import com.edutech.financial_seminar_and_workshop_management.dto.LoginResponse;
 import com.edutech.financial_seminar_and_workshop_management.dto.ResetPasswordRequest;
@@ -43,20 +43,7 @@ public class RegisterAndLoginController {
         }
     }
 
-    // ✅ Fix: Use the correct DTOs and handle the forgot password logic
-    @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
-        if (request.getEmail() == null || request.getEmail().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Email is required."));
-        }
-        
-        try {
-            passwordResetService.sendResetLink(request.getEmail());
-            return ResponseEntity.ok(Map.of("message", "If an account with that email exists, a reset link has been sent."));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
-        }
-    }
+
 
     // ✅ Fix: Use the correct DTOs and handle the reset password logic
     @PostMapping("/reset-password")

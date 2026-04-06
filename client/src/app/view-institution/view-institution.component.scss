@@ -104,7 +104,7 @@ $glass-bg: rgba(255, 255, 255, 0.08);
   text-transform: uppercase;
   
   &[data-status="PENDING"] { background: rgba(217, 119, 6, 0.2); border: 1px solid rgba(217, 119, 6, 0.4); color: #fcd34d; }
-  &[data-status="IN_PROGRESS"] { background: rgba(37, 99, 235, 0.2); border: 1px solid rgba(37, 99, 235, 0.4); color: #93c5fd; }
+  &[data-status="UPCOMING"] { background: rgba(37, 99, 235, 0.2); border: 1px solid rgba(37, 99, 235, 0.4); color: #93c5fd; }
   &[data-status="COMPLETED"] { background: rgba(5, 150, 105, 0.2); border: 1px solid rgba(5, 150, 105, 0.4); color: #6ee7b7; }
 }
 
