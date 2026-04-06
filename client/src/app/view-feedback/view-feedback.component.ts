@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { NotificationService } from '../notification.service';
 import { SelectedEventService } from '../selected-event.service';
 
-
 @Component({
   selector: 'app-view-feedback',
-  templateUrl: './view-feedback.component.html'
+  templateUrl: './view-feedback.component.html',
+  styleUrls: ['./view-feedback.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ViewFeedbacksComponent implements OnInit {
   selectedEvent: any | null = null;

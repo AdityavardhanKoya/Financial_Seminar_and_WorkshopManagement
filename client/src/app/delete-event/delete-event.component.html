@@ -1,29 +1,63 @@
-<div class="container mt-4">
-  <h3 class="text-danger fw-bold mb-3">Delete Event</h3>
-
-  <div class="card shadow-sm">
-    <div class="card-body p-0">
-      <table class="table table-hover mb-0" *ngIf="events.length">
-        <thead class="table-dark">
-          <tr><th>ID</th><th>Title</th><th>Schedule</th><th>Status</th><th>Action</th></tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let e of pagedEvents">
-            <td>{{e.id}}</td>
-            <td>{{e.title}}</td>
-            <td>{{e.schedule}}</td>
-            <td>{{e.status}}</td>
-            <td><button class="btn btn-sm btn-danger" (click)="delete(e)">Delete</button></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="p-3 text-muted" *ngIf="!events.length">No events.</div>
+<div class="pro-glass-dashboard">
+  <div class="container-fluid px-md-5">
+    
+    <div class="header-section mb-4">
+      <div class="role-badge">
+        <span class="pulse-dot"></span> Institution Portal
+      </div>
+      <h1 class="page-title">Delete Event</h1>
+      <p class="subtitle">Review and remove scheduled financial seminars from the directory.</p>
     </div>
-  </div>
 
-  <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
-    <button class="btn btn-outline-secondary btn-sm" (click)="page=page-1" [disabled]="page===1">Prev</button>
-    <span class="small">Page {{page}} / {{totalPages}}</span>
-    <button class="btn btn-outline-secondary btn-sm" (click)="page=page+1" [disabled]="page===totalPages">Next</button>
+    <div class="glass-panel mb-4">
+      <div class="panel-header d-flex justify-content-between align-items-center">
+        <h3 class="panel-title mb-0">Event Deletion Management</h3>
+        <span class="count-badge">{{events.length}} Total Events</span>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="glass-table" *ngIf="events.length">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Event Details</th>
+              <th>Schedule</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let e of pagedEvents">
+              <td class="text-muted-light">#{{e.id}}</td>
+              <td>
+                <div class="fw-bold text-white">{{e.title}}</div>
+              </td>
+              <td class="text-muted-light">{{e.schedule}}</td>
+              <td>
+                <span class="status-badge" [attr.data-status]="e.status">{{e.status}}</span>
+              </td>
+              <td class="text-end">
+                <button class="btn-glass-action danger-hover" (click)="delete(e)">
+                  Delete Event
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="!events.length" class="empty-state">
+        <div class="icon">🗑️</div>
+        <h5>No events found</h5>
+        <p>There are no events currently available to delete.</p>
+      </div>
+    </div>
+
+    <div class="pagination-container pb-5" *ngIf="events.length > 0">
+      <button class="btn-glass-page" (click)="page=page-1" [disabled]="page===1">← Prev</button>
+      <div class="page-info">Page {{page}} of {{totalPages}}</div>
+      <button class="btn-glass-page" (click)="page=page+1" [disabled]="page===totalPages">Next →</button>
+    </div>
+
   </div>
 </div>

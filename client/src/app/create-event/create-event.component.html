@@ -1,96 +1,88 @@
-<div class="page-wrapper">
-  <div class="bg-scene">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-  </div>
-
-  <div class="container-fluid py-5 px-md-5">
+<div class="pro-glass-dashboard">
+  <div class="container-fluid px-md-5">
+    
     <div class="header-section mb-4">
-      <div class="card-badge">
-        <span class="dot"></span> Institution Portal
+      <div class="role-badge">
+        <span class="pulse-dot"></span> Institution Portal
       </div>
-      <h1 class="text-white fw-bold">Event Management</h1>
-      <p class="text-muted">Create new financial seminars or update existing schedules.</p>
+      <h1 class="page-title">Event Management</h1>
+      <p class="subtitle">Create new financial seminars or update existing schedules.</p>
     </div>
 
-    <div class="glass-card p-4 mb-5">
-      <h3 class="text-white mb-4 fs-5 fw-bold">
-        {{ editId ? 'Update Event Details' : 'Create New Event' }}
-      </h3>
+    <div class="glass-panel mb-5">
+      <div class="panel-header">
+        <h3 class="panel-title">{{ editId ? 'Update Event Details' : 'Create New Event' }}</h3>
+      </div>
       
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <div class="row g-4">
-          <div class="col-md-4">
-            <label class="form-label-custom">TITLE</label>
-            <div class="input-wrap">
-              <div class="icon-box">👤</div>
-              <input class="input-field" formControlName="title" placeholder="Event Title">
+      <div class="panel-body">
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <div class="row g-4">
+            
+            <div class="col-md-4">
+              <label class="glass-label">Event Title</label>
+              <div class="glass-input-wrap">
+                <input type="text" class="glass-input" formControlName="title" placeholder="Enter title">
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <label class="glass-label">Schedule</label>
+              <div class="glass-input-wrap">
+                <input type="datetime-local" class="glass-input" formControlName="schedule" [min]="getCurrentDateTime()">
+              </div>
+              <small *ngIf="form.get('schedule')?.hasError('pastDate') && form.get('schedule')?.touched" class="text-danger mt-1 d-block fw-bold" style="font-size: 0.75rem;">
+                Date/time cannot be in the past.
+              </small>
+            </div>
+            
+            <div class="col-md-4">
+              <label class="glass-label">Location</label>
+              <div class="glass-input-wrap">
+                <input type="text" class="glass-input" formControlName="location" placeholder="Venue or Online Link">
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <label class="glass-label">Status</label>
+              <div class="glass-input-wrap bg-disabled-wrap">
+                <input type="text" class="glass-input bg-disabled" formControlName="status" readonly title="Status is managed automatically by the system">
+              </div>
+              <small class="text-muted mt-1 d-block" style="font-size: 0.75rem;">Updates automatically.</small>
+            </div>
+            
+            <div class="col-md-4">
+              <label class="glass-label">Max Enrollment</label>
+              <div class="glass-input-wrap">
+                <input type="number" class="glass-input" formControlName="maxEnrollment" placeholder="e.g. 100">
+              </div>
+            </div>
+            
+            <div class="col-md-12">
+              <label class="glass-label">Description</label>
+              <div class="glass-input-wrap align-items-start">
+                <textarea rows="2" class="glass-input" formControlName="description" placeholder="Brief event summary..."></textarea>
+              </div>
             </div>
           </div>
-
-          <div class="col-md-4">
-            <label class="form-label-custom">SCHEDULE</label>
-            <div class="input-wrap">
-              <div class="icon-box">📅</div>
-              <input class="input-field" formControlName="schedule" placeholder="yyyy-MM-dd HH:mm">
-            </div>
+          
+          <div class="mt-4 d-flex justify-content-end gap-3">
+            <button type="button" class="btn-glass-cancel" *ngIf="editId" (click)="cancelEdit()">Cancel</button>
+            <button type="submit" class="btn-glass-submit">
+              {{ editId ? 'Update Event' : 'Create Event' }}
+            </button>
           </div>
-
-          <div class="col-md-4">
-            <label class="form-label-custom">LOCATION</label>
-            <div class="input-wrap">
-              <div class="icon-box">📍</div>
-              <input class="input-field" formControlName="location" placeholder="Venue or Online Link">
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label-custom">STATUS</label>
-            <div class="input-wrap">
-              <div class="icon-box">⚙️</div>
-              <select class="select-field" formControlName="status">
-                <option value="PENDING">PENDING</option>
-                <option value="IN_PROGRESS">IN_PROGRESS</option>
-                <option value="COMPLETED">COMPLETED</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label-custom">MAX ENROLLMENT</label>
-            <div class="input-wrap">
-              <div class="icon-box">👥</div>
-              <input type="number" class="input-field" formControlName="maxEnrollment">
-            </div>
-          </div>
-
-          <div class="col-md-12">
-            <label class="form-label-custom">DESCRIPTION</label>
-            <div class="input-wrap">
-              <div class="icon-box">ℹ️</div>
-              <textarea rows="2" class="input-field" formControlName="description" placeholder="Brief event summary..."></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-4 d-flex justify-content-end gap-3">
-          <button type="button" class="btn-secondary-custom" *ngIf="editId" (click)="cancelEdit()">Cancel</button>
-          <button class="btn-primary-vibrant" type="submit">
-            {{ editId ? 'Update Event' : 'Create Event' }}
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
 
-    <div class="glass-card overflow-hidden">
-      <div class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center">
-        <h3 class="text-white fs-5 fw-bold mb-0">My Published Events</h3>
-        <span class="badge bg-primary px-3 py-2 rounded-pill">{{events.length}} Total</span>
+    <div class="glass-panel mb-4">
+      <div class="panel-header d-flex justify-content-between align-items-center">
+        <h3 class="panel-title mb-0">My Published Events</h3>
+        <span class="count-badge">{{events.length}} Total</span>
       </div>
-
+      
       <div class="table-responsive">
-        <table class="table table-dark-custom mb-0" *ngIf="events.length">
+        <table class="glass-table" *ngIf="events.length">
           <thead>
             <tr>
               <th>TITLE</th>
@@ -103,24 +95,31 @@
           </thead>
           <tbody>
             <tr *ngFor="let e of pagedEvents" [class.active-row]="editId===e.id">
-              <td class="fw-bold">{{e.title}}</td>
-              <td><small class="text-muted">{{e.schedule}}</small></td>
-              <td><span class="status-pill" [attr.data-status]="e.status">{{e.status}}</span></td>
+              <td class="fw-bold text-white">{{e.title}}</td>
+              <td class="text-muted-light">{{e.schedule}}</td>
+              <td><span class="status-badge" [attr.data-status]="e.status">{{e.status}}</span></td>
               <td>{{e.enrollmentCount || 0}}</td>
               <td>{{e.maxEnrollment || '∞'}}</td>
               <td class="text-end">
-                <button class="btn-edit" (click)="selectForEdit(e)">Edit</button>
+                <button class="btn-glass-action" (click)="selectForEdit(e)">Edit</button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+
+      <div *ngIf="!events.length" class="empty-state">
+        <div class="icon">📋</div>
+        <h5>No events created yet</h5>
+        <p>Your scheduled events will appear here.</p>
+      </div>
     </div>
 
-    <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
-      <button class="btn-page" (click)="page=page-1" [disabled]="page===1">Prev</button>
-      <span class="text-muted small fw-bold">Page {{page}} of {{totalPages}}</span>
-      <button class="btn-page" (click)="page=page+1" [disabled]="page===totalPages">Next</button>
+    <div class="pagination-container pb-5" *ngIf="events.length > 0">
+      <button class="btn-glass-page" (click)="page=page-1" [disabled]="page===1">Previous</button>
+      <span class="page-info">Page {{page}} of {{totalPages}}</span>
+      <button class="btn-glass-page" (click)="page=page+1" [disabled]="page===totalPages">Next</button>
     </div>
+
   </div>
 </div>

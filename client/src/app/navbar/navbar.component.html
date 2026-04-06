@@ -1,59 +1,52 @@
-<div *ngIf="notification" class="alert-custom-toast shadow-lg" [ngClass]="'alert-' + notification.type">
-  <span class="dot"></span> {{ notification.message }}
-</div>
-
-<nav class="navbar navbar-expand-lg navbar-dark glass-nav">
-  <div class="container-fluid px-4">
-    
-    <a class="navbar-brand fw-bold" routerLink="/view-events">
-      <span class="brand-dot"></span> Fin<span>Seminar</span>
-    </a>
-
-    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto">
-
-        <ng-container *ngIf="roleName === 'INSTITUTION'">
-          <li class="nav-item"><a class="nav-link" routerLink="/create-event">Manage Events</a></li>
-          <li class="nav-item"><a class="nav-link text-danger-hover" routerLink="/delete-event">Delete</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/add-resource">Add Resource</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/assign-professional">Assign Prof.</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/view-events">View Events</a></li>
-          <li class="nav-item" *ngIf="selectedEvent?.id">
-            <a class="nav-link text-accent" routerLink="/view-feedbacks">Feedbacks</a>
-          </li>
-        </ng-container>
-
-        <ng-container *ngIf="roleName === 'PROFESSIONAL'">
-          <li class="nav-item"><a class="nav-link" routerLink="/update-event-status">My Assignments</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/add-feedback">Add Feedback</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/view-events">Browse Events</a></li>
-        </ng-container>
-
-        <ng-container *ngIf="roleName === 'PARTICIPANT'">
-          <li class="nav-item"><a class="nav-link" routerLink="/view-events">View Events</a></li>
-          <li class="nav-item" *ngIf="selectedEvent?.id">
-            <a class="nav-link text-accent" routerLink="/view-feedbacks">View Feedbacks</a>
-          </li>
-        </ng-container>
-
-      </ul>
-
-      <ul class="navbar-nav ms-auto align-items-center" *ngIf="isLoggedIn">
-        <li class="nav-item me-3">
-          <div class="user-pill">
-            <span class="user-icon">👤</span>
-            <span class="user-name">{{ username }}</span>
-            <span class="role-badge">{{ roleName }}</span>
-          </div>
-        </li>
-        <li class="nav-item">
-          <button class="btn-logout-nav" (click)="logout()">Logout</button>
-        </li>
-      </ul>
-    </div>
+<ng-container *ngIf="showNavbar">
+  
+  <div *ngIf="notification" class="alert-custom-toast alert-{{notification.type}}">
+    <span class="dot"></span> {{ notification.message }}
   </div>
-</nav>
+
+  <nav class="navbar navbar-expand-lg custom-transparent-nav" [class.scrolled]="isScrolled">
+    <div class="container-fluid px-md-5">
+      
+      <a class="navbar-brand logo" routerLink="/view-events">Fin Event.</a>
+      
+      <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="navbarNav">
+        
+        <div class="nav-links me-auto mt-3 mt-lg-0">
+          
+          <ng-container *ngIf="roleName === 'INSTITUTION'">
+            <a routerLink="/create-event">Manage Event</a>
+            <a routerLink="/delete-event">Delete Event</a>
+            <a routerLink="/assign-professional">Assign Professional</a>
+            <a routerLink="/view-institution">View Events</a>
+          </ng-container>
+  
+          <ng-container *ngIf="roleName === 'PROFESSIONAL'">
+            <a routerLink="/update-event-status">My Events</a>
+            <a routerLink="/add-feedback">Add Feedback</a>
+            <a routerLink="/view-professional">View Events</a>
+          </ng-container>
+  
+          <ng-container *ngIf="roleName === 'PARTICIPANT'">
+            <a routerLink="/view-events">View Events</a>
+          </ng-container>
+
+        </div>
+  
+        <div class="nav-links ms-auto align-items-center mt-3 mt-lg-0" *ngIf="isLoggedIn">
+          <span class="user-pill">
+            Welcome, <strong class="text-white">{{ username }}</strong>
+            <span class="role-badge">{{ roleName }}</span>
+          </span>
+          
+          <a class="logout-link" (click)="logout()">Logout</a>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+</ng-container>

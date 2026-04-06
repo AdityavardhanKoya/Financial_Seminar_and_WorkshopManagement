@@ -1,42 +1,76 @@
-<div class="container mt-4">
-  <h3 class="mb-3">My Assignments</h3>
+<div class="pro-glass-dashboard">
+  <div class="container-fluid px-md-5">
+    
+    <div class="header-section mb-4">
+      <div class="role-badge">
+        <span class="pulse-dot"></span> Professional Portal
+      </div>
+      <h1 class="page-title">My Assignments</h1>
+      <p class="subtitle">Review invitations and manage your participation status for scheduled seminars.</p>
+    </div>
 
-  <table class="table table-bordered table-hover" *ngIf="events.length">
-    <thead class="table-dark">
-      <tr>
-        <th>ID</th><th>Title</th><th>Schedule</th><th>Status</th>
-        <th>My Response</th><th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let e of events">
-        <td>{{e.id}}</td>
-        <td>{{e.title}}</td>
-        <td>{{e.schedule}}</td>
-        <td>{{e.status}}</td>
+    <div class="glass-panel mb-5">
+      <div class="panel-header d-flex justify-content-between align-items-center">
+        <h3 class="panel-title mb-0">Assignment Directory</h3>
+        <span class="count-badge">{{events.length}} Total</span>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="glass-table" *ngIf="events.length">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Event Title</th>
+              <th>Schedule</th>
+              <th>Status</th>
+              <th>Professionals</th>
+              <th>Assigned At</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let e of events; trackBy: trackById">
+              <td class="text-muted-light">#{{ e.id }}</td>
+              <td>
+                <div class="fw-bold text-white">{{ e.title }}</div>
+              </td>
+              <td class="text-muted-light">{{ e.schedule }}</td>
+              <td>
+                <span class="status-badge" [attr.data-status]="(e.status || '').toUpperCase()">{{ e.status | uppercase}}</span>
+              </td>
+              <td class="text-white-50 small">
+                {{ professionalsText(e) }}
+              </td>
+              <td class="text-muted-light small">
+                {{ assignedAt(e) }}
+              </td>
+              <td class="text-end">
+                <div class="d-flex gap-2 justify-content-end align-items-center">
+                  
+                  <ng-container *ngIf="myResponse(e) === 'PENDING'; else respondedTpl">
+                    <button class="btn-glass-action success" (click)="respond(e, 'ACCEPTED')">Accept</button>
+                    <button class="btn-glass-action danger" (click)="respond(e, 'REJECTED')">Reject</button>
+                  </ng-container>
 
-        <!-- Your backend returns professionalStatus map; professional sees own in event.professionalStatus[userId] if included -->
-        <td>{{ e.assignmentStatus || 'PENDING' }}</td>
+                  <ng-template #respondedTpl>
+                    <span class="badge-response" [ngClass]="myResponse(e) === 'ACCEPTED' ? 'success' : 'danger'">
+                      {{ myResponse(e) }}
+                    </span>
+                  </ng-template>
 
-        <td class="d-flex gap-2 flex-wrap">
-          <button class="btn btn-sm btn-success" (click)="respond(e,'ACCEPTED')">Accept</button>
-          <button class="btn btn-sm btn-danger" (click)="respond(e,'REJECTED')">Reject</button>
-          <button class="btn btn-sm btn-warning" (click)="selectForStatus(e)">Update Status</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-  <div *ngIf="!events.length" class="alert alert-info">No assignments.</div>
+      <div *ngIf="!events.length" class="empty-state">
+        <div class="icon">📂</div>
+        <h5>No assignments found</h5>
+        <p>You haven't been assigned to any events yet.</p>
+      </div>
+    </div>
 
-  <div class="card p-3 mt-3" *ngIf="selectedId">
-    <h6>Update Status — Event ID: {{selectedId}}</h6>
-    <select class="form-select w-auto" [(ngModel)]="status">
-      <option [ngValue]="null">-- Select --</option>
-      <option value="PENDING">PENDING</option>
-      <option value="IN_PROGRESS">IN_PROGRESS</option>
-      <option value="COMPLETED">COMPLETED</option>
-    </select>
-    <button class="btn btn-primary mt-2" (click)="saveStatus()">Save</button>
   </div>
 </div>

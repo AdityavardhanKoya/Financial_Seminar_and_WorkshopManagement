@@ -1,28 +1,79 @@
-<div class="container mt-4">
-  <h3 class="mb-3 text-primary fw-bold">View Feedbacks</h3>
+<div class="pro-glass-dashboard">
+  <div class="container-fluid px-md-5">
+    
+    <div class="header-section mb-4">
+      <div class="role-badge">
+        <span class="pulse-dot"></span> Institution Portal
+      </div>
+      <h1 class="page-title">Event Feedback</h1>
+      <p class="subtitle">Review detailed participant and professional responses for your seminar.</p>
+    </div>
 
-  <div class="card p-3 mb-3 shadow-sm" *ngIf="selectedEvent">
-    <div><b>Event:</b> {{selectedEvent.title}}</div>
-    <div><b>Schedule:</b> {{selectedEvent.schedule}}</div>
-    <div><b>Location:</b> {{selectedEvent.location}}</div>
+    <div class="glass-panel mb-4" *ngIf="selectedEvent">
+      <div class="panel-header">
+        <h3 class="panel-title">Event Reference</h3>
+      </div>
+      <div class="panel-body">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <span class="glass-label">Event Name</span>
+            <div class="text-white fw-bold">{{selectedEvent.title}}</div>
+          </div>
+          <div class="col-md-4">
+            <span class="glass-label">Schedule</span>
+            <div class="text-white-50">{{selectedEvent.schedule}}</div>
+          </div>
+          <div class="col-md-4">
+            <span class="glass-label">Location</span>
+            <div class="text-white-50">{{selectedEvent.location}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-panel">
+      <div class="panel-header d-flex justify-content-between align-items-center">
+        <h3 class="panel-title mb-0">Feedback Directory</h3>
+        <span class="count-badge" *ngIf="feedbacks.length">{{feedbacks.length}} Total</span>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="glass-table" *ngIf="feedbacks.length">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>User Details</th>
+              <th>Role</th>
+              <th>Feedback Message</th>
+              <th class="text-end">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let f of feedbacks; let i = index">
+              <td class="text-muted-light">{{i+1}}</td>
+              <td>
+                <div class="fw-bold text-white">{{f.user?.username || 'Unknown'}}</div>
+              </td>
+              <td>
+                <span class="badge-role">{{f.user?.role || '—'}}</span>
+              </td>
+              <td class="feedback-content">
+                <p class="text-white-50 mb-0">{{f.content}}</p>
+              </td>
+              <td class="text-end text-muted-light small">
+                {{f.timestamp | date:'yyyy-MM-dd HH:mm'}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="feedbacks.length === 0" class="empty-state">
+        <div class="icon">💬</div>
+        <h5>No Feedbacks Yet</h5>
+        <p>Participant responses will appear here once the event has concluded.</p>
+      </div>
+    </div>
+
   </div>
-
-  <div *ngIf="feedbacks.length === 0" class="alert alert-info">
-    No feedbacks yet.
-  </div>
-
-  <table class="table table-hover" *ngIf="feedbacks.length">
-    <thead class="table-secondary">
-      <tr><th>#</th><th>User</th><th>Role</th><th>Feedback</th><th>Time</th></tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let f of feedbacks; let i = index">
-        <td>{{i+1}}</td>
-        <td>{{f.user?.username || 'Unknown'}}</td>
-        <td>{{f.user?.role || '—'}}</td>
-        <td>{{f.content}}</td>
-        <td>{{f.timestamp | date:'yyyy-MM-dd HH:mm'}}</td>
-      </tr>
-    </tbody>
-  </table>
 </div>

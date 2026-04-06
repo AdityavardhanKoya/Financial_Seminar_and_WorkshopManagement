@@ -1,109 +1,44 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpService } from '../../services/http.service';
+import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-view-professional',
-  templateUrl: './view-professional.component.html'
+  templateUrl: './view-professional.component.html',
+  styleUrls: ['./view-professional.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ViewProfessionalComponent implements OnInit {
+  events: any[] = [];
+  page = 1;
+  pageSize = 6;
 
-  formModel: any = { status: null };
-  showError: boolean = false;
-  errorMessage: any;
-  showMessage: any;
-  responseMessage: any;
-  eventList: any = [];
-  userId: any;
-  selectedEvent: any = {};
-  status: any;
-
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private http: HttpService,
+    private notif: NotificationService
+  ) {}
 
   ngOnInit(): void {
-    this.userId = localStorage.getItem('userId');
-    this.getEvent();
+    this.load();
   }
 
-  getEvent(): void {
-    this.httpService.getEventByProfessional(this.userId).subscribe({
-      next: res => {
-        this.eventList = res;
-        this.showError = false;
-      },
-      error: err => {
-        this.showError = true;
-        if (err.status === 403) this.errorMessage = 'Not authorized to view events.';
-        else this.errorMessage = 'Failed to fetch events. Please try again.';
-      }
+  load(): void {
+    this.http.getProfessionalEvents().subscribe({
+      next: (res: any) => this.events = res || [],
+      error: () => this.notif.show('Failed to load professional events', 'danger', 4000)
     });
   }
 
-  formatProfessionals(pros: any[]): string {
-    if (!pros || pros.length === 0) return '-';
-    return pros
-      .map(p => typeof p === 'string' ? p : (p.username ?? p.name ?? p.email ?? ''))
-      .filter((v: string) => v && v.trim().length > 0)
-      .join(', ');
+  get pagedEvents() {
+    const start = (this.page - 1) * this.pageSize;
+    return this.events.slice(start, start + this.pageSize);
   }
 
-  viewDetails(val: any): void {
-    this.selectedEvent = { ...val };
-    this.status = null;
-    this.formModel.content = '';
+  get totalPages() {
+    return Math.max(1, Math.ceil(this.events.length / this.pageSize));
   }
 
-  saveFeedBack(): void {
-    if (!this.selectedEvent?.id) {
-      this.showError = true;
-      this.errorMessage = 'Please select an event first.';
-      return;
-    }
-
-    if (!this.formModel.content) {
-      this.showError = true;
-      this.errorMessage = 'Feedback content cannot be empty.';
-      return;
-    }
-
-    const feedbackData = {
-      content: this.formModel.content,
-      timestamp: new Date().toISOString()
-    };
-
-    this.httpService.AddFeedback(this.selectedEvent.id, this.userId, feedbackData).subscribe({
-      next: () => {
-        this.showMessage = true;
-        this.responseMessage = 'Feedback submitted successfully!';
-        this.showError = false;
-        this.formModel.content = '';
-        this.selectedEvent = {};
-        this.getEvent();
-      },
-      error: err => {
-        this.showError = true;
-        if (err.status === 403) this.errorMessage = 'Not authorized to submit feedback.';
-        else this.errorMessage = 'Failed to submit feedback. Please try again.';
-      }
-    });
-  }
-
-  checkStatus(): void {
-    if (!this.selectedEvent?.id) {
-      this.showError = true;
-      this.errorMessage = 'Please select an event first.';
-      return;
-    }
-
-    this.httpService.viewEventStatus(this.selectedEvent.id).subscribe({
-      next: (res: any) => {
-        this.status = res.status;
-        this.showError = false;
-      },
-      error: err => {
-        this.showError = true;
-        if (err.status === 404) this.errorMessage = 'Event not found.';
-        else this.errorMessage = 'Failed to fetch event status.';
-      }
-    });
+  getEnrolledCount(e: any): number {
+    return Number(e?.enrollmentCount ?? 0);
   }
 }

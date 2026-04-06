@@ -1,41 +1,54 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
+import { NotificationService } from '../notification.service';
+import { SelectedEventService } from '../selected-event.service';
 
 @Component({
   selector: 'app-view-institution',
-  templateUrl: './view-institution.component.html'
+  templateUrl: './view-institution.component.html',
+  styleUrls: ['./view-institution.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ViewInstitutionComponent implements OnInit {
+  events: any[] = [];
+  page = 1;
+  pageSize = 6;
 
-  showError: boolean = false;
-  errorMessage: any;
-  eventList: any = [];
-
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private http: HttpService,
+    private notif: NotificationService,
+    private selected: SelectedEventService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.getEvent();
+    this.load();
   }
 
-  getEvent(): void {
-    this.httpService.viewAllEventss().subscribe({
-      next: res => {
-        this.eventList = res;
-        this.showError = false;
-      },
-      error: err => {
-        this.showError = true;
-        if (err.status === 403) this.errorMessage = 'Not authorized to view events.';
-        else this.errorMessage = 'Failed to fetch events. Please try again.';
-      }
+  load(): void {
+    this.http.getInstitutionEvents().subscribe({
+      next: (res: any) => this.events = res || [],
+      error: () => this.notif.show('Failed to load institution events', 'danger', 4000)
     });
   }
 
-  formatProfessionals(pros: any[]): string {
-    if (!pros || pros.length === 0) return '-';
-    return pros
-      .map(p => typeof p === 'string' ? p : (p.username ?? p.name ?? p.email ?? ''))
-      .filter((v: string) => v && v.trim().length > 0)
-      .join(', ');
+  get pagedEvents() {
+    const start = (this.page - 1) * this.pageSize;
+    return this.events.slice(start, start + this.pageSize);
+  }
+
+  get totalPages() {
+    return Math.max(1, Math.ceil(this.events.length / this.pageSize));
+  }
+
+  getProfessional(e: any): any | null {
+    if (Array.isArray(e?.professionals) && e.professionals.length > 0) return e.professionals[0];
+    return null;
+  }
+
+  openFeedbacks(e: any): void {
+    this.selected.set(e);
+    this.router.navigate(['/view-feedbacks']);
   }
 }

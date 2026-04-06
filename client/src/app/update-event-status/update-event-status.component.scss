@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+$primary-red: #fc0114;
+$primary-blue: #234a99;
+$dark-bg: #020042;
+$text-main: #ffffff;
+$text-muted: #cbd5e1;
+$glass-border: rgba(255, 255, 255, 0.15);
+$glass-bg: rgba(255, 255, 255, 0.08);
+
+:host {
+  display: block !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+}
+
+.pro-glass-dashboard {
+  background: 
+    radial-gradient(circle at 15% 20%, rgba(53, 8, 201, 0.5), transparent 55%),
+    radial-gradient(circle at 85% 30%, rgba(130, 11, 113, 0.5), transparent 55%),
+    radial-gradient(circle at 50% 85%, rgba(252, 1, 20, 0.4), transparent 60%),
+    radial-gradient(circle at 10% 80%, rgba(35, 74, 153, 0.5), transparent 60%),
+    $dark-bg;
+    
+  background-size: cover;
+  background-attachment: fixed;
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  color: $text-main;
+  padding-top: 110px; 
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba($primary-blue, 0.3);
+  border: 1px solid rgba($primary-blue, 0.6);
+  color: #93c5fd;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  backdrop-filter: blur(4px);
+
+  .pulse-dot {
+    width: 6px; height: 6px; background: #93c5fd; border-radius: 50%;
+    box-shadow: 0 0 10px #93c5fd; animation: pulse 2s infinite;
+  }
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.subtitle { color: $text-muted; font-size: 15px; }
+
+.glass-panel {
+  background: $glass-bg;
+  backdrop-filter: blur(24px); 
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid $glass-border;
+  overflow: hidden;
+  
+  .panel-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.2);
+    .panel-title { font-size: 18px; font-weight: 700; }
+  }
+}
+
+.glass-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  th {
+    text-align: left;
+    padding: 16px 24px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #cbd5e1;
+    text-transform: uppercase;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  td {
+    padding: 16px 24px;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+  }
+  
+  tr:hover { background-color: rgba(255, 255, 255, 0.05); }
+}
+
+.btn-glass-action {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: $text-main;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  transition: 0.3s;
+  cursor: pointer;
+
+  &.success:hover {
+    background-color: #10b981;
+    border-color: #10b981;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+  }
+
+  &.danger:hover {
+    background-color: $primary-red;
+    border-color: $primary-red;
+    box-shadow: 0 4px 10px rgba($primary-red, 0.3);
+  }
+}
+
+.badge-response {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  &.success { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+  &.danger { background: rgba(252, 1, 20, 0.2); color: #ff4d4f; border: 1px solid rgba(252, 1, 20, 0.3); }
+}
+
+.status-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  &[data-status="PENDING"] { background: rgba(245, 158, 11, 0.15); color: #FCD34D; border: 1px solid rgba(245, 158, 11, 0.3); }
+  &[data-status="UPCOMING"] { background: rgba(59, 130, 246, 0.15); color: #93C5FD; border: 1px solid rgba(59, 130, 246, 0.3); }
+  &[data-status="COMPLETED"] { background: rgba(16, 185, 129, 0.15); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.3); }
+}
+
+.count-badge {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.text-muted-light { color: #94a3b8 !important; }
+
+.empty-state {
+  padding: 60px 20px;
+  text-align: center;
+  .icon { font-size: 40px; margin-bottom: 16px; opacity: 0.6; }
+  h5 { font-weight: 700; margin-bottom: 8px; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}

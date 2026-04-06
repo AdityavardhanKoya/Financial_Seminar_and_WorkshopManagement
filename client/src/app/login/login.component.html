@@ -11,7 +11,7 @@
       <span class="dot"></span> Secure Portal
     </div>
 
-    <h1>Welcome Back</h1>
+    <h1>Welcome Back!</h1>
     <p class="sub">Sign in to your account</p>
 
     <div *ngIf="showError" class="error-box">
@@ -39,14 +39,18 @@
         <label class="remember">
           <input type="checkbox"> Remember me
         </label>
-        <a href="#" class="forgot">Forgot Password?</a>
+        <a routerLink="/forgot-password" class="forgot">Forgot Password?</a>
       </div>
 
-      <button class="btn-primary w-100">Login</button>
+      <button type="submit" class="btn-primary w-100">SIGN IN</button>
 
       <p class="signup-link">
         Don’t have an account?
         <a (click)="registration()">Register</a>
+      </p>
+
+      <p class="signup-link" style="margin-top: 15px;">
+        <a routerLink="/home">Return to Homepage</a>
       </p>
     </form>
   </div>

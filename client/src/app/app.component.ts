@@ -1,20 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-  showNavbar = false;
+export class AppComponent {
+  constructor(public router: Router) {}
 
-  constructor(private router: Router) {}
-
-  ngOnInit(): void {
-    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
-      const url = this.router.url;
-      this.showNavbar = !(url.startsWith('/login') || url.startsWith('/registration'));
-    });
+  // Determines if the portal's global navbar should be displayed
+  shouldShowNavbar(): boolean {
+    const currentRoute = this.router.url;
+    const portalExcludedRoutes = ['/', '/home', '/login', '/registration','/#about'];
+    return !portalExcludedRoutes.includes(currentRoute);
   }
 }

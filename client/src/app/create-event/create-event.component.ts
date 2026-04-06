@@ -1,13 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { HttpService } from '../../services/http.service';
 import { NotificationService } from '../notification.service';
 
+// Custom Validator to check if the date is in the past
+export function futureDateValidator(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) return null;
+  const selectedDate = new Date(control.value).getTime();
+  const now = new Date().getTime();
+  // Allow a 1-minute buffer to account for the time spent filling the form
+  return selectedDate < (now - 60000) ? { pastDate: true } : null;
+}
+
 @Component({
   selector: 'app-create-event',
   templateUrl: './create-event.component.html',
-  styleUrls: ['./create-event.component.scss'] // Updated extension
+  styleUrls: ['./create-event.component.scss'] 
 })
 export class CreateEventComponent implements OnInit {
   form: FormGroup;
@@ -26,7 +35,8 @@ export class CreateEventComponent implements OnInit {
     this.form = fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
-      schedule: ['', Validators.required],
+      // Applied the custom futureDateValidator here
+      schedule: ['', [Validators.required, futureDateValidator]],
       location: ['', Validators.required],
       status: ['PENDING', Validators.required],
       maxEnrollment: [10, [Validators.required, Validators.min(1)]],
@@ -40,6 +50,13 @@ export class CreateEventComponent implements OnInit {
       this.form.patchValue({ institutionId: Number(userId) });
     }
     this.load();
+  }
+
+  // Gets the current date/time in the format required by datetime-local input
+  getCurrentDateTime(): string {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 16);
   }
 
   load(): void {
@@ -78,7 +95,12 @@ export class CreateEventComponent implements OnInit {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.notif.show('Please complete all required fields', 'warning', 3000);
+      // Check for the past date error to give specific warning
+      if (this.form.get('schedule')?.hasError('pastDate')) {
+        this.notif.show('Event schedule cannot be in the past', 'warning', 3500);
+      } else {
+        this.notif.show('Please complete all required fields', 'warning', 3000);
+      }
       return;
     }
 
@@ -92,7 +114,7 @@ export class CreateEventComponent implements OnInit {
           this.cancelEdit();
           this.load();
         },
-        error: () => this.notif.show('Failed to create event', 'danger', 4000)
+        error: (err: any) => this.notif.show(err?.error || 'Failed to create event', 'danger', 4000)
       });
     } else {
       this.http.updateEvent(this.editId, body).subscribe({
@@ -101,7 +123,7 @@ export class CreateEventComponent implements OnInit {
           this.cancelEdit();
           this.load();
         },
-        error: () => this.notif.show('Update failed: Authorization issue', 'danger', 4000)
+        error: (err: any) => this.notif.show(err?.error || 'Update failed', 'danger', 4000)
       });
     }
   }

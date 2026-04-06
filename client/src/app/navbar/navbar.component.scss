@@ -1,134 +1,168 @@
-:host {
-  --bg-deep: #060d2e;
-  --accent: #3b5bdb;
-  --accent-glow: #4c6ef5;
-  --text: #e8eaf6;
-  --muted: #8899cc;
-  --border: rgba(59,91,219,0.25);
-  --card-bg: rgba(10,18,69,0.65);
-}
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap');
 
-.glass-nav {
-  background: rgba(6, 13, 46, 0.85);
-  backdrop-filter: blur(15px);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 0;
+$primary-red: #fc0114;
+$white: #ffffff;
+
+.custom-transparent-nav {
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%;
+  padding: 30px 0;
   z-index: 1000;
-  position: sticky;
-  top: 0;
-}
+  background-color: transparent !important; // Forces transparency
+  transition: all 0.4s ease;
 
-.navbar-brand {
-  font-size: 1.25rem;
-  letter-spacing: -0.5px;
-  color: white !important;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  span { color: var(--accent-glow); }
-}
+  &.scrolled {
+    padding: 15px 0;
+    /* Updated: Removed solid dark background, kept glass blur and border only */
+    background-color: transparent !important; 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: none; 
+  }
 
-.brand-dot {
-  width: 10px;
-  height: 10px;
-  background: var(--accent);
-  border-radius: 50%;
-  box-shadow: 0 0 10px var(--accent-glow);
-}
+  .logo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    font-size: 26px;
+    letter-spacing: -0.5px;
+    color: $white !important;
+    text-decoration: none;
+    margin-right: 60px;
+  }
 
-.nav-link {
-  color: var(--muted) !important;
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 8px 15px !important;
-  transition: all 0.3s;
-  
-  &:hover {
-    color: white !important;
-    background: rgba(59, 91, 219, 0.1);
+  .nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+
+    a {
+      color: rgba(255, 255, 255, 0.85);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: $primary-red;
+      }
+    }
+  }
+
+  .user-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.3px;
+    line-height: 1;
+  }
+
+  .role-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($primary-red, 0.15);
+    border: 1px solid rgba($primary-red, 0.3);
+    color: #ffb3b3;
+    padding: 0 12px;
+    height: 22px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 0;
+  }
+
+  .logout-link {
+    color: #ff4d4f !important;
+    font-weight: 600;
+    padding: 6px 16px;
+    border: 1px solid transparent;
     border-radius: 8px;
+    cursor: pointer;
+    
+    &:hover {
+      color: $primary-red !important;
+      background: rgba(252, 1, 20, 0.1);
+      border-color: rgba(252, 1, 20, 0.3);
+    }
+  }
+
+  .custom-toggler {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    .navbar-toggler-icon {
+      filter: brightness(0) invert(1);
+    }
   }
 }
 
-.text-accent { color: var(--accent-glow) !important; }
-.text-danger-hover:hover { color: #ff4d4f !important; background: rgba(255, 77, 79, 0.1) !important; }
-
-/* User Controls */
-.user-pill {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
-  padding: 6px 14px;
-  border-radius: 20px;
-  color: white;
-  font-size: 0.85rem;
-}
-
-.role-badge {
-  background: var(--accent);
-  color: white;
-  font-size: 0.65rem;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.btn-logout-nav {
-  background: transparent;
-  border: 1px solid rgba(255, 77, 79, 0.4);
-  color: #ff4d4f;
-  font-size: 0.85rem;
-  font-weight: 700;
-  padding: 6px 18px;
-  border-radius: 8px;
-  transition: all 0.3s;
+@media (max-width: 991px) {
+  .custom-transparent-nav {
+    /* Kept solid for mobile so links are readable over content */
+    background-color: rgba(6, 11, 25, 0.95) !important;
+    padding: 15px 0;
+  }
   
-  &:hover {
-    background: #ff4d4f;
-    color: white;
+  .logo { margin-right: 0; }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 15px;
+    padding: 15px 0;
   }
 }
 
-/* Toast/Notification Bar */
+/* ================= Custom Toast Notification ================= */
 .alert-custom-toast {
   position: fixed;
-  top: 80px;
+  top: 90px;
   right: 20px;
   z-index: 1100;
-  padding: 12px 24px;
+  padding: 12px 20px;
   border-radius: 12px;
-  color: white;
-  font-size: 0.9rem;
+  color: #fff;
+  font-size: 14px;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 12px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  animation: slideIn 0.4s ease-out;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease-out;
 
-  &.alert-success { background: rgba(16, 185, 129, 0.8); border-color: #10b981; }
-  &.alert-danger { background: rgba(239, 68, 68, 0.8); border-color: #ef4444; }
-  &.alert-info { background: rgba(59, 130, 246, 0.8); border-color: #3b82f6; }
+  &.alert-success { background: rgba(16, 185, 129, 0.85); border-color: rgba(16,185,129,0.5); }
+  &.alert-danger  { background: rgba(239, 68, 68, 0.85);  border-color: rgba(239,68,68,0.5); }
+  &.alert-warning { background: rgba(245, 158, 11, 0.85); border-color: rgba(245,158,11,0.5); }
+  &.alert-info    { background: rgba(59, 130, 246, 0.85); border-color: rgba(59,130,246,0.5); }
 
   .dot {
     width: 8px;
     height: 8px;
-    background: white;
+    background: #fff;
     border-radius: 50%;
-    animation: pulse 2s infinite;
+    animation: toastPulse 1.5s infinite;
   }
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
+  from { transform: translateX(120%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
 
-@keyframes pulse {
+@keyframes toastPulse {
   0% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.4); opacity: 0.5; }
   100% { transform: scale(1); opacity: 1; }
