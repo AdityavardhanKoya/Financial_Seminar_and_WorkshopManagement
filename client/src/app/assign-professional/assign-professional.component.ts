@@ -30,7 +30,7 @@ export class AssignProfessionalComponent implements OnInit {
       this.notif.show('Select event and professional', 'warning', 3500);
       return;
     }
-    if (!confirm('Assign this professional?')) return;
+ 
 
     this.http.assignProfessional(this.selectedEventId, this.selectedProfId).subscribe({
       next: () => this.notif.show('Professional assigned (email sent)', 'success', 4000),

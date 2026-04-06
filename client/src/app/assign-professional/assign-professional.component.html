@@ -20,7 +20,6 @@
           <div class="col-md-6">
             <label class="glass-label">Select Event</label>
             <div class="glass-input-wrap">
-              <span class="input-icon">📅</span>
               <select class="glass-input" [(ngModel)]="selectedEventId">
                 <option [ngValue]="null">-- Select Event --</option>
                 <option *ngFor="let e of events" [ngValue]="e.id">
@@ -33,7 +32,6 @@
           <div class="col-md-6">
             <label class="glass-label">Select Professional</label>
             <div class="glass-input-wrap">
-              <span class="input-icon">👨‍💼</span>
               <select class="glass-input" [(ngModel)]="selectedProfId">
                 <option [ngValue]="null">-- Select Professional --</option>
                 <option *ngFor="let p of pros" [ngValue]="p.id">

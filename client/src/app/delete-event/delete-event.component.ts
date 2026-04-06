@@ -41,7 +41,7 @@ export class DeleteEventComponent implements OnInit {
   }
 
   delete(e: any): void {
-    if (!confirm(`Delete "${e.title}"? This action is permanent.`)) return;
+   
 
     this.http.deleteEvent(e.id).subscribe({
       next: () => {

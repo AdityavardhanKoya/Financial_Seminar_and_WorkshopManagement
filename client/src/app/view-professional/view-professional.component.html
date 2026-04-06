@@ -30,13 +30,13 @@
             <div class="info-row mb-3">
               <span class="glass-label">Status</span>
               <div>
-                <span class="status-badge" [attr.data-status]="e.status">{{ e.status }}</span>
+                <span class="status-badge" [attr.data-status]="(e.status || '').toUpperCase()">{{ e.status | uppercase}}</span>
               </div>
             </div>
 
             <div class="info-row mb-0">
               <span class="glass-label">Enrolled Participants</span>
-              <div class="count-pill">{{ getEnrolledCount(e) }} Members</div>
+              <div class="count-pill">{{ getEnrolledCount(e) }}</div>
             </div>
           </div>
         </div>

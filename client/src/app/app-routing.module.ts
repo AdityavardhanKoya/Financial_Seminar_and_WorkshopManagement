@@ -6,7 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { CreateEventComponent } from './create-event/create-event.component';
 import { DeleteEventComponent } from './delete-event/delete-event.component';
-import { AddResourceComponent } from './add-resource/add-resource.component';
+
 import { AssignProfessionalComponent } from './assign-professional/assign-professional.component';
 import { ViewEventsComponent } from './view-events/view-events.component';
 import { UpdateEventStatusComponent } from './update-event-status/update-event-status.component';
@@ -18,7 +18,7 @@ import { SelectedEventGuard } from './selected-event.guard';
 import { ViewInstitutionComponent } from './view-institution/view-institution.component';
 import { ViewProfessionalComponent } from './view-professional/view-professional.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+
 import { ForgotPasswordOtpComponent } from './forgot-password-otp/forgot-password-otp.component';
 import { ResetPasswordOtpComponent } from './reset-password-otp/reset-password-otp.component';
 
@@ -46,7 +46,7 @@ const routes: Routes = [
   // Institution
   { path: 'create-event', component: CreateEventComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['INSTITUTION'] } },
   { path: 'delete-event', component: DeleteEventComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['INSTITUTION'] } },
-  { path: 'add-resource', component: AddResourceComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['INSTITUTION'] } },
+
   { path: 'assign-professional', component: AssignProfessionalComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['INSTITUTION'] } },
 
   // Professional
@@ -74,7 +74,7 @@ const routes: Routes = [
   },
   { path: 'forgot-password', component: ForgotPasswordOtpComponent },
 { path: 'reset-password', component: ResetPasswordOtpComponent },
- { path: 'forgot-password', component: ForgotPasswordComponent },
+
 { path: 'reset-password', component: ResetPasswordComponent },
   { path: '**', redirectTo: '' }
 ];

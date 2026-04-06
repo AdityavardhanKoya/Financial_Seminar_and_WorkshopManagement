@@ -59,7 +59,7 @@
 
             <div class="info-row">
               <span class="glass-label">Status</span>
-              <span class="status-badge" [attr.data-status]="e.status">{{ e.status }}</span>
+              <span class="status-badge" [attr.data-status]="(e.status || '').toUpperCase()">{{ e.status | uppercase}}</span>
             </div>
           </div>
 
@@ -109,7 +109,7 @@
   <div class="glass-modal-card">
     <h4 class="mb-3">Confirm Enrollment</h4>
     <p class="mb-4">
-      Are you sure you want to join <span>"{{ enrollTargetEvent?.title }}"</span>?
+      Are you sure you want to enroll in <span>{{ enrollTargetEvent?.title }}</span> ?
     </p>
     <div class="d-flex gap-3">
       <button class="btn-glass-cancel flex-grow-1" (click)="cancelEnroll()">Cancel</button>
