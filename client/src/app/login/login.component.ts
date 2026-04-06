@@ -3,18 +3,18 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
 import { AuthService } from '../../services/auth.service';
-
+ 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-
+ 
   itemForm: FormGroup;
   showError = false;
   errorMessage: any;
-
+ 
   constructor(
     private fb: FormBuilder,
     private httpService: HttpService,
@@ -22,13 +22,24 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     this.itemForm = this.fb.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(4)]]
+      // ✅ kept Validators.required (existing) + added missing validators
+      username: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(30),
+          Validators.pattern(/^[a-zA-Z0-9._-]+$/)
+        ]
+      ],
+ 
+      // ✅ kept required + minLength(4) (existing) + added maxLength
+      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(64)]]
     });
   }
-
+ 
   ngOnInit(): void {}
-
+ 
   private getRoleFromToken(token: string): string | null {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -37,51 +48,50 @@ export class LoginComponent implements OnInit {
       return null;
     }
   }
-
+ 
   onLogin(): void {
     if (this.itemForm.invalid) {
+      this.itemForm.markAllAsTouched();
       this.showError = true;
       this.errorMessage = 'Please fill in all required fields correctly.';
       return;
     }
-
+ 
     this.httpService.Login(this.itemForm.value).subscribe({
       next: (res: any) => {
         console.log('Login response:', res);
-
+ 
         if (!res?.token) {
           this.showError = true;
           this.errorMessage = 'Invalid response from server (token missing).';
           return;
         }
-
-        // ✅ role fallback if backend didn't send role properly
+ 
         const role = (res.role || this.getRoleFromToken(res.token) || '').toUpperCase().trim();
-
+ 
         if (!role) {
           this.showError = true;
           this.errorMessage = 'Role missing in login response. Please check backend LoginResponse.';
           return;
         }
-
-        // ✅ store session
+ 
         this.authService.saveToken(res.token);
         this.authService.SetRole(role);
+ 
         if (res.id) {
           this.authService.saveUserId(res.id.toString());
         } else {
-          // fallback decode id if backend doesn't send it
           this.extractAndSaveUserIdFromToken(res.token);
         }
+ 
         localStorage.setItem('username', res.username || this.itemForm.value.username);
-
-        // ✅ navigation (navigateByUrl is more direct)
+ 
         if (role === 'INSTITUTION') {
           this.router.navigateByUrl('/create-event');
         } else if (role === 'PROFESSIONAL') {
           this.router.navigateByUrl('/update-event-status');
         } else {
-          this.router.navigateByUrl('/view-events'); // PARTICIPANT default
+          this.router.navigateByUrl('/view-events');
         }
       },
       error: (err: any) => {
@@ -96,7 +106,7 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-
+ 
   private extractAndSaveUserIdFromToken(token: string): void {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -109,7 +119,7 @@ export class LoginComponent implements OnInit {
       console.error('Failed to decode JWT:', e);
     }
   }
-
+ 
   registration(): void {
     this.router.navigate(['/registration']);
   }

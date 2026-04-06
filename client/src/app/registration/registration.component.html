@@ -1,90 +1,143 @@
 <div class="login-wrapper">
-  <div class="bg-scene">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-    <div class="blob blob-4"></div>
-  </div>
-
+<div class="bg-scene">
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="blob blob-4"></div>
+</div>
+ 
   <div class="login-card">
-    <div class="card-badge">
-      <span class="dot"></span> Secure Portal
-    </div>
-
+<div class="card-badge">
+<span class="dot"></span> Secure Portal
+</div>
+ 
     <h1>Create Account</h1>
-    <p class="sub">Join our Fin Event Platform</p>
-
+<p class="sub">Join our Fin Event Platform</p>
+ 
     <div *ngIf="showMessage" class="info-box">
       {{ responseMessage }}
-    </div>
-
+</div>
+ 
     <form [formGroup]="itemForm" (ngSubmit)="onRegister()">
-      <div class="form-group">
-        <label>Username</label>
-        <div class="input-wrap">
-          <span class="icon">👤</span>
-          <input type="text" formControlName="username" placeholder="Enter username">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Email</label>
-        <div class="input-wrap">
-          <span class="icon">✉️</span>
-          <input type="email" formControlName="email" placeholder="Enter email address">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Role</label>
-        <div class="input-wrap">
-          <span class="icon">🔑</span>
-          <select class="select-input" formControlName="role">
-            <option [ngValue]="null">-- Select Role --</option>
-            <option value="INSTITUTION">Institution</option>
-            <option value="PROFESSIONAL">Professional</option>
-            <option value="PARTICIPANT">Participant</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group" *ngIf="itemForm.get('role')?.value === 'INSTITUTION' || itemForm.get('role')?.value === 'PROFESSIONAL'">
+ 
+      <!-- USERNAME -->
+<div class="form-group">
+<label>Username</label>
+<div class="input-wrap">
+<span class="icon">👤</span>
+<input type="text" formControlName="username" placeholder="Enter username">
+</div>
+ 
+        <small class="error"
+          *ngIf="itemForm.get('username')?.touched && itemForm.get('username')?.errors">
+<span *ngIf="itemForm.get('username')?.errors?.['required']">
+            Username is required
+</span>
+<span *ngIf="itemForm.get('username')?.errors?.['pattern']">
+            Only letters, numbers, dot, underscore allowed
+</span>
+<span *ngIf="itemForm.get('username')?.errors?.['minlength']">
+            Minimum 3 characters required
+</span>
+<span *ngIf="itemForm.get('username')?.errors?.['maxlength']">
+            Maximum 30 characters allowed
+</span>
+<span *ngIf="itemForm.get('username')?.errors?.['usernameTaken']">
+            Username already exists
+</span>
+</small>
+</div>
+ 
+      <!-- EMAIL -->
+<div class="form-group">
+<label>Email</label>
+<div class="input-wrap">
+<span class="icon">✉️</span>
+<input type="email" formControlName="email" placeholder="Enter email address">
+</div>
+ 
+        <small class="error"
+          *ngIf="itemForm.get('email')?.touched && itemForm.get('email')?.errors">
+<span *ngIf="itemForm.get('email')?.errors?.['required']">
+            Email is required
+</span>
+<span *ngIf="itemForm.get('email')?.errors?.['email']">
+            Enter a valid email address
+</span>
+<span *ngIf="itemForm.get('email')?.errors?.['emailTakenForRole']">
+            Email already used for selected role
+</span>
+</small>
+</div>
+ 
+      <!-- ROLE -->
+<div class="form-group">
+<label>Role</label>
+<div class="input-wrap">
+<span class="icon">🔑</span>
+<select class="select-input" formControlName="role">
+<option [ngValue]="null">-- Select Role --</option>
+<option value="INSTITUTION">Institution</option>
+<option value="PROFESSIONAL">Professional</option>
+<option value="PARTICIPANT">Participant</option>
+</select>
+</div>
+ 
+        <small class="error"
+          *ngIf="itemForm.get('role')?.touched && itemForm.get('role')?.errors?.['required']">
+          Role selection is required
+</small>
+</div>
+ 
+      <!-- AUTH CODE -->
+<div class="form-group"
+        *ngIf="itemForm.get('role')?.value === 'INSTITUTION' || itemForm.get('role')?.value === 'PROFESSIONAL'">
+ 
         <label>Authentication Code</label>
-        <div class="input-wrap">
-          <span class="icon">🛡️</span>
-          <input type="text" formControlName="authCode" placeholder="Enter admin code" />
-        </div>
-      </div>
-
-      <div class="form-group mb-2">
-        <label>Password</label>
-        <div class="input-wrap">
-          <span class="icon">🔒</span>
-          <input type="password" formControlName="password" placeholder="••••••••" />
-        </div>
-      </div>
-
-      <div class="rules-container" *ngIf="(itemForm.get('password')?.touched || itemForm.get('password')?.dirty) && !allRulesDone">
-        <ul class="list-unstyled">
-          <li *ngFor="let r of rules" 
-              [class.hidden-rule]="r.hidden" 
-              class="rule-item" 
+<div class="input-wrap">
+<span class="icon">🛡️</span>
+<input type="text" formControlName="authCode" placeholder="Enter admin code">
+</div>
+ 
+        <small class="error"
+          *ngIf="itemForm.get('authCode')?.touched && itemForm.get('authCode')?.errors?.['required']">
+          Authentication code is required
+</small>
+</div>
+ 
+      <!-- PASSWORD -->
+<div class="form-group mb-2">
+<label>Password</label>
+<div class="input-wrap">
+<span class="icon">🔒</span>
+<input type="password" formControlName="password" placeholder="••••••••">
+</div>
+</div>
+ 
+      <!-- PASSWORD RULES (UNCHANGED) -->
+<div class="rules-container"
+        *ngIf="(itemForm.get('password')?.touched || itemForm.get('password')?.dirty) && !allRulesDone">
+<ul class="list-unstyled">
+<li *ngFor="let r of rules"
+              [class.hidden-rule]="r.hidden"
+              class="rule-item"
               [ngClass]="r.flashGreen ? 'success' : 'pending'">
-            <span class="indicator">{{ r.flashGreen ? '✔' : '•' }}</span> {{ r.text }}
-          </li>
-        </ul>
-      </div>
-
+<span class="indicator">{{ r.flashGreen ? '✔' : '•' }}</span> {{ r.text }}
+</li>
+</ul>
+</div>
+ 
       <button type="submit" class="btn-primary w-100 mt-3">REGISTER</button>
-
+ 
       <p class="signup-link">
-        Already have an account? 
-        <a routerLink="/login">Login</a>
-      </p>
-
+        Already have an account?
+<a routerLink="/login">Login</a>
+</p>
+ 
       <p class="signup-link" style="margin-top: 15px;">
-        <a routerLink="/home">Return to Homepage</a>
-      </p>
+<a routerLink="/home">Return to Homepage</a>
+</p>
+ 
     </form>
-  </div>
+</div>
 </div>

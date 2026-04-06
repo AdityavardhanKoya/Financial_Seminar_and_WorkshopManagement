@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { AuthService } from './auth.service';
 import { environment } from '../environments/environment.development';
 
@@ -179,4 +179,64 @@ export class HttpService {
       { headers: this.getAuthHeaders() }
     );
   }
+    // ✅ Username must be unique (true = available, false = taken)
+
+checkUsernameAvailable(username: string): Observable<boolean> {
+
+  return this.http.get<any>(`${this.baseUrl}/users/check-username`, {
+
+    params: { username }
+
+  }).pipe(
+
+    map((res: any) => {
+
+      // Supports different backend styles:
+
+      // boolean OR {available:true} OR {exists:false}
+
+      if (typeof res === 'boolean') return res;
+
+      if (typeof res?.available === 'boolean') return res.available;
+
+      if (typeof res?.exists === 'boolean') return !res.exists;
+
+      return true; // safe default
+
+    }),
+
+    catchError(() => of(true)) // don't block user if API fails
+
+  );
+
+}
+ 
+// ✅ Email must be unique for EACH ROLE (true = available for that role)
+
+checkEmailAvailableForRole(email: string, role: string): Observable<boolean> {
+
+  return this.http.get<any>(`${this.baseUrl}/users/check-email-role`, {
+
+    params: { email, role }
+
+  }).pipe(
+
+    map((res: any) => {
+
+      if (typeof res === 'boolean') return res;
+
+      if (typeof res?.available === 'boolean') return res.available;
+
+      if (typeof res?.exists === 'boolean') return !res.exists;
+
+      return true;
+
+    }),
+
+    catchError(() => of(true))
+
+  );
+
+}
+ 
 }
