@@ -1,57 +1,81 @@
 <div class="login-wrapper">
-  <div class="bg-scene">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-    <div class="blob blob-4"></div>
-  </div>
-
+<div class="bg-scene">
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="blob blob-4"></div>
+</div>
+ 
   <div class="login-card">
-    <div class="card-badge">
-      <span class="dot"></span> Secure Portal
-    </div>
-
+<div class="card-badge">
+<span class="dot"></span> Secure Portal
+</div>
+ 
     <h1>Welcome Back!</h1>
-    <p class="sub">Sign in to your account</p>
-
+<p class="sub">Sign in to your account</p>
+ 
     <div *ngIf="showError" class="error-box">
       {{ errorMessage }}
-    </div>
-
+</div>
+ 
     <form [formGroup]="itemForm" (ngSubmit)="onLogin()">
-      <div class="form-group">
-        <label>Username</label>
-        <div class="input-wrap">
-          <div class="icon-box">👤</div>
-          <input type="text" formControlName="username" placeholder="Enter username">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Password</label>
-        <div class="input-wrap">
-          <div class="icon-box">🔒</div>
-          <input type="password" formControlName="password" placeholder="Enter password">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <label class="remember">
-          <input type="checkbox"> Remember me
-        </label>
-        <a routerLink="/forgot-password" class="forgot">Forgot Password?</a>
-      </div>
-
+ 
+      <!-- USERNAME -->
+<div class="form-group">
+<label>Username</label>
+<div class="input-wrap">
+<div class="icon-box">👤</div>
+<input type="text" formControlName="username" placeholder="Enter username">
+</div>
+ 
+        <small class="error"
+          *ngIf="itemForm.get('username')?.touched && itemForm.get('username')?.errors">
+<span *ngIf="itemForm.get('username')?.errors?.['required']">
+            Username is required
+</span>
+<span *ngIf="itemForm.get('username')?.errors?.['minlength']">
+            Username must be at least 3 characters
+</span>
+<span *ngIf="itemForm.get('username')?.errors?.['maxlength']">
+            Username too long
+</span>
+<span *ngIf="itemForm.get('username')?.errors?.['pattern']">
+            Invalid username format
+</span>
+</small>
+</div>
+ 
+      <!-- PASSWORD -->
+<div class="form-group">
+<label>Password</label>
+<div class="input-wrap">
+<div class="icon-box">🔒</div>
+<input type="password" formControlName="password" placeholder="Enter password">
+</div>
+ 
+        <small class="error"
+          *ngIf="itemForm.get('password')?.touched && itemForm.get('password')?.errors">
+<span *ngIf="itemForm.get('password')?.errors?.['required']">
+            Password is required
+</span>
+<span *ngIf="itemForm.get('password')?.errors?.['minlength']">
+            Password must be at least 4 characters
+</span>
+</small>
+</div>
+ 
       <button type="submit" class="btn-primary w-100">SIGN IN</button>
-
+ 
       <p class="signup-link">
         Don’t have an account?
-        <a (click)="registration()">Register</a>
-      </p>
-
+<a (click)="registration()">Register</a>
+</p>
+ 
       <p class="signup-link" style="margin-top: 15px;">
-        <a routerLink="/home">Return to Homepage</a>
-      </p>
+<a routerLink="/home">Return to Homepage</a>
+</p>
+ 
     </form>
-  </div>
 </div>
+</div>
+ 

@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600&family=Roboto:wght@300;400;500;700;900&display=swap');
-
+ 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600&family=Roboto:wght@300;400;500;700;900&display=swap%27');
+ 
 // Fin Event Brand Variables
 $primary-red: #fc0114;
 $primary-blue: #234a99;
@@ -9,7 +10,7 @@ $magenta-bg: #820b73;
 $white: #ffffff;
 $text-dark: #333333;
 $gray-light: #f5f7fa;
-
+ 
 .login-wrapper {
   min-height: 100vh;
   display: flex;
@@ -21,7 +22,7 @@ $gray-light: #f5f7fa;
   font-family: 'Roboto', sans-serif;
   padding: 20px;
 }
-
+ 
 /* ================= Background Animations ================= */
 .bg-scene {
   position: absolute;
@@ -32,26 +33,25 @@ $gray-light: #f5f7fa;
   z-index: 0;
   overflow: hidden;
   filter: blur(80px); // Creates that modern glowing orb effect
-
+ 
   .blob {
     position: absolute;
     border-radius: 50%;
     animation: float 12s infinite alternate ease-in-out;
     opacity: 0.7;
   }
-  
   .blob-1 { width: 400px; height: 400px; background: $purple-bg; top: -10%; left: -10%; animation-delay: 0s; }
   .blob-2 { width: 500px; height: 500px; background: $magenta-bg; bottom: -20%; right: -10%; animation-delay: -2s; }
   .blob-3 { width: 350px; height: 350px; background: $primary-red; top: 40%; left: 60%; animation-delay: -4s; }
   .blob-4 { width: 450px; height: 450px; background: $primary-blue; bottom: 20%; left: 10%; animation-delay: -6s; }
 }
-
+ 
 @keyframes float {
   0% { transform: translate(0, 0) scale(1); }
   50% { transform: translate(50px, 50px) scale(1.1); }
   100% { transform: translate(-50px, 30px) scale(0.9); }
 }
-
+ 
 /* ================= Authentication Card ================= */
 .login-card {
   position: relative;
@@ -62,7 +62,6 @@ $gray-light: #f5f7fa;
   width: 100%;
   max-width: 480px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
-  
   .card-badge {
     display: inline-flex;
     align-items: center;
@@ -76,7 +75,6 @@ $gray-light: #f5f7fa;
     margin-bottom: 25px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    
     .dot { 
       width: 8px; 
       height: 8px; 
@@ -85,13 +83,13 @@ $gray-light: #f5f7fa;
       animation: pulse 2s infinite;
     }
   }
-
+ 
   @keyframes pulse {
     0% { box-shadow: 0 0 0 0 rgba($primary-red, 0.4); }
     70% { box-shadow: 0 0 0 6px rgba($primary-red, 0); }
     100% { box-shadow: 0 0 0 0 rgba($primary-red, 0); }
   }
-
+ 
   h1 {
     font-family: 'Playfair Display', serif;
     color: $dark-bg;
@@ -100,14 +98,13 @@ $gray-light: #f5f7fa;
     font-weight: 700;
     line-height: 1.2;
   }
-  
   .sub {
     color: #666;
     font-size: 16px;
     margin-bottom: 35px;
     font-weight: 300;
   }
-
+ 
   /* ================= Messages & Alerts ================= */
   .info-box, .error-box {
     padding: 14px;
@@ -119,11 +116,10 @@ $gray-light: #f5f7fa;
   }
   .info-box { background: #e6f7ff; color: #005f99; border: 1px solid #91d5ff; }
   .error-box { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
-
+ 
   /* ================= Form Inputs ================= */
   .form-group {
     margin-bottom: 20px;
-    
     label {
       display: block;
       font-size: 14px;
@@ -131,12 +127,10 @@ $gray-light: #f5f7fa;
       color: $text-dark;
       margin-bottom: 8px;
     }
-    
     .input-wrap {
       position: relative;
       display: flex;
       align-items: center;
-      
       .icon, .icon-box {
         position: absolute;
         left: 16px;
@@ -144,7 +138,6 @@ $gray-light: #f5f7fa;
         color: #888;
         pointer-events: none;
       }
-      
       input, select {
         width: 100%;
         padding: 15px 15px 15px 48px;
@@ -155,26 +148,23 @@ $gray-light: #f5f7fa;
         background: #f9f9f9;
         transition: all 0.3s ease;
         outline: none;
-        
-        &:focus {
+&:focus {
           border-color: $primary-red;
           background: $white;
           box-shadow: 0 0 0 4px rgba($primary-red, 0.1);
         }
-        
-        &::placeholder {
+&::placeholder {
           color: #aaa;
           font-weight: 300;
         }
       }
-      
       select { 
         appearance: none; 
         cursor: pointer;
       }
     }
   }
-
+ 
   /* ================= Login Extras ================= */
   .form-row {
     display: flex;
@@ -183,7 +173,6 @@ $gray-light: #f5f7fa;
     margin-top: 10px;
     margin-bottom: 30px;
     font-size: 14px;
-    
     .remember { 
       display: flex; 
       align-items: center; 
@@ -191,22 +180,20 @@ $gray-light: #f5f7fa;
       color: #555; 
       cursor: pointer; 
       font-weight: 400;
-      
       input {
         accent-color: $primary-red;
         width: 16px;
         height: 16px;
       }
     }
-    
     .forgot { 
       color: $primary-blue; 
       font-weight: 600; 
       transition: 0.3s; 
-      &:hover { color: $primary-red; } 
+&:hover { color: $primary-red; } 
     }
   }
-
+ 
   /* ================= Registration Rules ================= */
   .rules-container {
     background: #f8f9fa;
@@ -215,9 +202,7 @@ $gray-light: #f5f7fa;
     border: 1px solid #eee;
     margin-bottom: 25px;
     font-size: 13px;
-    
     ul { list-style: none; padding: 0; margin: 0; }
-    
     .rule-item {
       display: flex;
       align-items: center;
@@ -225,21 +210,19 @@ $gray-light: #f5f7fa;
       margin-bottom: 8px;
       color: #666;
       font-weight: 500;
-      
-      &:last-child { margin-bottom: 0; }
-      &.success { color: #2e7d32; }
-      &.pending { color: #d9363e; }
-      &.hidden-rule { display: none; }
-      
+&:last-child { margin-bottom: 0; }
+&.success { color: #2e7d32; }
+&.pending { color: #d9363e; }
+&.hidden-rule { display: none; }
       .indicator { font-weight: bold; font-size: 14px;}
     }
   }
-
+ 
   /* ================= Buttons & Links ================= */
   .w-100 { width: 100%; }
   .mt-3 { margin-top: 15px; }
   .mb-2 { margin-bottom: 10px; }
-
+ 
   .btn-primary {
     background: $primary-red;
     color: $white;
@@ -252,44 +235,93 @@ $gray-light: #f5f7fa;
     transition: all 0.3s ease;
     margin-bottom: 25px;
     letter-spacing: 0.5px;
-    
-    &:hover { 
+&:hover { 
       background: darken($primary-red, 8%); 
       transform: translateY(-2px); 
       box-shadow: 0 8px 20px rgba($primary-red, 0.3); 
     }
-    
-    &:active {
+&:active {
       transform: translateY(0);
     }
   }
-
+ 
   .signup-link {
     text-align: center;
     font-size: 15px;
     color: #666;
     margin: 0;
-    
     a {
       color: $primary-blue;
       font-weight: 700;
       cursor: pointer;
       transition: 0.3s;
       margin-left: 5px;
-      
-      &:hover { 
+&:hover { 
         color: $primary-red; 
         text-decoration: underline;
       }
     }
   }
 }
-
+ 
 /* ================= Responsive ================= */
 @media (max-width: 576px) {
   .login-card {
     padding: 40px 25px;
-    
     h1 { font-size: 28px; }
   }
 }
+ 
+/* ============================= */
+/* ✅ VALIDATION TEXT (RED) */
+/* ============================= */
+ 
+.error {
+  color: #e53935;          /* RED color */
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 6px;
+  display: block;
+  line-height: 1.4;
+  animation: fadeIn 0.2s ease-in-out;
+}
+ 
+/* ============================= */
+/* ✅ INVALID INPUT BORDER (RED) */
+/* ============================= */
+ 
+input.ng-touched.ng-invalid,
+select.ng-touched.ng-invalid {
+  border: 1.5px solid #e53935 !important;
+  box-shadow: 0 0 0 1px rgba(229, 57, 53, 0.25);
+}
+ 
+/* ============================= */
+/* ✅ ERROR DIALOG BOX (RED) */
+/* ============================= */
+ 
+.error-box {
+  background: #fdecea;
+  color: #b71c1c;
+  border-left: 4px solid #e53935;
+  padding: 10px 14px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+ 
+/* ============================= */
+/* ✅ ANIMATION */
+/* ============================= */
+ 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+ 
