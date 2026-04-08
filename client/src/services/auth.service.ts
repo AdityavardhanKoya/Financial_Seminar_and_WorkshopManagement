@@ -10,9 +10,7 @@ export class AuthService {
   private USER_ID_KEY = 'userId';
   private USERNAME_KEY = 'username';
 
-  /* =========================
-     TOKEN METHODS
-     ========================= */
+
 
   saveToken(token: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);
@@ -26,11 +24,6 @@ export class AuthService {
     localStorage.removeItem(this.TOKEN_KEY);
   }
 
-  /* =========================
-     ROLE METHODS
-     ========================= */
-
-  // ✅ keep method name same as your login component uses
   SetRole(role: string): void {
     if (role) {
       localStorage.setItem(this.ROLE_KEY, role);
@@ -38,14 +31,11 @@ export class AuthService {
   }
 
   getRole(): string | null {
-    // ✅ Prefer JWT role if available
+ 
     const tokenRole = this.getRoleFromToken();
     return tokenRole || localStorage.getItem(this.ROLE_KEY);
   }
 
-  /* =========================
-     USER ID METHODS
-     ========================= */
 
   saveUserId(userId: string): void {
     localStorage.setItem(this.USER_ID_KEY, userId);
@@ -55,9 +45,6 @@ export class AuthService {
     return localStorage.getItem(this.USER_ID_KEY);
   }
 
-  /* =========================
-     USERNAME METHODS
-     ========================= */
 
   saveUsername(username: string): void {
     localStorage.setItem(this.USERNAME_KEY, username);
@@ -67,9 +54,6 @@ export class AuthService {
     return localStorage.getItem(this.USERNAME_KEY);
   }
 
-  /* =========================
-     AUTH CHECK
-     ========================= */
 
   isLoggedIn(): boolean {
     return !!this.getToken();
@@ -79,15 +63,7 @@ export class AuthService {
     localStorage.clear();
   }
 
-  /* =========================
-     JWT HELPERS (IMPORTANT)
-     ========================= */
 
-  /**
-   * ✅ Decodes JWT and extracts role
-   * JWT payload must contain:
-   *   role OR authority
-   */
   getRoleFromToken(): string | null {
     const token = this.getToken();
     if (!token) return null;
@@ -101,9 +77,7 @@ export class AuthService {
     }
   }
 
-  /**
-   * ✅ Optional helper: get userId from token
-   */
+
   getUserIdFromToken(): string | null {
     const token = this.getToken();
     if (!token) return null;

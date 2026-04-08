@@ -76,6 +76,12 @@ export class CreateEventComponent implements OnInit {
   }
 
   selectForEdit(e: any): void {
+  
+    
+  if ((e?.status || '').toUpperCase() === 'COMPLETED') {
+    this.notif.show('Completed events cannot be edited', 'warning', 4000);
+    return;
+  }
     this.editId = e.id;
     this.form.patchValue(e);
     // Smooth scroll to form

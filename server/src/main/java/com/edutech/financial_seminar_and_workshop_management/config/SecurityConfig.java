@@ -46,7 +46,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
 
-                /* ================= PUBLIC ================= */
                 .antMatchers(
                         "/api/user/register",
                         "/api/user/login",
@@ -56,7 +55,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/user/reset-password-otp"
                 ).permitAll()
 
-                /* ================= INSTITUTION ================= */
                 .antMatchers(HttpMethod.POST,   "/api/institution/event").hasAuthority("INSTITUTION")
                 .antMatchers(HttpMethod.PUT,    "/api/institution/event/*").hasAuthority("INSTITUTION")
                 .antMatchers(HttpMethod.DELETE, "/api/institution/event/*").hasAuthority("INSTITUTION")
@@ -66,19 +64,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST,   "/api/institution/event/*/professional").hasAuthority("INSTITUTION")
                 .antMatchers(HttpMethod.GET,    "/api/institution/event/*/feedbacks").hasAuthority("INSTITUTION")
 
-                /* ================= PROFESSIONAL ================= */
                 .antMatchers(HttpMethod.GET,  "/api/professional/events").hasAuthority("PROFESSIONAL")
                 .antMatchers(HttpMethod.PUT,  "/api/professional/event/*/assignment").hasAuthority("PROFESSIONAL")
                 .antMatchers(HttpMethod.PUT,  "/api/professional/event/*/status").hasAuthority("PROFESSIONAL")
                 .antMatchers(HttpMethod.POST, "/api/professional/event/*/feedback").hasAuthority("PROFESSIONAL")
 
-                /* ================= PARTICIPANT ================= */
                 .antMatchers(HttpMethod.GET,  "/api/participant/events").hasAuthority("PARTICIPANT")
                 .antMatchers(HttpMethod.POST, "/api/participant/event/*/enroll").hasAuthority("PARTICIPANT")
                 .antMatchers(HttpMethod.GET,  "/api/participant/event/*/status").hasAuthority("PARTICIPANT")
                 .antMatchers(HttpMethod.POST, "/api/participant/event/*/feedback").hasAuthority("PARTICIPANT")
 
-                /* ================= STRONG END GUARDS ================= */
                 .antMatchers("/api/institution/**").hasAuthority("INSTITUTION")
                 .antMatchers("/api/professional/**").hasAuthority("PROFESSIONAL")
                 .antMatchers("/api/participant/**").hasAuthority("PARTICIPANT")

@@ -48,14 +48,12 @@ public class InstitutionController {
     }
 
 
-    // ✅ Assign professional (Institution only)
-    // Endpoint matches the intended contract: /api/institution/event/{eventId}/professional?userId=...
     @PostMapping("/event/{eventId}/professional")
     public ResponseEntity<?> assignProfessional(@PathVariable Long eventId,
                                                 @RequestParam Long userId,
                                                 Authentication auth) {
         try {
-            String institutionUsername = auth.getName(); // ✅ from JWT
+            String institutionUsername = auth.getName(); // from JWT
             Event updated = eventService.assignProfessional(eventId, userId, institutionUsername);
             return ResponseEntity.ok(updated);
         } catch (IllegalAccessException ex) {

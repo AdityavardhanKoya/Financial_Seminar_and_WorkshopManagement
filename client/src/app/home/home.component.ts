@@ -7,7 +7,7 @@ import { Component, HostListener } from '@angular/core';
 })
 export class HomeComponent {
   isScrolled = false;
-  currentSection = 'hero'; // Defaults to the first section
+  currentSection = 'hero'; 
 
   constructor() {}
 

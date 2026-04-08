@@ -200,5 +200,10 @@ export class RegistrationComponent implements OnInit {
       }
     });
   }
+  showPassword = false;
+
+togglePassword(): void {
+  this.showPassword = !this.showPassword;
+}
 }
  

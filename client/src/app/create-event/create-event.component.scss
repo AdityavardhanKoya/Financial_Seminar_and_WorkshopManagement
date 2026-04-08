@@ -228,3 +228,8 @@ $glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   50% { transform: scale(1.4); opacity: 0.5; }
   100% { transform: scale(1); opacity: 1; }
 }
+.disabled-btn {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}

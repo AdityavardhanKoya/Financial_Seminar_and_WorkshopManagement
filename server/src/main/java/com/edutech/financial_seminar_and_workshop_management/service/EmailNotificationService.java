@@ -25,7 +25,7 @@ public class EmailNotificationService {
         mailSender.send(msg);
     }
 
-    // ✅ New method for Registration Welcome Email
+    // New method for Registration Welcome Email
     public void mailUserRegistrationSuccess(User user) {
         send(
             user.getEmail(),

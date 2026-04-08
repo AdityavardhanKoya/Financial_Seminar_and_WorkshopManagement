@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface PasswordResetOtpRepository extends JpaRepository<PasswordResetOtp, Long> {
     Optional<PasswordResetOtp> findByEmail(String email);
     
-    @Transactional // ✅ Fixes the "No EntityManager with actual transaction" error
+    @Transactional 
     void deleteByEmail(String email);
 }

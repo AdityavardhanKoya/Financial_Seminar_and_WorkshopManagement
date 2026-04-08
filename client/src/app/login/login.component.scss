@@ -342,3 +342,29 @@ select.ng-touched.ng-invalid {
     transform: translateY(0);
   }
 }
+.eye-btn {
+  background: transparent;
+  border: 0;
+  padding: 0 6px;
+  margin-left: 6px;
+  cursor: pointer;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  opacity: 0.85;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.eye-btn:hover {
+  opacity: 1;
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.input-wrap input {
+  flex: 1;
+}

@@ -101,7 +101,14 @@
               <td>{{e.enrollmentCount || 0}}</td>
               <td>{{e.maxEnrollment || '∞'}}</td>
               <td class="text-end">
-                <button class="btn-glass-action" (click)="selectForEdit(e)">Edit</button>
+               
+<button class="btn-glass-action"
+        [disabled]="(e.status || '').toUpperCase() === 'COMPLETED'"
+        [class.disabled-btn]="(e.status || '').toUpperCase() === 'COMPLETED'"
+        (click)="selectForEdit(e)">
+  Edit
+</button>
+
               </td>
             </tr>
           </tbody>

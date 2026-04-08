@@ -24,14 +24,11 @@ public class Event {
     @Transient
    private boolean enrolled;
 
-
-
-
     @JsonIgnore
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<Resource> resources = new ArrayList<>();
 
-    // Expose professionals with limited fields — no recursive loops
+
     @ManyToMany
     @JoinTable(
         name = "event_professionals",
@@ -49,7 +46,6 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<Feedback> feedbacks = new ArrayList<>();
 
-    // Tracks per-professional assignment response
     @ElementCollection
     @CollectionTable(name = "event_professional_status",
         joinColumns = @JoinColumn(name = "event_id"))
@@ -57,7 +53,6 @@ public class Event {
     @Column(name = "status")
     private Map<Long, String> professionalStatus = new HashMap<>();
 
-    // Timestamp when professional was assigned (for 1-day deadline)
     @ElementCollection
     @CollectionTable(name = "event_professional_assigned_at",
         joinColumns = @JoinColumn(name = "event_id"))
@@ -66,9 +61,6 @@ public class Event {
     private Map<Long, Long> professionalAssignedAt = new HashMap<>();
 
     public Event() {}
-    
- 
-
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

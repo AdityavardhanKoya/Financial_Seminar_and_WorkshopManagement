@@ -37,7 +37,6 @@ protected void doFilterInternal(HttpServletRequest request,
 
     String path = request.getServletPath();
 
-    // ✅ Skip JWT filter for public endpoints
     if (path.equals("/api/user/login") || path.equals("/api/user/register")) {
         filterChain.doFilter(request, response);
         return;

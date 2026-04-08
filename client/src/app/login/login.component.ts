@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     this.itemForm = this.fb.group({
-      // ✅ kept Validators.required (existing) + added missing validators
+      
       username: [
         '',
         [
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
         ]
       ],
  
-      // ✅ kept required + minLength(4) (existing) + added maxLength
+      
       password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(64)]]
     });
   }
@@ -119,6 +119,12 @@ export class LoginComponent implements OnInit {
       console.error('Failed to decode JWT:', e);
     }
   }
+  showPassword = false;
+
+togglePassword(): void {
+  this.showPassword = !this.showPassword;
+}
+
  
   registration(): void {
     this.router.navigate(['/registration']);

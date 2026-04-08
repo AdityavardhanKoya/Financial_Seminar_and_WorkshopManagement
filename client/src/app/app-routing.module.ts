@@ -59,7 +59,7 @@ const routes: Routes = [
     data: { roles: ['PROFESSIONAL'] }
   },
   // Selected-event feedbacks
-  // ✅ INSTITUTION ONLY — View feedbacks from PROFESSIONAL + PARTICIPANT
+  // INSTITUTION ONLY — View feedbacks from PROFESSIONAL + PARTICIPANT
   {
     path: 'view-feedbacks',
     component: ViewFeedbacksComponent,

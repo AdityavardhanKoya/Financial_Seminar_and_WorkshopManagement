@@ -52,7 +52,7 @@ export class HttpService {
     return this.http.post(`${this.baseUrl}/api/user/reset-password-otp`, body);
   }
 
-  /* ================= INSTITUTION ================= */
+ 
 
   createEvent(body: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/api/institution/event`, body, { headers: this.getAuthHeaders() });
@@ -110,7 +110,7 @@ export class HttpService {
     );
   }
 
-  /* ================= PROFESSIONAL ================= */
+
 
   getProfessionalEvents(): Observable<any> {
     const userId = this.auth.getUserId();
@@ -147,7 +147,7 @@ export class HttpService {
     );
   }
 
-  /* ================= PARTICIPANT ================= */
+
 
   getParticipantEvents(): Observable<any> {
     return this.http.get(
@@ -179,7 +179,7 @@ export class HttpService {
       { headers: this.getAuthHeaders() }
     );
   }
-    // ✅ Username must be unique (true = available, false = taken)
+
 
 checkUsernameAvailable(username: string): Observable<boolean> {
 
@@ -191,9 +191,7 @@ checkUsernameAvailable(username: string): Observable<boolean> {
 
     map((res: any) => {
 
-      // Supports different backend styles:
-
-      // boolean OR {available:true} OR {exists:false}
+ 
 
       if (typeof res === 'boolean') return res;
 
@@ -201,17 +199,16 @@ checkUsernameAvailable(username: string): Observable<boolean> {
 
       if (typeof res?.exists === 'boolean') return !res.exists;
 
-      return true; // safe default
+      return true; 
 
     }),
 
-    catchError(() => of(true)) // don't block user if API fails
+    catchError(() => of(true)) 
 
   );
 
 }
  
-// ✅ Email must be unique for EACH ROLE (true = available for that role)
 
 checkEmailAvailableForRole(email: string, role: string): Observable<boolean> {
 

@@ -23,7 +23,7 @@ public class RegisterAndLoginController {
     @Autowired
     private UserService userService;
 
-    // ✅ Fix: Inject the PasswordResetService
+    
     @Autowired
     private PasswordResetService passwordResetService;
     @Autowired 
@@ -43,9 +43,6 @@ public class RegisterAndLoginController {
         }
     }
 
-
-
-    // ✅ Fix: Use the correct DTOs and handle the reset password logic
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
         if (request.getToken() == null || request.getNewPassword() == null) {

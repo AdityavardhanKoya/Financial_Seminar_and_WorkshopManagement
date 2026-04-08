@@ -324,4 +324,30 @@ select.ng-touched.ng-invalid {
     transform: translateY(0);
   }
 }
- 
+ .input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrap input {
+  width: 100%;
+  padding-right: 44px;
+}
+
+.eye-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.75;
+  padding: 0;
+}
+
+.eye-btn:hover {
+  opacity: 1;
+}

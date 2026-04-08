@@ -32,7 +32,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // ✅ Inject the Email Service here
+
     @Autowired
     private EmailNotificationService emailNotificationService;
 
@@ -53,23 +53,21 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("Role is required");
         }
 
-        // ✅ allow only valid roles
         if (!List.of("PARTICIPANT", "INSTITUTION", "PROFESSIONAL")
                 .contains(user.getRole())) {
             throw new RuntimeException("Invalid role");
         }
 
-        // ✅ DO NOT override role
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         
-        // Save user to Database first
+    
         User savedUser = userRepository.save(user);
 
-        // ✅ Send Welcome Email
+      
         try {
             emailNotificationService.mailUserRegistrationSuccess(savedUser);
         } catch (Exception e) {
-            // Log the error but don't break the registration process if email fails
+          
             System.err.println("Failed to send welcome email to " + savedUser.getEmail() + ": " + e.getMessage());
         }
 
