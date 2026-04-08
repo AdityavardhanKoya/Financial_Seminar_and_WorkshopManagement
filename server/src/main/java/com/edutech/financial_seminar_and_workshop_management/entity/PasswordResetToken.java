@@ -26,7 +26,6 @@ public class PasswordResetToken {
     @Temporal(TemporalType.TIMESTAMP)
     private Date expiryDate;
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

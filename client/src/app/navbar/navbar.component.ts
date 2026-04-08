@@ -17,7 +17,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   username: string | null = null;
   isLoggedIn = false;
   showNavbar = true; 
-  isScrolled = false; // Added to track scrolling
+  isScrolled = false; 
 
   notification: AppNotification | null = null;
   selectedEvent: any | null = null;
@@ -31,7 +31,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private selected: SelectedEventService
   ) {}
 
-  // Listens to scroll events to toggle the transparent/glass effect
+  
   @HostListener('window:scroll', [])
   onWindowScroll() {
     this.isScrolled = window.scrollY > 50;

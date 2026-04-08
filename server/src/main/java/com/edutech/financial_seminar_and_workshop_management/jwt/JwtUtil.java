@@ -15,7 +15,6 @@
  @Component
  public class JwtUtil {
 
-     // Use getBytes() so special characters like _ are handled safely
      private static final String SECRET_KEY = "financialseminarsecretkey2024xyzabc";
      private static final long EXPIRATION_MS = 1000L * 60 * 60 * 10;
 
@@ -74,5 +73,4 @@
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
      }
-    
  }

@@ -9,5 +9,5 @@ import java.util.List;
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     boolean existsByEvent_IdAndUser_Id(Long eventId, Long userId);
     long countByEvent_Id(Long eventId);
-  List<Enrollment> findByUser_Id(Long userId);
+    List<Enrollment> findByUser_Id(Long userId);
 }

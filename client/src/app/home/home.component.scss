@@ -1,13 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600&family=Roboto:wght@300;400;500;700;900&display=swap');
 
-// Variables
 $primary-red: #fc0114;
 $primary-blue: #234a99;
 $dark-bg: #09042a;
 $light-bg: #e5e5e5; 
 $purple-bg: #3508c9; 
 $magenta-bg: #820b73; 
-$footer-navy: #020042; // The exact deep navy blue from your second image
+$footer-navy: #020042; 
 $white: #ffffff;
 $text-dark: #333333;
 $font-sans: 'Roboto', sans-serif;
@@ -35,7 +34,7 @@ a {
   position: relative; 
 }
 
-/* ================= Navbar Styles ================= */
+
 .navbar {
   position: fixed; 
   top: 0; 
@@ -58,7 +57,7 @@ a {
   
   .nav-links {
     display: flex; 
-    gap: 35px; // Adjusted for the 5 links (including Home)
+    gap: 35px; 
     font-size: 16px; 
     font-weight: 400;
     
@@ -78,7 +77,7 @@ a {
   }
 }
 
-/* ================= Side Dots ================= */
+
 .scroll-dots {
   position: fixed; 
   right: 40px; 
@@ -103,7 +102,7 @@ a {
   }
 }
 
-/* ================= Sections ================= */
+
 .section { 
   min-height: 100vh; 
   position: relative; 
@@ -111,7 +110,7 @@ a {
   padding: 100px 80px; 
 }
 
-// Section 1: Hero
+
 .hero-section {
   background-color: $dark-bg; 
   align-items: center; 
@@ -160,7 +159,7 @@ a {
   }
 }
 
-// Section 2: About
+
 .about-section {
   background-color: $light-bg; 
   color: $text-dark; 
@@ -242,7 +241,7 @@ a {
   }
 }
 
-// Section 3: Features
+
 .features-section {
   background-color: $purple-bg; 
   color: $white; 
@@ -338,7 +337,7 @@ a {
   }
 }
 
-// Section 4: Roles
+
 .roles-section {
   background-color: $magenta-bg; 
   color: $white; 
@@ -429,11 +428,11 @@ a {
   }
 }
 
-// Section 5: Get Started Footer
+
 .footer-cta {
   background-color: $footer-navy; 
   color: $white;
-  padding: 50px 20px; // Slightly less padding for a tighter look
+  padding: 50px 20px; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -442,7 +441,7 @@ a {
   .cta-container {
     h2 {
       font-family: $font-serif;
-      font-size: 36px; // Reduced from 52px
+      font-size: 36px; 
       font-weight: 500;
       margin-bottom: 30px; 
       letter-spacing: -0.5px;
@@ -454,8 +453,8 @@ a {
       justify-content: center;
       
       a {
-        padding: 12px 28px; // Reduced padding (Button Size)
-        font-size: 14px;    // Reduced font size
+        padding: 12px 28px; 
+        font-size: 14px;    
         font-weight: 500;
         border-radius: 5px;
         transition: all 0.3s ease;
@@ -489,7 +488,7 @@ a {
   }
 }
 
-/* ================= Media Queries ================= */
+
 @media (max-width: 1024px) {
   .hero-section .hero-content .text-content .title { font-size: 100px; }
   .about-section .about-content-wrapper .about-text-content .about-title { font-size: 80px; }
@@ -519,7 +518,7 @@ a {
 
   .footer-cta .cta-container {
     h2 { 
-      font-size: 30px; // Slightly smaller on mobile
+      font-size: 30px; 
     }
     .cta-buttons { 
       flex-direction: column; 

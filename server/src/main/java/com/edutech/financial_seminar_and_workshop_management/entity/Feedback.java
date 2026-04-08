@@ -19,14 +19,14 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ Ignore event to avoid infinite recursion
+    // Ignore event to avoid infinite recursion
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
 
-    // ✅ Correct annotation (ONLY ONE @)
-    // ✅ User details will be visible in response (username, role)
+    // Correct annotation (ONLY ONE @)
+    // User details will be visible in response (username, role)
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnoreProperties({
@@ -45,7 +45,7 @@ public class Feedback {
     @Column(name = "timestamp")
     private Date timestamp;
 
-    // ✅ Required no-arg constructor
+    // Required no-arg constructor
     public Feedback() {}
 
     public Feedback(Long id, Event event, User user, String content, Date timestamp) {
@@ -56,7 +56,6 @@ public class Feedback {
         this.timestamp = timestamp;
     }
 
-    // -------- Getters & Setters --------
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

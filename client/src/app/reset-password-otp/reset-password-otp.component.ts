@@ -14,6 +14,7 @@ export class ResetPasswordOtpComponent implements OnInit {
 
   form: FormGroup;
   emailFromRoute = '';
+  isUpdating = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,19 +38,25 @@ export class ResetPasswordOtpComponent implements OnInit {
   }
 
   resetPassword(): void {
+    if (this.isUpdating) return;
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    this.isUpdating = true;
+
     this.http.resetPasswordOtp(this.form.value).subscribe({
       next: () => {
+        this.isUpdating = false;
         this.notif.show('Password updated successfully', 'success', 4000);
         this.router.navigateByUrl('/login');
       },
       error: (err) => {
-        const errorMsg = err?.error?.message || err?.error || 'OTP invalid or expired';
-        this.notif.show(errorMsg, 'danger', 4000);
+        this.isUpdating = false;
+        const msg = err?.error?.message || 'OTP invalid or expired';
+        this.notif.show(msg, 'danger', 4000);
       }
     });
   }

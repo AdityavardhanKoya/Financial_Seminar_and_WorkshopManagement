@@ -128,6 +128,11 @@ public class EventService {
         validateFutureSchedule(updated.getSchedule());
 
         Event e = getOrThrow(id);
+        
+if ("COMPLETED".equalsIgnoreCase(e.getStatus())) {
+    throw new RuntimeException("Completed events cannot be edited");
+}
+
         if (!e.getInstitutionId().equals(institutionId)) {
             throw new RuntimeException("Not your event");
         }
@@ -161,19 +166,19 @@ public class EventService {
         return list;
     }
 
-    public List<Event> getEventsByProfessional(Long userId) {
-        List<Event> list = eventRepository.findByProfessionalsId(userId);
+ public List<Event> getEventsByProfessional(Long userId) {
+    List<Event> list = eventRepository.findByProfessionalsId(userId);
 
-        list.forEach(e -> {
-            refreshEnrollmentCount(e);
-            autoCompleteIfSchedulePassed(e);
-            expireIfNeeded(e, userId);
-        });
+    list.forEach(e -> {
+        refreshEnrollmentCount(e);
+        autoCompleteIfSchedulePassed(e);
+        expireIfNeeded(e, userId);
+    });
 
-        return list.stream()
-                .filter(e -> e.getStatus() == null || !"COMPLETED".equalsIgnoreCase(e.getStatus()))
-                .toList();
-    }
+    return list.stream()
+            .filter(e -> e.getStatus() == null || !"COMPLETED".equalsIgnoreCase(e.getStatus()))
+            .toList();
+}
 
     public Event getEventById(Long id) {
         Event e = getOrThrow(id);
