@@ -32,6 +32,6 @@ jobs:
           cache: maven
 
       - name: Build and Test Backend
-        run: mvn clean verifygit  
+        run: mvn clean verify 
 
  
