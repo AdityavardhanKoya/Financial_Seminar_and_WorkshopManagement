@@ -3,7 +3,7 @@ name: FinEvent Backend CI
 on:
   push:
     branches:
-      - feature/cicd
+      - feature/cicd-setup
     paths:
       - "server/**"
       - ".github/workflows/backend-ci.yml"
@@ -32,4 +32,6 @@ jobs:
           cache: maven
 
       - name: Build and Test Backend
-        run: mvn clean verify
+        run: mvn clean verifygit  
+
+ 
